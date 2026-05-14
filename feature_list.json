@@ -90,6 +90,36 @@
         "agent-browser is now a local dev dependency with pnpm verify:browser.",
         "Root README and app README document local running, testing, browser verification, and deploy testing."
       ]
+    },
+    {
+      "id": "opal-minimal-hero-scroll-contract",
+      "priority": 4,
+      "title": "Opal-style minimal homepage hero and scroll verification",
+      "status": "complete",
+      "description": "Replace the homepage shell with a minimal Opal Tadpole-inspired landing surface containing only the Tomorrow Today slogan and one full-bleed hero image, plus scroll-reactive motion and automated design contract checks.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "./init.sh: passed with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed",
+          "pnpm build: passed",
+          "pnpm verify:browser: passed on desktop 1440x1000 and mobile 390x844; verified slogan-only homepage contract, hero image, no public chrome, no dev overlay, no horizontal overflow, and active scroll effect"
+        ]
+      },
+      "notes": [
+        "Homepage intentionally bypasses the shared public PageFrame so shadcn-style site chrome stays off the hero.",
+        "Shared public route shells and admin dashboard foundations remain unchanged."
+      ]
     }
   ]
 }

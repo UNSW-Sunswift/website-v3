@@ -68,6 +68,9 @@ for the webapp.
 - When a dev server is started, use the `vercel:agent-browser` workflow to
   verify the page visually with `agent-browser open`, `wait --load networkidle`,
   `screenshot --annotate`, and `snapshot -i`.
+- Homepage visual changes must keep `pnpm test:homepage-design` and
+  `pnpm verify:browser` passing; the homepage contract is slogan plus image
+  only, with no public shadcn controls or shared site chrome.
 - If the `agent-browser` CLI is unavailable, record that limitation in
   `claude-progress.md` and run HTTP smoke checks for the affected routes.
 

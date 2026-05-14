@@ -128,3 +128,16 @@
     @apply font-sans;
     }
 }
+
+.opal-hero-image {
+    filter: saturate(0.92) contrast(1.02);
+    opacity: var(--hero-opacity);
+    transform: scale(var(--hero-scale)) translate3d(var(--hero-x), 0, 0);
+    transform-origin: 56% 45%;
+    will-change: opacity, transform;
+}
+
+.opal-hero-title {
+    transform: translate3d(0, var(--hero-title-y), 0);
+    will-change: transform;
+}

@@ -24,6 +24,7 @@ The app runs at `http://localhost:3000`.
 ```bash
 pnpm typecheck
 pnpm lint
+pnpm test:homepage-design
 pnpm build
 ```
 

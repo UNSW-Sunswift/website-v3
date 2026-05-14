@@ -55,6 +55,7 @@ echo "[init] Verifying frontend project"
   cd "$ROOT_DIR/sunswift-website-v3"
   pnpm typecheck
   pnpm lint
+  pnpm test:homepage-design
 )
 
 echo "[init] Complete. LocalStack endpoint: http://localhost:4566"

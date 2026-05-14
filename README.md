@@ -81,6 +81,7 @@ Run these before handing work off:
 cd sunswift-website-v3
 pnpm typecheck
 pnpm lint
+pnpm test:homepage-design
 pnpm build
 ```
 
