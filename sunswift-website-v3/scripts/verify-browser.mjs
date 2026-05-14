@@ -2,34 +2,104 @@ import { spawnSync } from "node:child_process";
 
 const baseUrl = process.env.VERIFY_URL ?? "http://localhost:3000";
 
-const homepageContract = `(() => {
+const homepageContract = `(() => new Promise((resolve, reject) => {
   const main = document.querySelector("main[data-homepage]");
   const hero = document.querySelector("[data-homepage-hero]");
+  const navbar = document.querySelector("[data-homepage-navbar]");
+  const about = document.querySelector("[data-homepage-about]");
+  const records = document.querySelector("[data-homepage-records]");
   const title = hero?.querySelector("h1");
   const image = hero?.querySelector("img");
 
   if (!main || !hero) {
-    throw new Error("MISSING_HOMEPAGE_HERO");
+    reject(new Error("MISSING_HOMEPAGE_HERO"));
+    return;
   }
 
-  if (!title || title.textContent.replace(/\\s+/g, "").trim() !== "Tomorrow,Today") {
-    throw new Error("MISSING_SLOGAN");
+  if (!navbar) {
+    reject(new Error("MISSING_HOMEPAGE_NAVBAR"));
+    return;
+  }
+
+  const requiredLinks = ["About Us", "Our Team", "Vehicles", "Partners", "Media", "Recruitment", "Contact"];
+  const navText = navbar.innerText;
+  const missingLink = requiredLinks.find((label) => !navText.includes(label));
+  if (missingLink) {
+    reject(new Error("MISSING_NAV_LINK:" + missingLink));
+    return;
+  }
+
+  if (!about) {
+    reject(new Error("MISSING_HOMEPAGE_ABOUT"));
+    return;
+  }
+
+  const aboutText = about.innerText;
+  if (!aboutText.includes("What is Sunswift Racing?")) {
+    reject(new Error("MISSING_ABOUT_HEADLINE"));
+    return;
+  }
+  if (!aboutText.includes("World Solar Challenge") || !aboutText.includes("Guinness World Records")) {
+    reject(new Error("MISSING_ABOUT_COPY"));
+    return;
+  }
+
+  const statement = document.querySelector("[data-homepage-statement]");
+  if (!statement) {
+    reject(new Error("MISSING_HOMEPAGE_STATEMENT"));
+    return;
+  }
+  const statementH2 = statement.querySelector("h2");
+  if (!statementH2 || statementH2.innerText.trim().length < 8) {
+    reject(new Error("MISSING_STATEMENT_HEADLINE"));
+    return;
+  }
+
+  if (!records) {
+    reject(new Error("MISSING_HOMEPAGE_RECORDS"));
+    return;
+  }
+  const recordCards = records.querySelectorAll("[data-homepage-record]");
+  if (recordCards.length < 3) {
+    reject(new Error("MISSING_RECORD_CARDS:" + recordCards.length));
+    return;
+  }
+  const recordsText = records.innerText;
+  if (!recordsText.includes("Records that move") || !recordsText.includes("1,000")) {
+    reject(new Error("MISSING_RECORDS_COPY"));
+    return;
   }
 
   if (!image) {
-    throw new Error("MISSING_HERO_IMAGE");
+    reject(new Error("MISSING_HERO_IMAGE"));
+    return;
   }
 
-  if (main.querySelector("a, button, nav, header, footer, p")) {
-    throw new Error("HOMEPAGE_HAS_EXTRA_CHROME");
+  if (!title) {
+    reject(new Error("MISSING_SLOGAN_TITLE"));
+    return;
   }
 
-  if (main.querySelectorAll("h1").length !== 1) {
-    throw new Error("HOMEPAGE_MUST_HAVE_ONE_HEADLINE");
+  const expected = title.dataset.fullText;
+  if (expected !== "Tomorrow, Today.") {
+    reject(new Error("MISSING_SLOGAN_DATA:" + expected));
+    return;
   }
 
-  return "HOMEPAGE_CONTRACT_OK";
-})()`;
+  const deadline = Date.now() + 5000;
+  const tick = () => {
+    if (title.dataset.typingComplete === "true") {
+      resolve("HOMEPAGE_CONTRACT_OK");
+      return;
+    }
+    if (Date.now() > deadline) {
+      reject(new Error("TYPING_NEVER_COMPLETED:" + (title.textContent || "").trim()));
+      return;
+    }
+    setTimeout(tick, 80);
+  };
+  tick();
+}))()`;
 
 const pageIsHealthy = `(() => {
   if (document.querySelector("[data-nextjs-dialog], .vite-error-overlay, #webpack-dev-server-client-overlay")) {
@@ -44,7 +114,7 @@ const pageIsHealthy = `(() => {
     .filter((element) => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
-      return !element.matches(".opal-hero-image") && rect.width > 0 && rect.height > 0 && style.position !== "fixed" && (rect.left < -1 || rect.right > window.innerWidth + 1);
+      return !element.matches(".homepage-hero-image") && rect.width > 0 && rect.height > 0 && style.position !== "fixed" && (rect.left < -1 || rect.right > window.innerWidth + 1);
     })
     .slice(0, 3)
     .map((element) => element.tagName.toLowerCase());

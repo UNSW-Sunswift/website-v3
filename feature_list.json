@@ -92,6 +92,329 @@
       ]
     },
     {
+      "id": "homepage-transparent-navbar-about-section",
+      "priority": 5,
+      "title": "Remove Opal naming, add transparent navbar and about section",
+      "status": "complete",
+      "description": "Strip internal Opal references, rename the homepage hero, add a transparent overlay navbar with the Sunswift navigation, and extend the homepage with the Sunswift about copy and a placeholder image.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Homepage hero renamed to HomepageHero and CSS hooks renamed to .homepage-hero-*.",
+        "Transparent navbar sits over the dark hero and links to all seven Sunswift sections.",
+        "About section uses placeholder garage.svg image until real Sunswift photography lands."
+      ]
+    },
+    {
+      "id": "homepage-typing-slogan-guinness-records",
+      "priority": 6,
+      "title": "Typing slogan and Guinness records section",
+      "status": "complete",
+      "description": "Add an Apple-style Guinness World Records section below the about block and animate the homepage slogan with a typing effect ending in 'Tomorrow, Today.'.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Slogan now reveals one character at a time and ends with a blinking caret; an sr-only full slogan keeps accessibility intact.",
+        "Records section uses placeholder vehicle SVGs; swap with real photography when assets land.",
+        "Browser harness now waits for data-typing-complete before asserting the slogan and checks records copy."
+      ]
+    },
+    {
+      "id": "statement-section-vehicles-gallery",
+      "priority": 7,
+      "title": "Statement section, records kicker removed, vehicles full-page gallery",
+      "status": "complete",
+      "description": "Drop the Guinness kicker, add an Opal-style big-text statement between hero and about, expand the vehicles dataset to all seven cars, and replace /vehicles with a hover-expand, click-to-open gallery that uses the whole page.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Vehicles dataset now mirrors the Webflow source (Sunswift 7, VIolet, eVe, IVy, III, II, I).",
+        "Placeholder SVGs cover all seven cars; 3D renders are deferred until requested.",
+        "Vehicles detail view is client-state only — no /vehicles/[slug] route yet."
+      ]
+    },
+    {
+      "id": "mono-yellow-theme-vehicles-flip",
+      "priority": 8,
+      "title": "Monochrome theme with yellow accents and vehicles layout flip",
+      "status": "complete",
+      "description": "Shift the site palette to black/white with a single Sunswift-yellow accent for important states (e.g. Join the team hover), flip the vehicles page so cards occupy the top and the headline anchors the bottom, and add staggered/blur transitions.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Yellow exposed via --accent-yellow / Tailwind utilities (text-accent-yellow etc).",
+        "Vehicle gallery uses vehicle-card-rise, vehicle-fade-up, vehicle-detail-in keyframes with a reduced-motion guard.",
+        "Shared PageFrame chrome may still surface yellow via text-primary; a per-page accent audit is queued."
+      ]
+    },
+    {
+      "id": "homepage-zoom-tone-darkens-on-scroll",
+      "priority": 16,
+      "title": "Remove statement section and darken zoom-reveal tone on scroll",
+      "status": "complete",
+      "description": "Delete the HomepageStatement section, place the zoom-reveal on a light canvas, and tween the 'Built by Students. Driving Sustainability.' headline colour from a faint gray to near-black as the user scrolls, with the background vehicle render fading in alongside.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed with the statement-removal + tone-shift assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Headline tone driven by --zoom-text-color, interpolated rgb(186,186,186) -> rgb(12,12,12) via Math.pow(progress, 0.85).",
+        "Render slot now also fades in via --zoom-render-opacity (0.18 -> 0.65).",
+        "Reduced-motion fallback locks the headline to a readable dark color and the render to opacity 0.45."
+      ]
+    },
+    {
+      "id": "homepage-zoom-reveal-built-by-students",
+      "priority": 15,
+      "title": "Homepage zoom-reveal section with vehicle render placeholder",
+      "status": "complete",
+      "description": "Add a new Opal Tadpole-style scroll section between the statement and about blocks that grows the 'Built by Students. Driving Sustainability.' headline toward the viewer while a vehicle render placeholder breathes in behind it.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed with new HomepageZoomReveal mount, ordering, and scroll/Inter-Thin assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Vehicle render uses the SR8 placeholder SVG; the data-homepage-vehicle-render slot is ready for a live 3D render or video element when the asset is ready.",
+        "Scroll behaviour is driven by --zoom-scale, --zoom-opacity, --zoom-tracking, --zoom-render-scale, and --zoom-render-y custom properties on the section root.",
+        "Reduced-motion users get the headline flat at its final scale/opacity, with no parallax on the render slot."
+      ]
+    },
+    {
+      "id": "vehicles-top-vignette-sr8-abbreviated-names",
+      "priority": 14,
+      "title": "Top vignette, SR8 card, and abbreviated vehicle names",
+      "status": "complete",
+      "description": "Add a top vignette over the vehicles navbar, add the in-build Sunswift 8 (SR8) card to the gallery, and abbreviate every vehicle's display name (Sunswift 7 -> SR7, IVy/eVe/VIolet drop the Sunswift prefix).",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed with the new top-vignette, SR8, and abbreviated-name assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Top vignette is a pointer-events-none linear-gradient(180deg, #000 -> transparent) anchored top-0 at z-[15].",
+        "SR8 entry uses placeholder /placeholders/vehicle-sunswift-8.svg until the production render is ready.",
+        "Display names only changed in lib/cms/static-data.ts; slugs and underlying data remain stable so deep-links keep working."
+      ]
+    },
+    {
+      "id": "vehicles-right-name-inter-thin-vignette",
+      "priority": 13,
+      "title": "Right-anchored vertical names in Inter Thin with bottom vignette",
+      "status": "complete",
+      "description": "Move the vertical vehicle name to the right edge of each card, switch its typography to Inter Thin loaded via next/font/google, and add a vignette overlay at the bottom of the vehicles gallery that fades to black behind the Seven cars. One vision. headline.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed with new right-edge, Inter-thin, and vignette assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Inter loaded via next/font/google with weight 100 exposed as --font-inter and applied to <html>.",
+        ".vehicle-name-vertical now declares font-family Inter and font-weight 100 for true thin typography.",
+        "data-homepage-vignette overlay fades the bottom 42svh of the gallery to black; ready for hand-off to design when finer tuning is desired."
+      ]
+    },
+    {
+      "id": "vehicles-vertical-thin-names",
+      "priority": 12,
+      "title": "Vertical, thinner vehicle names on the gallery cards",
+      "status": "complete",
+      "description": "Render each vehicle card's name as a vertical top-to-bottom string with a thinner weight (mirroring the Sunswift Webflow gallery), replace the previously truncated horizontal title, and add harness assertions to enforce the new layout.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed with the new data-vehicle-name + writing-mode + font-extralight assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Names use writing-mode: vertical-rl and the .vehicle-name-vertical helper for tracking + light text-shadow.",
+        "Font weight is now font-extralight for both the vertical title and the hover summary copy.",
+        "Card content footer no longer renders a horizontal name; vertical name is always visible regardless of hover/dim state."
+      ]
+    },
+    {
+      "id": "vehicles-title-clearance-harness-extended",
+      "priority": 11,
+      "title": "Vehicles title clearance, redundant + indicator removed, harness extended",
+      "status": "complete",
+      "description": "Lift the vehicle card title above the transparent footer overlay, drop the redundant top-right + indicator on each card, and extend the homepage design contract to permanently enforce the vehicles gallery, theme, and shared site-shell visual rules established this session.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed with the extended vehicles + theme + site-shell assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Card content footer now uses h-[220px] pb-44 sm:h-[260px] sm:pb-56 to clear the absolute footer overlay.",
+        "Harness now scopes card-only checks (no rounded utilities, no hairline border) to the gallery half of vehicles-gallery.tsx so the detail view chrome is unaffected.",
+        "globals.css keyframes (vehicle-card-rise, vehicle-click-pulse, vehicle-detail-in) and the --accent-yellow / near-black --primary tokens are now harness-enforced."
+      ]
+    },
+    {
+      "id": "black-on-white-liquid-glass",
+      "priority": 10,
+      "title": "Black-on-white primary with square liquid-glass surfaces",
+      "status": "complete",
+      "description": "Set the public site's primary token to near-black on white, lock the theme to light, square up the radius, and rework the shared site shell/page intro/content sections into translucent backdrop-blurred panels with black borders and yellow only as an accent on hover/highlight.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Theme is now locked to light via ThemeProvider forcedTheme; the d hotkey toggle has been removed.",
+        "Yellow remains available via --accent-yellow / text-accent-yellow / bg-accent-yellow for deliberate accents.",
+        "Dark hero, statement, records, and vehicles gallery are intentionally retained for photographic moments."
+      ]
+    },
+    {
+      "id": "vehicles-click-choreography-uniform-text",
+      "priority": 9,
+      "title": "Vehicles card click choreography and uniform card text baselines",
+      "status": "complete",
+      "description": "Anchor every vehicle card's year/name to the same baseline regardless of hover state and add a cinematic click animation (yellow pulse, focused card expansion, sibling fade/blur) before the detail view mounts.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "pnpm test:homepage-design: passed",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "Card content footer is a fixed height (140/160px) with truncated name text for a stable baseline.",
+        "Click choreography uses a 520ms transition with vehicle-click-pulse + sibling fade-out before the detail view mounts."
+      ]
+    },
+    {
       "id": "opal-minimal-hero-scroll-contract",
       "priority": 4,
       "title": "Opal-style minimal homepage hero and scroll verification",

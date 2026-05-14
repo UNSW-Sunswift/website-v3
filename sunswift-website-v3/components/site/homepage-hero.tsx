@@ -2,10 +2,16 @@
 
 import Image from "next/image"
 import type { CSSProperties } from "react"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
-export function OpalHomepageHero() {
+const SLOGAN = "Tomorrow, Today."
+const LINE_BREAK_INDEX = 9
+const TYPE_INTERVAL_MS = 95
+const TYPE_START_DELAY_MS = 350
+
+export function HomepageHero() {
   const rootRef = useRef<HTMLElement>(null)
+  const [typed, setTyped] = useState("")
 
   useEffect(() => {
     const root = rootRef.current
@@ -49,6 +55,32 @@ export function OpalHomepageHero() {
     }
   }, [])
 
+  useEffect(() => {
+    let index = 0
+    let intervalId: ReturnType<typeof setInterval> | undefined
+
+    const start = window.setTimeout(() => {
+      intervalId = setInterval(() => {
+        index += 1
+        setTyped(SLOGAN.slice(0, index))
+        if (index >= SLOGAN.length && intervalId) {
+          clearInterval(intervalId)
+        }
+      }, TYPE_INTERVAL_MS)
+    }, TYPE_START_DELAY_MS)
+
+    return () => {
+      window.clearTimeout(start)
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
+  }, [])
+
+  const firstLine = typed.slice(0, LINE_BREAK_INDEX)
+  const secondLine = typed.length > LINE_BREAK_INDEX ? typed.slice(LINE_BREAK_INDEX + 1) : ""
+  const isComplete = typed.length >= SLOGAN.length
+
   return (
     <section
       ref={rootRef}
@@ -70,15 +102,28 @@ export function OpalHomepageHero() {
           alt="Sunswift solar race car"
           fill
           priority
-          className="opal-hero-image object-cover"
+          className="homepage-hero-image object-cover"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_54%_42%,transparent_0%,rgba(20,24,27,0.08)_31%,rgba(20,24,27,0.58)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,24,27,0.58)_0%,rgba(20,24,27,0.16)_42%,rgba(20,24,27,0.34)_100%)]" />
-        <h1 className="opal-hero-title absolute left-[9vw] top-[41svh] max-w-[9ch] text-[clamp(3.05rem,5.45vw,5.95rem)] font-light leading-[0.98] tracking-normal text-white">
-          Tomorrow,
-          <br />
-          Today
+        <h1
+          data-full-text={SLOGAN}
+          data-typing-complete={isComplete ? "true" : "false"}
+          className="homepage-hero-title absolute left-[9vw] top-[41svh] max-w-[12ch] text-[clamp(3.05rem,5.45vw,5.95rem)] font-light leading-[0.98] tracking-normal text-white"
+        >
+          <span className="sr-only">{SLOGAN}</span>
+          <span aria-hidden="true">
+            {firstLine}
+            {typed.length > LINE_BREAK_INDEX && <br />}
+            {secondLine}
+            <span
+              className="homepage-hero-caret ml-[0.08em] inline-block w-[0.06em] translate-y-[0.05em] self-end bg-white align-baseline"
+              data-complete={isComplete ? "true" : "false"}
+            >
+              &nbsp;
+            </span>
+          </span>
         </h1>
       </div>
     </section>

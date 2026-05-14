@@ -1,14 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Gauge, Mail, Zap } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 const navItems = [
-  { href: "/who-we-are", label: "Who we are" },
-  { href: "/what-we-do", label: "What we do" },
-  { href: "/team", label: "Team" },
+  { href: "/who-we-are", label: "About Us" },
+  { href: "/team", label: "Our Team" },
   { href: "/vehicles", label: "Vehicles" },
   { href: "/partners", label: "Partners" },
   { href: "/media", label: "Media" },
@@ -18,27 +16,32 @@ const navItems = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/75 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-black/10 bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/55">
       <div className="mx-auto flex h-16 max-w-[92rem] items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="grid size-9 place-items-center rounded-full border border-foreground/10 bg-card text-foreground shadow-sm">
-            <Zap className="size-4" />
-          </span>
-          <span className="text-sm font-semibold">Sunswift</span>
+        <Link
+          href="/"
+          className="text-sm font-semibold tracking-wide text-black transition-colors duration-300 hover:text-accent-yellow"
+        >
+          Sunswift Racing
         </Link>
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {navItems.map((item) => (
-            <Button key={item.href} asChild variant="ghost" size="sm">
-              <Link href={item.href}>{item.label}</Link>
-            </Button>
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-medium text-black/75 transition-colors duration-300 hover:text-accent-yellow"
+            >
+              {item.label}
+            </Link>
           ))}
         </nav>
-        <Button asChild className="hidden sm:inline-flex" size="sm">
-          <Link href="/recruitment">
-            Join the team
-            <ArrowRight className="size-4" />
-          </Link>
-        </Button>
+        <Link
+          href="/recruitment"
+          className="hidden items-center gap-2 border border-black/80 bg-transparent px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-black transition-[background-color,color,border-color] duration-300 ease-out hover:border-accent-yellow hover:bg-accent-yellow hover:text-black sm:inline-flex"
+        >
+          Join the team
+          <ArrowRight className="size-3.5" />
+        </Link>
       </div>
     </header>
   )
@@ -46,25 +49,26 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 bg-muted/30">
+    <footer className="border-t border-black/10 bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/55">
       <div className="mx-auto grid max-w-[92rem] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_2fr]">
         <div>
-          <div className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-full border border-foreground/10 bg-card text-foreground shadow-sm">
-              <Zap className="size-4" />
-            </span>
-            <span className="text-sm font-semibold">Sunswift Racing</span>
-          </div>
-          <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
-            Student-led engineering for solar electric vehicles, built at UNSW in Sydney.
+          <Link
+            href="/"
+            className="text-sm font-semibold tracking-wide text-black"
+          >
+            Sunswift Racing
+          </Link>
+          <p className="mt-4 max-w-sm text-sm leading-6 text-black/60">
+            Student-led engineering for solar electric vehicles, built at UNSW
+            in Sydney.
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {navItems.slice(0, 8).map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="text-sm text-black/70 transition-colors duration-300 hover:text-accent-yellow"
             >
               {item.label}
             </Link>
@@ -77,7 +81,11 @@ export function SiteFooter() {
 
 export function PageFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
+    <div className="relative min-h-screen bg-white text-black selection:bg-accent-yellow/40">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(0,0,0,0.04)_0%,transparent_60%)]"
+      />
       <SiteHeader />
       <main>{children}</main>
       <SiteFooter />
@@ -87,8 +95,7 @@ export function PageFrame({ children }: { children: React.ReactNode }) {
 
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.22em] text-primary">
-      <Gauge className="size-3.5" />
+    <div className="mb-4 inline-flex items-center gap-2 border border-black/15 bg-white/60 px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-black/70 backdrop-blur-md">
       {children}
     </div>
   )
@@ -106,13 +113,13 @@ export function PageIntro({
   className?: string
 }) {
   return (
-    <section className={cn("mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28", className)}>
+    <section className={cn("mx-auto max-w-[92rem] px-4 pb-12 pt-24 sm:px-6 lg:pt-32", className)}>
       <SectionLabel>{label}</SectionLabel>
-      <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-        <h1 className="max-w-4xl text-5xl font-medium leading-none tracking-normal sm:text-7xl">
+      <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+        <h1 className="max-w-4xl text-5xl font-light leading-[0.98] tracking-tight text-black sm:text-7xl lg:text-[5.5rem]">
           {title}
         </h1>
-        <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+        <p className="max-w-2xl text-base leading-7 text-black/65 sm:text-lg">
           {description}
         </p>
       </div>
@@ -132,11 +139,23 @@ export function ImagePanel({
   className?: string
 }) {
   return (
-    <div className={cn("relative overflow-hidden rounded-lg border border-border/70 bg-muted", className)}>
-      <Image src={src} alt={alt} fill className="object-cover" sizes="(min-width: 1024px) 50vw, 100vw" />
-      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-background/90 to-transparent p-4">
-        <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">{label}</span>
-        <Mail className="size-4 text-primary" />
+    <div
+      className={cn(
+        "relative overflow-hidden border border-black/10 bg-black/[0.03]",
+        className,
+      )}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover"
+        sizes="(min-width: 1024px) 50vw, 100vw"
+      />
+      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between border-t border-white/30 bg-white/30 px-4 py-3 backdrop-blur-md">
+        <span className="font-mono text-[0.65rem] uppercase tracking-[0.24em] text-black/80">
+          {label}
+        </span>
       </div>
     </div>
   )

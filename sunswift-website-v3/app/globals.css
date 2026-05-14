@@ -39,6 +39,8 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+    --color-accent-yellow: var(--accent-yellow);
+    --color-accent-yellow-soft: var(--accent-yellow-soft);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -49,38 +51,42 @@
 }
 
 :root {
-    --background: oklch(0.985 0.008 93);
-    --foreground: oklch(0.18 0.006 78);
-    --card: oklch(1 0.003 93);
-    --card-foreground: oklch(0.18 0.006 78);
-    --popover: oklch(1 0.003 93);
-    --popover-foreground: oklch(0.18 0.006 78);
-    --primary: oklch(0.81 0.165 84);
-    --primary-foreground: oklch(0.19 0.012 74);
-    --secondary: oklch(0.94 0.018 92);
-    --secondary-foreground: oklch(0.25 0.01 76);
-    --muted: oklch(0.94 0.018 92);
-    --muted-foreground: oklch(0.46 0.013 77);
-    --accent: oklch(0.91 0.04 91);
-    --accent-foreground: oklch(0.22 0.01 76);
+    /* Sunswift yellow accent, used sparingly for important UI states. */
+    --accent-yellow: #f5d000;
+    --accent-yellow-soft: #ffe14a;
+
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.12 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.12 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.12 0 0);
+    --primary: oklch(0.12 0 0);
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.96 0 0);
+    --secondary-foreground: oklch(0.12 0 0);
+    --muted: oklch(0.965 0 0);
+    --muted-foreground: oklch(0.42 0 0);
+    --accent: oklch(0.96 0 0);
+    --accent-foreground: oklch(0.12 0 0);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.83 0.018 88);
-    --input: oklch(0.86 0.015 88);
-    --ring: oklch(0.74 0.08 85);
-    --chart-1: oklch(0.81 0.165 84);
-    --chart-2: oklch(0.61 0.05 170);
-    --chart-3: oklch(0.45 0.03 250);
-    --chart-4: oklch(0.72 0.07 48);
-    --chart-5: oklch(0.55 0.04 25);
-    --radius: 0.7rem;
-    --sidebar: oklch(0.97 0.012 93);
-    --sidebar-foreground: oklch(0.18 0.006 78);
-    --sidebar-primary: oklch(0.81 0.165 84);
-    --sidebar-primary-foreground: oklch(0.19 0.012 74);
-    --sidebar-accent: oklch(0.94 0.018 92);
-    --sidebar-accent-foreground: oklch(0.25 0.01 76);
-    --sidebar-border: oklch(0.83 0.018 88);
-    --sidebar-ring: oklch(0.74 0.08 85);
+    --border: oklch(0.9 0 0);
+    --input: oklch(0.9 0 0);
+    --ring: oklch(0.12 0 0);
+    --chart-1: oklch(0.12 0 0);
+    --chart-2: oklch(0.4 0 0);
+    --chart-3: oklch(0.55 0 0);
+    --chart-4: oklch(0.7 0 0);
+    --chart-5: oklch(0.86 0.17 95);
+    --radius: 0.25rem;
+    --sidebar: oklch(0.98 0 0);
+    --sidebar-foreground: oklch(0.12 0 0);
+    --sidebar-primary: oklch(0.12 0 0);
+    --sidebar-primary-foreground: oklch(1 0 0);
+    --sidebar-accent: oklch(0.96 0 0);
+    --sidebar-accent-foreground: oklch(0.12 0 0);
+    --sidebar-border: oklch(0.9 0 0);
+    --sidebar-ring: oklch(0.12 0 0);
 }
 
 .dark {
@@ -129,7 +135,7 @@
     }
 }
 
-.opal-hero-image {
+.homepage-hero-image {
     filter: saturate(0.92) contrast(1.02);
     opacity: var(--hero-opacity);
     transform: scale(var(--hero-scale)) translate3d(var(--hero-x), 0, 0);
@@ -137,7 +143,141 @@
     will-change: opacity, transform;
 }
 
-.opal-hero-title {
+.homepage-hero-title {
     transform: translate3d(0, var(--hero-title-y), 0);
     will-change: transform;
+}
+
+.homepage-hero-caret {
+    height: 0.95em;
+    animation: homepage-hero-caret-blink 1s steps(1, end) infinite;
+}
+
+.homepage-hero-caret[data-complete="true"] {
+    animation-duration: 1.2s;
+    opacity: 0.85;
+}
+
+@keyframes homepage-hero-caret-blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .homepage-hero-caret {
+        animation: none;
+        opacity: 0.7;
+    }
+}
+
+@keyframes vehicle-card-rise {
+    from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.985);
+        filter: blur(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes vehicle-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes vehicle-click-pulse {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.4);
+        border-width: 2px;
+    }
+    35% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(5);
+        border-width: 1px;
+    }
+}
+
+.vehicle-click-pulse {
+    animation: vehicle-click-pulse 620ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.vehicle-name-vertical {
+    font-family: var(--font-inter), "Inter", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 100;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+    letter-spacing: -0.005em;
+}
+
+.homepage-zoom-text {
+    font-family: var(--font-inter), "Inter", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 100;
+    -webkit-font-smoothing: antialiased;
+    font-size: clamp(2.5rem, 11vw, 9.5rem);
+    color: var(--zoom-text-color);
+    transform: scale(var(--zoom-scale)) translateZ(0);
+    opacity: var(--zoom-opacity);
+    letter-spacing: var(--zoom-tracking);
+    transition: color 120ms linear;
+    will-change: transform, opacity, letter-spacing, color;
+}
+
+.homepage-zoom-render {
+    transform: scale(var(--zoom-render-scale)) translate3d(0, var(--zoom-render-y), 0);
+    transform-origin: 50% 55%;
+    opacity: var(--zoom-render-opacity);
+    will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .homepage-zoom-text {
+        transform: none;
+        opacity: 1;
+        letter-spacing: -0.025em;
+        color: rgb(12, 12, 12);
+    }
+    .homepage-zoom-render {
+        transform: none;
+        opacity: 0.45;
+    }
+}
+
+@keyframes vehicle-detail-in {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.99);
+        filter: blur(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-vehicles-gallery] *,
+    [data-vehicle-detail],
+    [data-vehicle-detail] * {
+        animation: none !important;
+    }
 }
