@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILE="$ROOT_DIR/docker-compose.localstack.yml"
 TABLE_NAME="${CMS_TABLE_NAME:-WebsiteV3CMS}"
+ASSETS_BUCKET="${CMS_ASSETS_BUCKET:-website-v3-cms-assets}"
 
 echo "[init] Checking Docker"
 docker --version >/dev/null
@@ -38,6 +39,9 @@ docker compose -f "$COMPOSE_FILE" exec -T localstack /etc/localstack/init/ready.
 
 echo "[init] Verifying DynamoDB table $TABLE_NAME"
 docker compose -f "$COMPOSE_FILE" exec -T localstack awslocal dynamodb describe-table --table-name "$TABLE_NAME" >/dev/null
+
+echo "[init] Verifying S3 bucket $ASSETS_BUCKET"
+docker compose -f "$COMPOSE_FILE" exec -T localstack awslocal s3api head-bucket --bucket "$ASSETS_BUCKET" >/dev/null
 
 echo "[init] Verifying AWS CDK project"
 (

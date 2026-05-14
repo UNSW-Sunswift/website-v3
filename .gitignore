@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+
+# CDK build output
+aws/cdk.out/
+aws/**/*.js
+aws/**/*.d.ts
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Nested repository metadata
+**/.git/

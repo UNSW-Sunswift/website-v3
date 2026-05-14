@@ -2,7 +2,7 @@ import * as cdk from 'aws-cdk-lib/core';
 import { Template, Match } from 'aws-cdk-lib/assertions';
 import * as WebsiteV3 from '../lib/website-v3-stack';
 
-test('SQS queue and CMS DynamoDB table are created', () => {
+test('CMS infrastructure is created', () => {
   const app = new cdk.App();
   // WHEN
   const stack = new WebsiteV3.WebsiteV3Stack(app, 'MyTestStack');
@@ -26,4 +26,6 @@ test('SQS queue and CMS DynamoDB table are created', () => {
       { AttributeName: 'type', AttributeType: 'S' }
     ])
   });
+
+  template.resourceCountIs('AWS::S3::Bucket', 1);
 });

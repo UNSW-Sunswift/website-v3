@@ -1,6 +1,7 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib/core';
+import { CfnOutput, Duration, Stack, StackProps } from 'aws-cdk-lib/core';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
 export class WebsiteV3Stack extends Stack {
@@ -16,6 +17,15 @@ export class WebsiteV3Stack extends Stack {
       sortKey: { name: 'type', type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       tableName: 'WebsiteV3CMS'
+    });
+
+    const assetsBucket = new s3.Bucket(this, 'WebsiteV3CMSAssets', {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true
+    });
+
+    new CfnOutput(this, 'CMSAssetsBucketName', {
+      value: assetsBucket.bucketName
     });
   }
 }

@@ -43,13 +43,25 @@ for the webapp.
   LocalStack on `http://localhost:4566`.
 - `localstack/init/ready.d/10-create-cms-table.sh` creates the
   `WebsiteV3CMS` table with `id` as the partition key and `type` as the sort
-  key, then seeds a minimal CMS collection and page record.
+  key, creates the local CMS assets S3 bucket, then seeds page, team member,
+  recruitment role, and media asset records.
 - Run `./init.sh` before feature work. It starts LocalStack, waits for the
-  DynamoDB table, then runs the AWS CDK build/test checks and frontend
+  DynamoDB table and S3 bucket, then runs the AWS CDK build/test checks and frontend
   typecheck/lint checks.
 - Local app code should use `AWS_ENDPOINT_URL=http://localhost:4566`,
-  `AWS_REGION=ap-southeast-2`, `CMS_TABLE_NAME=WebsiteV3CMS`, and dummy local
-  AWS credentials when talking to LocalStack.
+  `AWS_REGION=ap-southeast-2`, `CMS_TABLE_NAME=WebsiteV3CMS`,
+  `CMS_ASSETS_BUCKET=website-v3-cms-assets`, and dummy local AWS credentials
+  when talking to LocalStack.
+
+## Webflow Placeholder Copy
+
+- `sunswift-website-v3/scripts/import-webflow-content.mjs` imports temporary
+  public-page copy from a hardcoded allowlist of `https://sunswift.webflow.io`
+  routes.
+- Run `pnpm import:webflow` from `sunswift-website-v3/` when refreshing
+  placeholder copy.
+- The website must read the generated `content/webflow-pages.json` at runtime;
+  it must not depend on Webflow during normal page rendering.
 
 ## Definition Of Done
 

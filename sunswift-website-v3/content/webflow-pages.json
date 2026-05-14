@@ -1,0 +1,274 @@
+{
+  "importedAt": "2026-05-14T16:52:24.103Z",
+  "pages": {
+    "home": {
+      "key": "home",
+      "appPath": "/",
+      "sourcePath": "/",
+      "sourceUrl": "https://sunswift.webflow.io/",
+      "status": 200,
+      "title": "Sunswift Racing",
+      "description": "Sunswift Racing is a team of innovators working to redefine the future of sustainable transport through the research and development of world class prototype electric cars. Whilst Sunswift is best known for its success in the World Solar Challenge, we also focus on progressing technology through partnerships and collaborations with industry leaders.",
+      "headings": [
+        "What is Sunswift Racing?",
+        "Stay Connected",
+        "Support Us"
+      ],
+      "paragraphs": [
+        "Sunswift Racing is a team of innovators working to redefine the future of sustainable transport through the research and development of world class prototype electric cars. Whilst Sunswift is best known for its success in the World Solar Challenge, we also focus on progressing technology through partnerships and collaborations with industry leaders.​ Based in Sydney, Australia since 1996, Sunswift has built seven solar vehicles, with the eighth currently in production. Over this time, Sunswift has seen success in numerous solar vehicle races and holds records with the FIA and Guinness World Records.",
+        "Keep up with our race updates, behind-the-scenes, and engineering wins - straight from the team.",
+        "Help us keep driving innovation in clean energy and transport. Whether you’re interested in sponsorship or collaboration, we’re always open to a chat.",
+        "We’re a team of students building world-class cars - and having a lot of fun along the way. Get to know the team behind the innovation."
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Follow Us",
+        "Our Partners",
+        "About Us",
+        "Stay Connected!",
+        "Credits"
+      ]
+    },
+    "whoWeAre": {
+      "key": "whoWeAre",
+      "appPath": "/who-we-are",
+      "sourcePath": "/about",
+      "sourceUrl": "https://sunswift.webflow.io/about",
+      "status": 200,
+      "title": "Sunswift Racing",
+      "description": "Sunswift Racing is a team of innovators working to redefine the future of sustainable transport through the research and development of world class prototype electric cars. Whilst Sunswift is best known for its success in the World Solar Challenge, we also focus on progressing technology through partnerships and collaborations with industry leaders.",
+      "headings": [
+        "What is Sunswift Racing?",
+        "Stay Connected",
+        "Support Us"
+      ],
+      "paragraphs": [
+        "Sunswift Racing is a team of innovators working to redefine the future of sustainable transport through the research and development of world class prototype electric cars. Whilst Sunswift is best known for its success in the World Solar Challenge, we also focus on progressing technology through partnerships and collaborations with industry leaders.​ Based in Sydney, Australia since 1996, Sunswift has built seven solar vehicles, with the eighth currently in production. Over this time, Sunswift has seen success in numerous solar vehicle races and holds records with the FIA and Guinness World Records.",
+        "Keep up with our race updates, behind-the-scenes, and engineering wins - straight from the team.",
+        "Help us keep driving innovation in clean energy and transport. Whether you’re interested in sponsorship or collaboration, we’re always open to a chat.",
+        "We’re a team of students building world-class cars - and having a lot of fun along the way. Get to know the team behind the innovation."
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Follow Us",
+        "Our Partners",
+        "About Us",
+        "Stay Connected!",
+        "Credits"
+      ]
+    },
+    "whatWeDo": {
+      "key": "whatWeDo",
+      "appPath": "/what-we-do",
+      "sourcePath": "/about",
+      "sourceUrl": "https://sunswift.webflow.io/about",
+      "status": 200,
+      "title": "Sunswift Racing",
+      "description": "Sunswift Racing is a team of innovators working to redefine the future of sustainable transport through the research and development of world class prototype electric cars. Whilst Sunswift is best known for its success in the World Solar Challenge, we also focus on progressing technology through partnerships and collaborations with industry leaders.",
+      "headings": [
+        "What is Sunswift Racing?",
+        "Stay Connected",
+        "Support Us"
+      ],
+      "paragraphs": [
+        "Sunswift Racing is a team of innovators working to redefine the future of sustainable transport through the research and development of world class prototype electric cars. Whilst Sunswift is best known for its success in the World Solar Challenge, we also focus on progressing technology through partnerships and collaborations with industry leaders.​ Based in Sydney, Australia since 1996, Sunswift has built seven solar vehicles, with the eighth currently in production. Over this time, Sunswift has seen success in numerous solar vehicle races and holds records with the FIA and Guinness World Records.",
+        "Keep up with our race updates, behind-the-scenes, and engineering wins - straight from the team.",
+        "Help us keep driving innovation in clean energy and transport. Whether you’re interested in sponsorship or collaboration, we’re always open to a chat.",
+        "We’re a team of students building world-class cars - and having a lot of fun along the way. Get to know the team behind the innovation."
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Follow Us",
+        "Our Partners",
+        "About Us",
+        "Stay Connected!",
+        "Credits"
+      ]
+    },
+    "team": {
+      "key": "team",
+      "appPath": "/team",
+      "sourcePath": "/our-team",
+      "sourceUrl": "https://sunswift.webflow.io/our-team",
+      "status": 200,
+      "title": "Our Team | Sunswift Racing",
+      "description": "Get to know the dedicated students and academics behind Sunswift Racing.",
+      "headings": [
+        "Academics",
+        "Senior Leadership Team",
+        "Executive Leadership Team",
+        "Undergraduate Students"
+      ],
+      "paragraphs": [
+        "Team Principal",
+        "Business Academic",
+        "Chemical Engineering Academic",
+        "Computer Science Academic",
+        "Industrial Design Academic",
+        "Materials Science Academic",
+        "Mechanical Engineering Academic",
+        "N/A Academic",
+        "Renewable Energy Academic",
+        "Systems Engineering Academic",
+        "Chief Engineer",
+        "Chassis and Bodywork"
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Stay Connected!",
+        "Credits"
+      ]
+    },
+    "vehicles": {
+      "key": "vehicles",
+      "appPath": "/vehicles",
+      "sourcePath": "/vehicles",
+      "sourceUrl": "https://sunswift.webflow.io/vehicles",
+      "status": 200,
+      "title": "Vehicles | Sunswift Racing",
+      "description": "Explore our legacy of cutting-edge solar vehicles, from early prototypes to race-winning cars.",
+      "headings": [
+        "Sunswift 7",
+        "Sunswift I",
+        "Sunswift II",
+        "Sunswift III",
+        "Sunswift IVy",
+        "Sunswift eVe",
+        "Sunswift VIolet",
+        "Technical Specifications",
+        "Gallery",
+        "Related Articles"
+      ],
+      "paragraphs": [
+        "Our most capable vehicle to date.",
+        "Years Active:",
+        "2020-Current",
+        "Sunswift 7 is the seventh solar car developed by Sunswift Racing and represents a leap in efficiency and endurance. Designed during the COVID-19 pandemic, its development faced lockdowns, remote collaboration, and the cancellation of the 2021 World Solar Challenge - but the team persisted, unveiling the vehicle in 2022 after 18 months of intense work.",
+        "Built for the Bridgestone World Solar Challenge’s Cruiser Class, Sunswift 7 features a lightweight carbon fibre chassis, a 4.4 m² solar array, and custom low-resistance tyres. Stripped of non-essentials to maximise performance, the car weighs just 680 kg and boasts an exceptionally low drag coefficient of 0.095. In 2022, it broke a Guinness World Record by driving 1000 km on a single charge in under 12 hours, averaging nearly 85 km/h. It went on to win first place in the Cruiser Class at the 2023 World Solar Challenge - the first Australian team to do so.",
+        "The team continues to refine Sunswift 7 as it prepares to return to the world stage at the 2025 Bridgestone World Solar Challenge, showcasing the power of student-led innovation in sustainable transport.",
+        "Sunswift partnered with Optus to showcase the capabilities of the Optus 5G network, with Audi driver Chaz Mostert driving Sunswift 7 remotely around the Adelaide Parklands circuit.",
+        "Sunswift 7 achieved the fastest 1000 km achieved by an electric car on a single charge.",
+        "Sunswift 7 placed first overall in the cruiser class.",
+        "Sustainability at your doorstep.",
+        "2015-2019",
+        "Sunswift VIolet was the sixth solar vehicle designed and manufactured by the team, and the second to compete in the Bridgestone World Solar Challenge’s Cruiser Class. Development began in 2016 and the car was completed in late 2017."
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Stay Connected!",
+        "Credits"
+      ]
+    },
+    "partners": {
+      "key": "partners",
+      "appPath": "/partners",
+      "sourcePath": "/partners",
+      "sourceUrl": "https://sunswift.webflow.io/partners",
+      "status": 200,
+      "title": "Partners | Sunswift Racing",
+      "description": "We proudly collaborate with leading industry partners to power innovation and progress.",
+      "headings": [],
+      "paragraphs": [
+        "Building world-class cars takes more than just engineering - it takes a community. From partners and sponsors to long-time friends of the team, Sunswift is powered by collaboration, mentorship, and shared ambition.",
+        "Interested in supporting our mission?"
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Contact Us!",
+        "Stay Connected!",
+        "Credits"
+      ]
+    },
+    "media": {
+      "key": "media",
+      "appPath": "/media",
+      "sourcePath": "/news",
+      "sourceUrl": "https://sunswift.webflow.io/news",
+      "status": 200,
+      "title": "Highlights | Sunswift Racing",
+      "description": "Catch the best moments from Sunswift Racing’s events, races, and major milestones.",
+      "headings": [
+        "Sunswift 7's Journey to a World Record",
+        "Partnership Spotlights",
+        "Team Highlights",
+        "Partner Spotlights"
+      ],
+      "paragraphs": [
+        "Video description",
+        "UNSW's latest high-performance solar powered car, designed and built by students, is now on track for an incredible Guinness World Record attempt."
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Auto-UX Partners with UNSW Sunswift Racing",
+        "Driving Greater Energy Efficiency with UNSW’s Sunswift Racing and Altium",
+        "Optiver partners with UNSW Sunswift Racing to drive innovation for a better future",
+        "Optus takes to the track with Sunswift Racing",
+        "Sunswift 7 & MI: Helping the drive towards a sustainable future",
+        "UNSW students build a world record-holding solar electric race car with AWS",
+        "EV record breakers! Sunswift 7 goes 1000km on a single charge in world’s best time Video description",
+        "International pros contested this solar car race. Sydney students beat them all Video description",
+        "Sunswift 7: Driving technology forward Video description",
+        "Sunswift 7: Driving technology forward UNSW's latest high-performance solar powered car, designed and built by students, is now on track for an incredible Guinness World Record attempt."
+      ]
+    },
+    "recruitment": {
+      "key": "recruitment",
+      "appPath": "/recruitment",
+      "sourcePath": "/recruitment",
+      "sourceUrl": "https://sunswift.webflow.io/recruitment",
+      "status": 200,
+      "title": "Sunswift Racing",
+      "description": "Sunswift Racing is a team of innovators working to redefine the future of sustainable transport through the research and development of world class prototype electric cars. Whilst Sunswift is best known for its success in the World Solar Challenge, we also focus on progressing technology through partnerships and collaborations with industry leaders.",
+      "headings": [
+        "What is Sunswift Racing?",
+        "Stay Connected",
+        "Support Us"
+      ],
+      "paragraphs": [
+        "Sunswift Racing is a team of innovators working to redefine the future of sustainable transport through the research and development of world class prototype electric cars. Whilst Sunswift is best known for its success in the World Solar Challenge, we also focus on progressing technology through partnerships and collaborations with industry leaders.​ Based in Sydney, Australia since 1996, Sunswift has built seven solar vehicles, with the eighth currently in production. Over this time, Sunswift has seen success in numerous solar vehicle races and holds records with the FIA and Guinness World Records.",
+        "Keep up with our race updates, behind-the-scenes, and engineering wins - straight from the team.",
+        "Help us keep driving innovation in clean energy and transport. Whether you’re interested in sponsorship or collaboration, we’re always open to a chat.",
+        "We’re a team of students building world-class cars - and having a lot of fun along the way. Get to know the team behind the innovation."
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Follow Us",
+        "Our Partners",
+        "About Us",
+        "Stay Connected!",
+        "Credits"
+      ]
+    },
+    "contact": {
+      "key": "contact",
+      "appPath": "/contact",
+      "sourcePath": "/contact",
+      "sourceUrl": "https://sunswift.webflow.io/contact",
+      "status": 200,
+      "title": "Contact | Sunswift Racing",
+      "description": "Have questions or want to collaborate? Get in touch with the team.",
+      "headings": [
+        "Contact Us"
+      ],
+      "paragraphs": [
+        "For general enquiries and questions, please fill out the form below. For enquiries about potential partnerships, please email richard.hopkins1@unsw.edu.au.",
+        "For general enquiries and questions, please fill out the form below. For enquiries about potential partnerships, please email",
+        "richard.hopkins1@unsw.edu.au."
+      ],
+      "ctas": [
+        "Contact",
+        "home Home",
+        "Stay Connected!",
+        "Credits"
+      ]
+    }
+  }
+}

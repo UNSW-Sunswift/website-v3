@@ -4,7 +4,7 @@
       "id": "localstack-dynamodb-cms-harness",
       "priority": 1,
       "title": "LocalStack DynamoDB CMS harness",
-      "status": "blocked_on_environment",
+      "status": "complete",
       "description": "Provide a local LocalStack DynamoDB setup that mimics the CMS data layer for the webapp and is usable by future coding agents.",
       "verification": {
         "required": [
@@ -19,14 +19,49 @@
           "npm test -- --runInBand in aws: passed",
           "pnpm typecheck in sunswift-website-v3: passed",
           "pnpm lint in sunswift-website-v3: passed with one existing unused Geist warning",
-          "./init.sh rerun on 2026-05-15: blocked at Docker daemon health check"
-        ],
-        "blocked": [
-          "./init.sh cannot complete because the Docker daemon is not reachable in the current environment"
+          "./init.sh rerun on 2026-05-15: blocked at Docker daemon health check",
+          "./init.sh on 2026-05-15: passed after pinning LocalStack to 4.10.0 and adding idempotent S3 bootstrap"
         ]
       },
       "notes": [
-        "Implementation files are present and ready to verify once Docker is started."
+        "LocalStack now starts with DynamoDB and S3 for the CMS harness."
+      ]
+    },
+    {
+      "id": "sunswift-redesign-foundation-webflow-import",
+      "priority": 2,
+      "title": "Sunswift redesign foundation and Webflow text import",
+      "status": "complete",
+      "description": "First redesign slice with public route shells, Opal-inspired homepage, Webflow text import, CMS v1 for team members and roles, S3 headshot staging, and Auth.js Google admin login.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "npm run build in aws",
+          "npm test -- --runInBand in aws"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "./init.sh: passed with LocalStack DynamoDB and S3",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed",
+          "npm run build in aws: passed",
+          "npm test -- --runInBand in aws: passed",
+          "HTTP route smoke: /, /who-we-are, /what-we-do, /team, /vehicles, /partners, /media, /recruitment, /contact, and /admin/login returned 200",
+          "Vehicles route contained Garage archive, Sunswift 7, and Related posts text",
+          "Admin login route contained Sunswift CMS, Admin login, and Continue with Google text"
+        ],
+        "blocked": [
+          "Visual browser automation was not run because the agent-browser CLI is not installed in this environment"
+        ]
+      },
+      "notes": [
+        "Webflow text is imported into repo-managed JSON via pnpm import:webflow.",
+        "CMS v1 is limited to team members, headshots, and recruitment roles.",
+        "Auth.js is configured for Google OAuth and authorized email gating."
       ]
     }
   ]
