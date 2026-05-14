@@ -14,25 +14,28 @@ export default function Page() {
 
   return (
     <PageFrame>
-      <section className="relative min-h-[calc(100svh-4rem)] overflow-hidden">
+      <section className="relative min-h-[calc(100svh-4rem)] overflow-hidden bg-background">
         <Image
           src="/placeholders/hero-track.svg"
-          alt="Placeholder solar car on a dark test track"
+          alt="Placeholder solar car on a bright test track"
           fill
           priority
           className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/15 to-background" />
-        <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-7xl flex-col justify-end px-4 pb-16 pt-24 sm:px-6 lg:pb-20">
-          <div className="max-w-5xl">
-            <div className="mb-5 inline-flex items-center rounded-full border border-primary/30 bg-background/50 px-3 py-1 font-mono text-xs uppercase tracking-[0.22em] text-primary backdrop-blur">
-              UNSW solar racing
-            </div>
-            <h1 className="text-6xl font-medium leading-none tracking-normal text-white sm:text-8xl lg:text-9xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-background/8 via-background/16 to-background/86" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
+        <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-[92rem] items-end justify-end px-4 pb-12 pt-12 sm:px-6 lg:items-center lg:pb-16">
+          <div className="w-full max-w-xl lg:mr-8">
+            <div className="mb-5 inline-flex items-center rounded-full border border-foreground/10 bg-card/75 px-3 py-1 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground shadow-sm backdrop-blur">
               Sunswift Racing
+            </div>
+            <h1 className="max-w-xl text-6xl font-medium leading-none tracking-normal text-foreground sm:text-8xl lg:text-9xl">
+              Tomorrow, Today
             </h1>
-            <p className="mt-6 max-w-3xl text-base leading-7 text-zinc-200 sm:text-lg">{heroCopy}</p>
+            <p className="mt-6 max-w-lg text-base leading-7 text-muted-foreground sm:text-lg">
+              {heroCopy}
+            </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
                 <Link href="/vehicles">
@@ -40,7 +43,7 @@ export default function Page() {
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="bg-background/40 backdrop-blur">
+              <Button asChild size="lg" variant="outline" className="bg-card/70 backdrop-blur">
                 <Link href="/who-we-are">Who we are</Link>
               </Button>
             </div>

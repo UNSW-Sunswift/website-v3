@@ -1,21 +1,47 @@
-# Next.js template
+# Sunswift Website App
 
-This is a Next.js template with shadcn/ui.
+Next.js 16 App Router website for Sunswift Racing.
 
-## Adding components
+## Local Development
 
-To add components to your app, run the following command:
+Run the repository harness first from the repo root:
 
 ```bash
-npx shadcn@latest add button
+../init.sh
 ```
 
-This will place the ui components in the `components` directory.
+Then start the app:
 
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
+```bash
+pnpm install
+pnpm dev
 ```
+
+The app runs at `http://localhost:3000`.
+
+## Checks
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm build
+```
+
+## Webflow Copy Import
+
+```bash
+pnpm import:webflow
+```
+
+This refreshes `content/webflow-pages.json` from the current Webflow site.
+
+## Browser Verification
+
+Start the dev server in one shell, then run the browser check in another:
+
+```bash
+pnpm exec agent-browser install
+pnpm verify:browser
+```
+
+`agent-browser install` is only needed the first time on a machine.

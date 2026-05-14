@@ -83,3 +83,41 @@ Known limits:
   were not available. HTTP smoke checks were used instead.
 - Dev server logs show an AWS SDK warning that future SDK versions after
   January 2027 will require Node 22; current checks still pass on Node 20.18.2.
+
+## 2026-05-15 - Opal-Inspired Light Homepage + Browser Verification
+
+- Selected `opal-light-homepage-browser-verification-readme` after the user
+  requested the Vercel agent-browser skill, a lighter Opal Tadpole-inspired
+  visual pass, Roobert-like type, a one-image hero, and human README docs.
+- Read the `vercel:agent-browser` workflow and added repo instructions to use
+  browser verification whenever a dev server is started.
+- Updated the public theme to default light, with a warmer off-white palette,
+  Roobert-first font stacks, lighter header/footer surfaces, and a brighter
+  local placeholder hero image.
+- Reworked the homepage hero around one large image and the side slogan
+  `Tomorrow, Today`.
+- Added root and app README guidance for local setup, LocalStack CMS env vars,
+  Webflow import, checks, browser verification, and deploy testing.
+- Added `agent-browser` as a local dev dependency and `pnpm verify:browser` as
+  the repeatable browser verification path.
+
+Verification:
+
+- Baseline `./init.sh`: passed before changes.
+- `pnpm exec agent-browser install`: installed Chrome 148.0.7778.167 for the
+  local verifier.
+- `pnpm verify:browser`: passed against the dev server, including desktop
+  1440x1000 and mobile 390x844 screenshots, content checks, dev-overlay checks,
+  and horizontal-overflow checks.
+- HTTP smoke while the dev server was running: `/`, `/vehicles`, and
+  `/admin/login` returned 200.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm build`: passed.
+- Final `./init.sh`: passed with LocalStack DynamoDB/S3, AWS build/test, and
+  frontend typecheck/lint.
+
+Known limits:
+
+- Browser verification currently covers the homepage visual pass only. OAuth
+  login completion still requires real Google OAuth credentials.

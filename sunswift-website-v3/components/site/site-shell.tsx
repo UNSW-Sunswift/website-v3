@@ -18,13 +18,13 @@ const navItems = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/75 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-[92rem] items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-3">
-          <span className="grid size-9 place-items-center rounded-full border border-primary/40 bg-primary/15 text-primary">
+          <span className="grid size-9 place-items-center rounded-full border border-foreground/10 bg-card text-foreground shadow-sm">
             <Zap className="size-4" />
           </span>
-          <span className="text-sm font-semibold uppercase tracking-[0.28em]">Sunswift</span>
+          <span className="text-sm font-semibold">Sunswift</span>
         </Link>
         <nav className="hidden items-center gap-1 lg:flex">
           {navItems.map((item) => (
@@ -46,14 +46,14 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 bg-muted/20">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_2fr]">
+    <footer className="border-t border-border/60 bg-muted/30">
+      <div className="mx-auto grid max-w-[92rem] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_2fr]">
         <div>
           <div className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-full border border-primary/40 bg-primary/15 text-primary">
+            <span className="grid size-9 place-items-center rounded-full border border-foreground/10 bg-card text-foreground shadow-sm">
               <Zap className="size-4" />
             </span>
-            <span className="text-sm font-semibold uppercase tracking-[0.28em]">Sunswift Racing</span>
+            <span className="text-sm font-semibold">Sunswift Racing</span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
             Student-led engineering for solar electric vehicles, built at UNSW in Sydney.
@@ -77,7 +77,7 @@ export function SiteFooter() {
 
 export function PageFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       <SiteHeader />
       <main>{children}</main>
       <SiteFooter />

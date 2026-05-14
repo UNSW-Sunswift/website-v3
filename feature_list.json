@@ -52,16 +52,43 @@
           "npm test -- --runInBand in aws: passed",
           "HTTP route smoke: /, /who-we-are, /what-we-do, /team, /vehicles, /partners, /media, /recruitment, /contact, and /admin/login returned 200",
           "Vehicles route contained Garage archive, Sunswift 7, and Related posts text",
-          "Admin login route contained Sunswift CMS, Admin login, and Continue with Google text"
-        ],
-        "blocked": [
-          "Visual browser automation was not run because the agent-browser CLI is not installed in this environment"
+          "Admin login route contained Sunswift CMS, Admin login, and Continue with Google text",
+          "Follow-up visual verification enabled with local agent-browser script on 2026-05-15"
         ]
       },
       "notes": [
         "Webflow text is imported into repo-managed JSON via pnpm import:webflow.",
         "CMS v1 is limited to team members, headshots, and recruitment roles.",
         "Auth.js is configured for Google OAuth and authorized email gating."
+      ]
+    },
+    {
+      "id": "opal-light-homepage-browser-verification-readme",
+      "priority": 3,
+      "title": "Opal-inspired light homepage, browser verification, and README",
+      "status": "complete",
+      "description": "Update the Sunswift homepage toward the Opal Tadpole reference with a light image-led hero, Roobert-like typography, Tomorrow Today slogan, documented human workflows, and repeatable agent-browser verification.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "./init.sh: passed with LocalStack DynamoDB and S3, AWS build/test, frontend typecheck/lint",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed",
+          "pnpm verify:browser: passed after installing Chrome for agent-browser; desktop 1440x1000 and mobile 390x844 checked for content, dev overlays, screenshots, and horizontal overflow",
+          "HTTP smoke while dev server was running: /, /vehicles, and /admin/login returned 200"
+        ]
+      },
+      "notes": [
+        "agent-browser is now a local dev dependency with pnpm verify:browser.",
+        "Root README and app README document local running, testing, browser verification, and deploy testing."
       ]
     }
   ]

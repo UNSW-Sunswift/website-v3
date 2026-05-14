@@ -10,7 +10,8 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "import:webflow": "node scripts/import-webflow-content.mjs"
+    "import:webflow": "node scripts/import-webflow-content.mjs",
+    "verify:browser": "node scripts/verify-browser.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1046.0",
@@ -36,6 +37,7 @@
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "agent-browser": "^0.27.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.1.7",
     "postcss": "^8",

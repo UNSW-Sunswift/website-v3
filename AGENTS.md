@@ -63,6 +63,14 @@ for the webapp.
 - The website must read the generated `content/webflow-pages.json` at runtime;
   it must not depend on Webflow during normal page rendering.
 
+## Browser Verification
+
+- When a dev server is started, use the `vercel:agent-browser` workflow to
+  verify the page visually with `agent-browser open`, `wait --load networkidle`,
+  `screenshot --annotate`, and `snapshot -i`.
+- If the `agent-browser` CLI is unavailable, record that limitation in
+  `claude-progress.md` and run HTTP smoke checks for the affected routes.
+
 ## Definition Of Done
 
 A feature is done only when all of the following are true:
