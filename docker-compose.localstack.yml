@@ -1,0 +1,23 @@
+name: website-v3-local
+
+services:
+  localstack:
+    build:
+      context: ./localstack
+      dockerfile: Dockerfile
+    container_name: website-v3-localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: ap-southeast-2
+      CMS_TABLE_NAME: WebsiteV3CMS
+      DEBUG: "0"
+      PERSISTENCE: "1"
+      SERVICES: dynamodb
+    volumes:
+      - localstack-data:/var/lib/localstack
+
+volumes:
+  localstack-data:

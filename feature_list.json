@@ -1,0 +1,32 @@
+{
+  "features": [
+    {
+      "id": "localstack-dynamodb-cms-harness",
+      "priority": 1,
+      "title": "LocalStack DynamoDB CMS harness",
+      "status": "blocked_on_environment",
+      "description": "Provide a local LocalStack DynamoDB setup that mimics the CMS data layer for the webapp and is usable by future coding agents.",
+      "verification": {
+        "required": [
+          "./init.sh"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "bash -n init.sh: passed",
+          "bash -n localstack/init/ready.d/10-create-cms-table.sh: passed",
+          "docker compose -f docker-compose.localstack.yml config: passed",
+          "npm run build in aws: passed",
+          "npm test -- --runInBand in aws: passed",
+          "pnpm typecheck in sunswift-website-v3: passed",
+          "pnpm lint in sunswift-website-v3: passed with one existing unused Geist warning"
+        ],
+        "blocked": [
+          "./init.sh cannot complete because the Docker daemon is not reachable in the current environment"
+        ]
+      },
+      "notes": [
+        "Implementation files are present and ready to verify once Docker is started."
+      ]
+    }
+  ]
+}
