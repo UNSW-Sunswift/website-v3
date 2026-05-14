@@ -18,7 +18,8 @@
           "npm run build in aws: passed",
           "npm test -- --runInBand in aws: passed",
           "pnpm typecheck in sunswift-website-v3: passed",
-          "pnpm lint in sunswift-website-v3: passed with one existing unused Geist warning"
+          "pnpm lint in sunswift-website-v3: passed with one existing unused Geist warning",
+          "./init.sh rerun on 2026-05-15: blocked at Docker daemon health check"
         ],
         "blocked": [
           "./init.sh cannot complete because the Docker daemon is not reachable in the current environment"

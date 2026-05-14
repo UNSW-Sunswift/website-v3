@@ -39,3 +39,8 @@ Verification after changes:
 - `./init.sh`: blocked because the Docker daemon is not reachable in the
   current environment. The script now fails fast with a direct Docker daemon
   message before attempting LocalStack startup.
+
+Verification rerun:
+
+- `./init.sh` rerun on 2026-05-15: still blocked at Docker daemon health check
+  with `Docker daemon is not reachable. Start Docker, then rerun ./init.sh.`
