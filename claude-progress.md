@@ -672,3 +672,40 @@ Verification:
 - `pnpm typecheck`: passed.
 - `pnpm lint`: passed.
 - `pnpm build`: passed.
+
+## 2026-05-15 - Sustainability Focus Reveal Replaces Zoom
+
+- Selected `homepage-sustainability-focus-reveal` after the user requested
+  that the `Built by Students. Driving Sustainability.` landing-page section
+  stop zooming in and use a sleeker effect instead.
+- Baseline `./init.sh` failed in the sandbox because Docker was unreachable;
+  reran with escalation and the harness passed before edits.
+- Replaced the headline scale animation with a stable-size focus reveal:
+  blur resolves from `18px` to `0px`, opacity rises, tracking tightens,
+  text tone darkens, and the headline glides subtly on the y-axis.
+- Added a moving light-sweep layer over the section and changed the vehicle
+  render motion from scale/parallax to lateral + vertical glide.
+- Updated `pnpm test:homepage-design` to assert that `--zoom-scale` is no
+  longer used, while requiring `--zoom-blur`, `--zoom-text-y`, and
+  `--zoom-sweep-x`.
+- Updated `pnpm verify:browser` to verify the focus reveal in computed styles,
+  reject scale-based transforms, ignore intentional off-canvas motion layers,
+  and read hidden mobile nav labels via `textContent`.
+
+Verification:
+
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm build`: passed after escalation because sandboxed network blocked the
+  `next/font` Google Fonts fetch.
+- `pnpm verify:browser`: passed on desktop 1440x1000 and mobile 390x844; the
+  focus reveal changed from `blur(18px)` to `blur(0px)` and no scale transform
+  was detected.
+- Final `./init.sh`: passed with LocalStack DynamoDB/S3, AWS build/test,
+  frontend typecheck/lint, and homepage design contract.
+
+Known limits:
+
+- The component filename/data hook still says `zoom` for compatibility with
+  the existing harness, but the behavior no longer zooms the headline.

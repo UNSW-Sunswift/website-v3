@@ -22,7 +22,7 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
   }
 
   const requiredLinks = ["About Us", "Our Team", "Vehicles", "Partners", "Media", "Recruitment", "Contact"];
-  const navText = navbar.innerText;
+  const navText = navbar.textContent || "";
   const missingLink = requiredLinks.find((label) => !navText.includes(label));
   if (missingLink) {
     reject(new Error("MISSING_NAV_LINK:" + missingLink));
@@ -44,14 +44,15 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
     return;
   }
 
-  const statement = document.querySelector("[data-homepage-statement]");
-  if (!statement) {
-    reject(new Error("MISSING_HOMEPAGE_STATEMENT"));
+  const focusReveal = document.querySelector("[data-homepage-zoom-reveal]");
+  if (!focusReveal) {
+    reject(new Error("MISSING_HOMEPAGE_FOCUS_REVEAL"));
     return;
   }
-  const statementH2 = statement.querySelector("h2");
-  if (!statementH2 || statementH2.innerText.trim().length < 8) {
-    reject(new Error("MISSING_STATEMENT_HEADLINE"));
+  const focusHeadline = focusReveal.querySelector("[data-homepage-zoom-text]");
+  const focusText = focusHeadline?.innerText ?? "";
+  if (!focusHeadline || !focusText.includes("Built by Students.") || !focusText.includes("Driving Sustainability.")) {
+    reject(new Error("MISSING_FOCUS_REVEAL_HEADLINE"));
     return;
   }
 
@@ -114,7 +115,8 @@ const pageIsHealthy = `(() => {
     .filter((element) => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
-      return !element.matches(".homepage-hero-image") && rect.width > 0 && rect.height > 0 && style.position !== "fixed" && (rect.left < -1 || rect.right > window.innerWidth + 1);
+      const expectedMotion = element.matches(".homepage-hero-image, .homepage-zoom-render, .homepage-zoom-sweep") || element.closest(".homepage-zoom-render");
+      return !expectedMotion && rect.width > 0 && rect.height > 0 && style.position !== "fixed" && (rect.left < -1 || rect.right > window.innerWidth + 1);
     })
     .slice(0, 3)
     .map((element) => element.tagName.toLowerCase());
@@ -151,23 +153,66 @@ const scrollEffectWorks = `(() => new Promise((resolve, reject) => {
   });
 }))()`;
 
+const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
+  const reveal = document.querySelector("[data-homepage-zoom-reveal]");
+  const headline = document.querySelector("[data-homepage-zoom-text]");
+
+  if (!reveal || !headline) {
+    reject(new Error("MISSING_HOMEPAGE_FOCUS_REVEAL"));
+    return;
+  }
+
+  const before = getComputedStyle(headline);
+  const beforeFilter = before.filter;
+  const beforeTracking = before.letterSpacing;
+
+  reveal.scrollIntoView({ block: "start" });
+  window.scrollBy(0, Math.max(window.innerHeight * 0.72, 1));
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const after = getComputedStyle(headline);
+      const afterTransform = after.transform;
+      const afterFilter = after.filter;
+      const afterTracking = after.letterSpacing;
+      const afterScale = afterTransform.includes("matrix(") ? afterTransform.match(/matrix\\(([^)]+)\\)/)?.[1]?.split(",").slice(0, 4).map((value) => Number(value.trim())) : null;
+
+      window.scrollTo(0, 0);
+
+      if (beforeFilter === afterFilter && beforeTracking === afterTracking) {
+        reject(new Error("FOCUS_REVEAL_STATIC"));
+        return;
+      }
+
+      if (afterScale && (Math.abs(afterScale[0] - 1) > 0.03 || Math.abs(afterScale[3] - 1) > 0.03 || Math.abs(afterScale[1]) > 0.03 || Math.abs(afterScale[2]) > 0.03)) {
+        reject(new Error("FOCUS_REVEAL_USES_ZOOM:" + afterTransform));
+        return;
+      }
+
+      resolve(\`FOCUS_REVEAL_OK:\${beforeFilter}->\${afterFilter}\`);
+    });
+  });
+}))()`;
+
 const commands = [
   ["open", baseUrl],
   ["set", "viewport", "1440", "1000"],
   ["reload"],
   ["wait", "--load", "networkidle"],
-  ["screenshot", "--annotate"],
   ["eval", pageIsHealthy],
   ["eval", homepageContract],
   ["eval", scrollEffectWorks],
+  ["eval", focusRevealEffectWorks],
+  ["screenshot", "--annotate"],
   ["snapshot", "-i"],
   ["set", "viewport", "390", "844"],
   ["reload"],
   ["wait", "--load", "networkidle"],
-  ["screenshot", "--annotate"],
   ["eval", pageIsHealthy],
   ["eval", homepageContract],
   ["eval", scrollEffectWorks],
+  ["eval", focusRevealEffectWorks],
+  ["screenshot", "--annotate"],
   ["snapshot", "-i"],
 ];
 

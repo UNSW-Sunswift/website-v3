@@ -415,6 +415,36 @@
       ]
     },
     {
+      "id": "homepage-sustainability-focus-reveal",
+      "priority": 17,
+      "title": "Homepage sustainability focus reveal without zoom",
+      "status": "complete",
+      "description": "Replace the Built by Students / Driving Sustainability zoom-in treatment with a stable-size focus reveal using blur, opacity, tracking, tone, vertical glide, and a light sweep while preserving the section copy and render slot.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "./init.sh: passed with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
+          "pnpm test:homepage-design: passed with assertions that --zoom-scale is no longer used and blur/glide/sweep properties are present",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed after network escalation for next/font Google Fonts fetch",
+          "pnpm verify:browser: passed on desktop 1440x1000 and mobile 390x844; focus reveal changed from blur(18px) to blur(0px) and rejected zoom-scale transforms"
+        ]
+      },
+      "notes": [
+        "Section naming still uses the existing homepage-zoom-reveal filename/data hooks to avoid broad churn, but the behavior no longer scales the headline.",
+        "Browser verifier now ignores intentional off-canvas motion layers and reads hidden mobile nav labels via textContent."
+      ]
+    },
+    {
       "id": "opal-minimal-hero-scroll-contract",
       "priority": 4,
       "title": "Opal-style minimal homepage hero and scroll verification",

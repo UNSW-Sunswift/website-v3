@@ -51,11 +51,15 @@ assert(zoomReveal.includes("data-homepage-vehicle-render"), "Zoom-reveal section
 assert(zoomReveal.includes("Built by Students."), "Zoom-reveal headline must include 'Built by Students.'.");
 assert(zoomReveal.includes("Driving Sustainability."), "Zoom-reveal headline must include 'Driving Sustainability.'.");
 assert(zoomReveal.includes("useEffect"), "Zoom-reveal section must be scroll-reactive via useEffect.");
-assert(/window\.addEventListener\("scroll"/.test(zoomReveal), "Zoom-reveal section must listen to scroll events to drive the expand effect.");
-assert(/--zoom-scale/.test(zoomReveal), "Zoom-reveal section must drive a --zoom-scale custom property.");
+assert(/window\.addEventListener\("scroll"/.test(zoomReveal), "Zoom-reveal section must listen to scroll events to drive the focus reveal.");
+assert(!/--zoom-scale/.test(zoomReveal), "Zoom-reveal headline must not use --zoom-scale; this section should no longer zoom in.");
+assert(/--zoom-blur/.test(zoomReveal), "Zoom-reveal section must drive a --zoom-blur custom property for the focus effect.");
+assert(/--zoom-text-y/.test(zoomReveal), "Zoom-reveal section must drive a --zoom-text-y custom property for the glide effect.");
+assert(/--zoom-sweep-x/.test(zoomReveal), "Zoom-reveal section must drive a --zoom-sweep-x custom property for the light sweep.");
 assert(/--zoom-opacity/.test(zoomReveal), "Zoom-reveal section must drive a --zoom-opacity custom property.");
 assert(/--zoom-text-color/.test(zoomReveal), "Zoom-reveal section must drive a --zoom-text-color custom property so the headline darkens on scroll.");
 assert(/rgb\(\$\{channel\},\s*\$\{channel\},\s*\$\{channel\}\)/.test(zoomReveal), "Zoom-reveal must interpolate the headline tone from a gray channel to black on scroll.");
+assert(/homepage-zoom-sweep/.test(zoomReveal), "Zoom-reveal section must render the moving light sweep overlay.");
 assert(/font-thin/.test(zoomReveal), "Zoom-reveal headline must use font-thin (Inter 100).");
 assert(/h-\[180svh\]/.test(zoomReveal), "Zoom-reveal section must reserve tall scroll distance (~180svh) to drive the animation.");
 assert(/sticky\s+top-0/.test(zoomReveal), "Zoom-reveal section must use a sticky inner stage.");
@@ -65,7 +69,10 @@ assert(!/text-shadow:[^;]*rgba\(0,\s*0,\s*0,\s*0\.5/.test(zoomReveal), "Zoom-rev
 
 assert(/\.homepage-zoom-text\s*{/.test(globalsCss), "globals.css must style the .homepage-zoom-text helper.");
 assert(/\.homepage-zoom-render\s*{/.test(globalsCss), "globals.css must style the .homepage-zoom-render helper.");
-assert(/transform:\s*scale\(var\(--zoom-scale\)\)/.test(globalsCss), ".homepage-zoom-text must read the --zoom-scale custom property for its transform.");
+assert(/\.homepage-zoom-sweep\s*{/.test(globalsCss), "globals.css must style the .homepage-zoom-sweep helper.");
+assert(!/transform:\s*scale\(var\(--zoom-scale\)\)/.test(globalsCss), ".homepage-zoom-text must not scale with --zoom-scale.");
+assert(/transform:\s*translate3d\(0,\s*var\(--zoom-text-y\),\s*0\)/.test(globalsCss), ".homepage-zoom-text must glide via --zoom-text-y instead of scaling.");
+assert(/filter:\s*blur\(var\(--zoom-blur\)\)/.test(globalsCss), ".homepage-zoom-text must read --zoom-blur for the focus effect.");
 assert(/color:\s*var\(--zoom-text-color\)/.test(globalsCss), ".homepage-zoom-text must read the --zoom-text-color custom property for its colour.");
 assert(/opacity:\s*var\(--zoom-render-opacity\)/.test(globalsCss), ".homepage-zoom-render must read the --zoom-render-opacity custom property so the render fades in on scroll.");
 

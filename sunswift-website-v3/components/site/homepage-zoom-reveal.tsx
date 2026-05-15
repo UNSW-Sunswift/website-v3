@@ -25,27 +25,31 @@ export function HomepageZoomReveal() {
       const distance = Math.max(root.offsetHeight - window.innerHeight, 1)
       const progress = Math.min(Math.max(-rect.top / distance, 0), 1)
 
-      // Headline grows from far away into a confident display headline.
-      const growthRamp = Math.min(progress / 0.55, 1)
-      const scale = 0.42 + growthRamp * 0.76
-      const tracking = -0.05 + growthRamp * 0.025
-      const opacity = Math.min(progress / 0.12, 1)
+      // Headline resolves into focus without changing size.
+      const revealRamp = Math.min(progress / 0.62, 1)
+      const tracking = lerp(0.08, -0.035, revealRamp)
+      const opacity = lerp(0.22, 1, Math.min(progress / 0.32, 1))
+      const blur = lerp(18, 0, revealRamp)
+      const textY = lerp(7.5, -1.5, revealRamp)
+      const sweepX = lerp(-42, 142, Math.min(progress / 0.82, 1))
 
       // Tone: starts as a faint light gray and darkens to near-black on scroll.
       const toneRamp = Math.pow(Math.min(progress / 0.65, 1), 0.85)
       const channel = Math.round(lerp(186, 12, toneRamp))
 
-      // Background vehicle render breathes in with a hint of parallax.
-      const renderScale = 1.02 + progress * 0.08
-      const renderY = (progress - 0.5) * -10
+      // Background vehicle render glides in with a quiet parallax pass.
+      const renderX = lerp(3.5, -2.5, Math.min(progress / 0.86, 1))
+      const renderY = lerp(8, -4, Math.min(progress / 0.86, 1))
       const renderOpacity = lerp(0.18, 0.65, Math.min(progress / 0.8, 1))
 
       root.style.setProperty("--zoom-progress", progress.toFixed(4))
-      root.style.setProperty("--zoom-scale", scale.toFixed(4))
       root.style.setProperty("--zoom-opacity", opacity.toFixed(4))
       root.style.setProperty("--zoom-tracking", `${tracking.toFixed(4)}em`)
+      root.style.setProperty("--zoom-blur", `${blur.toFixed(4)}px`)
+      root.style.setProperty("--zoom-text-y", `${textY.toFixed(4)}vh`)
+      root.style.setProperty("--zoom-sweep-x", `${sweepX.toFixed(4)}%`)
       root.style.setProperty("--zoom-text-color", `rgb(${channel}, ${channel}, ${channel})`)
-      root.style.setProperty("--zoom-render-scale", renderScale.toFixed(4))
+      root.style.setProperty("--zoom-render-x", `${renderX.toFixed(4)}vw`)
       root.style.setProperty("--zoom-render-y", `${renderY.toFixed(4)}vh`)
       root.style.setProperty("--zoom-render-opacity", renderOpacity.toFixed(4))
     }
@@ -77,12 +81,14 @@ export function HomepageZoomReveal() {
       style={
         {
           "--zoom-progress": 0,
-          "--zoom-scale": 0.42,
-          "--zoom-opacity": 0,
-          "--zoom-tracking": "-0.05em",
+          "--zoom-opacity": 0.22,
+          "--zoom-tracking": "0.08em",
+          "--zoom-blur": "18px",
+          "--zoom-text-y": "7.5vh",
+          "--zoom-sweep-x": "-42%",
           "--zoom-text-color": "rgb(186, 186, 186)",
-          "--zoom-render-scale": 1.02,
-          "--zoom-render-y": "0vh",
+          "--zoom-render-x": "3.5vw",
+          "--zoom-render-y": "8vh",
           "--zoom-render-opacity": 0.18,
         } as CSSProperties
       }
@@ -106,6 +112,10 @@ export function HomepageZoomReveal() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(246,245,241,0.35)_0%,rgba(246,245,241,0.92)_70%)]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[28svh] bg-[linear-gradient(180deg,#f6f5f1_0%,rgba(246,245,241,0.6)_55%,transparent_100%)]" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[28svh] bg-[linear-gradient(0deg,#f6f5f1_0%,rgba(246,245,241,0.6)_55%,transparent_100%)]" />
+        <div
+          aria-hidden="true"
+          className="homepage-zoom-sweep pointer-events-none absolute inset-y-[18svh] w-[34vw] -translate-x-1/2 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.72)_44%,transparent_100%)] opacity-70 mix-blend-screen blur-2xl"
+        />
 
         <h2
           data-homepage-zoom-text
