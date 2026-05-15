@@ -1965,3 +1965,47 @@ scripts/verify-browser.mjs`: passed against `next start` on port 3001.
 
 - This was a frontend-only pass; LocalStack-dependent AWS/CDK checks remain
   intentionally deferred per the user's instruction.
+
+## 2026-05-15 - Team Roster Front-End Filter
+
+Implemented the revised public team section as a frontend-only slice, leaving
+CMS integration for a later pass.
+
+### Implementation
+
+- Replaced the `/team` route's direct DynamoDB usage with a `TeamRoster` client
+  component and the shared transparent navbar.
+- Added placeholder roster cards using the existing local
+  `/placeholders/team-member.svg` asset.
+- Added a department dropdown filter with live profile counts and animated card
+  re-entry via the `team-card-filter-in` keyframe.
+- Included representative departments from the old roster shape, including
+  Embedded Systems, Energy Systems, Chassis and Bodywork, Powertrain, Vehicle
+  Dynamics, Business, and Media.
+
+### Harness updates
+
+- Extended `scripts/test-homepage-design.mjs` to lock the team route as
+  frontend-only for this slice and assert dropdown/filter hooks.
+- Extended `scripts/verify-browser.mjs` to visit `/team`, filter to Business,
+  verify the visible cards are all Business cards, and assert the filtered count
+  updates.
+
+### Verification
+
+- Startup `./init.sh`: passed before feature work with LocalStack DynamoDB/S3,
+  AWS build/test, frontend typecheck/lint, and homepage design contract.
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed with one existing unrelated
+  `homepage-recruitment.tsx` unused variable warning.
+- `pnpm build`: passed.
+- `VERIFY_URL=http://localhost:3000 pnpm verify:browser`: passed, including
+  `TEAM_CONTRACT_OK:2` on `/team`.
+- Final `./init.sh`: passed after implementation with LocalStack DynamoDB/S3,
+  AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+### Known limits
+
+- The team cards are placeholder front-end records only; the revised CMS-backed
+  roster, real headshots, and member data remain deferred.

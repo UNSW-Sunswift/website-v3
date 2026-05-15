@@ -4,6 +4,7 @@ const baseUrl = process.env.VERIFY_URL ?? "http://localhost:3000"
 const achievementsUrl = new URL("/achievements", baseUrl).toString()
 const whoWeAreUrl = new URL("/who-we-are", baseUrl).toString()
 const ourStoryUrl = new URL("/our-story", baseUrl).toString()
+const teamUrl = new URL("/team", baseUrl).toString()
 const recruitmentUrl = new URL("/recruitment", baseUrl).toString()
 const availableRolesUrl = new URL(
   "/recruitment/available-roles",
@@ -843,6 +844,65 @@ const partnersContract = `(() => {
   return "PARTNERS_OK:" + cards.length;
 })()`
 
+const teamContract = `(() => new Promise((resolve, reject) => {
+  const page = document.querySelector("[data-team-page]");
+  const filter = document.querySelector("[data-team-filter]");
+  const grid = document.querySelector("[data-team-grid]");
+  const filteredCount = document.querySelector("[data-filtered-count]");
+
+  if (!page || !filter || !grid || !filteredCount) {
+    reject(new Error("MISSING_TEAM_ROSTER"));
+    return;
+  }
+
+  const text = document.body.textContent || "";
+  for (const phrase of ["Our Team.", "Filter roster", "Embedded Systems", "Chassis and Bodywork", "Vehicle Dynamics", "Business", "Media"]) {
+    if (!text.includes(phrase)) {
+      reject(new Error("MISSING_TEAM_COPY:" + phrase));
+      return;
+    }
+  }
+
+  const initialCards = document.querySelectorAll("[data-team-card]");
+  if (initialCards.length < 10) {
+    reject(new Error("MISSING_TEAM_PLACEHOLDERS:" + initialCards.length));
+    return;
+  }
+
+  filter.value = "Business";
+  filter.dispatchEvent(new Event("change", { bubbles: true }));
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const businessCards = Array.from(document.querySelectorAll("[data-team-card]"));
+      if (businessCards.length < 2 || businessCards.length >= initialCards.length) {
+        reject(new Error("TEAM_FILTER_COUNT_STATIC:" + initialCards.length + "->" + businessCards.length));
+        return;
+      }
+
+      for (const card of businessCards) {
+        if (card.getAttribute("data-team-department") !== "Business") {
+          reject(new Error("TEAM_FILTER_WRONG_DEPARTMENT:" + card.getAttribute("data-team-department")));
+          return;
+        }
+
+        if (!card.classList.contains("team-card-filter-in")) {
+          reject(new Error("TEAM_CARD_FILTER_TRANSITION_CLASS_MISSING"));
+          return;
+        }
+      }
+
+      const count = (filteredCount.textContent || "").trim();
+      if (count !== String(businessCards.length)) {
+        reject(new Error("TEAM_FILTERED_COUNT_STALE:" + count + ":" + businessCards.length));
+        return;
+      }
+
+      resolve("TEAM_CONTRACT_OK:" + businessCards.length);
+    });
+  });
+}))()`
+
 const commands = [
   ["open", baseUrl],
   ["set", "viewport", "1440", "1000"],
@@ -888,6 +948,13 @@ const commands = [
   ["eval", pageIsHealthy],
   ["eval", siteFooterContract],
   ["eval", aboutPagesContract],
+  ["screenshot", "--annotate"],
+  ["snapshot", "-i"],
+  ["open", teamUrl],
+  ["wait", "--load", "networkidle"],
+  ["eval", pageIsHealthy],
+  ["eval", siteFooterContract],
+  ["eval", teamContract],
   ["screenshot", "--annotate"],
   ["snapshot", "-i"],
   ["open", recruitmentUrl],

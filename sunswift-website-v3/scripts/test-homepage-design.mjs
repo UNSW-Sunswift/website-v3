@@ -51,6 +51,11 @@ const partnersPageContent = readFileSync(
   join(root, "components/site/partners-page.tsx"),
   "utf8"
 )
+const teamPage = readFileSync(join(root, "app/(public)/team/page.tsx"), "utf8")
+const teamRoster = readFileSync(
+  join(root, "components/site/team-roster.tsx"),
+  "utf8"
+)
 const vehiclesGallery = readFileSync(
   join(root, "components/site/vehicles-gallery.tsx"),
   "utf8"
@@ -1551,6 +1556,66 @@ for (const phrase of [
     `Achievements data must include ${phrase}.`
   )
 }
+
+assert(
+  teamPage.includes("<TransparentNavbar />") && teamPage.includes("<TeamRoster />"),
+  "Team route must render the transparent navbar and the front-end roster component."
+)
+assert(
+  !teamPage.includes("@/lib/cms/dynamodb") &&
+    !teamPage.includes("getTeamMembers") &&
+    !teamPage.includes("assetUrl") &&
+    !/force-dynamic/.test(teamPage),
+  "Team route must stay front-end only for this slice; CMS integration is deferred."
+)
+assert(
+  teamRoster.includes('"use client"') &&
+    teamRoster.includes("useState") &&
+    teamRoster.includes("useMemo"),
+  "Team roster must be a client component with local filtering state."
+)
+assert(
+  /data-team-page/.test(teamRoster) &&
+    /data-team-filter/.test(teamRoster) &&
+    /data-team-grid/.test(teamRoster) &&
+    /data-team-card/.test(teamRoster) &&
+    /data-team-department/.test(teamRoster) &&
+    /data-filtered-count/.test(teamRoster),
+  "Team roster must expose data hooks for browser verification."
+)
+assert(
+  /<select[^]*data-team-filter/.test(teamRoster) &&
+    /selectedDepartment/.test(teamRoster) &&
+    /setSelectedDepartment/.test(teamRoster),
+  "Team roster must include an accessible department dropdown filter."
+)
+for (const department of [
+  "Embedded Systems",
+  "Energy Systems",
+  "Chassis and Bodywork",
+  "Powertrain",
+  "Vehicle Dynamics",
+  "Business",
+  "Media",
+]) {
+  assert(
+    teamRoster.includes(department),
+    `Team placeholder roster must include the ${department} department.`
+  )
+}
+assert(
+  teamRoster.includes("/placeholders/team-member.svg"),
+  "Team roster must use the local team-member placeholder image path."
+)
+assert(
+  teamRoster.includes("team-card-filter-in") &&
+    globalsCss.includes("@keyframes team-card-filter-in"),
+  "Team filtering must use the team-card-filter-in transition."
+)
+assert(
+  !teamRoster.includes("@/components/ui"),
+  "Public team roster must not use shadcn UI; shadcn styling is reserved for admin."
+)
 
 if (failures.length > 0) {
   console.error("Homepage design contract failed:")

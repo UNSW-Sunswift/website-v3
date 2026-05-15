@@ -1223,6 +1223,37 @@
         "The footer vignette now uses before:-top-32 before:h-32 plus a stronger shadow and z-20 stacking context.",
         "LocalStack-dependent AWS/CDK verification was skipped per the frontend-only instruction."
       ]
+    },
+    {
+      "id": "team-roster-front-end-filter",
+      "priority": 42,
+      "title": "Team roster front-end filter",
+      "status": "complete",
+      "description": "Replace the CMS-backed public team page with a current-style front-end placeholder roster and a department dropdown filter until the revised CMS team records are integrated.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "./init.sh: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
+          "pnpm test:homepage-design: passed with front-end-only team route, dropdown filter, placeholder image, and transition assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed with one existing unrelated homepage-recruitment unused variable warning",
+          "pnpm build: passed",
+          "VERIFY_URL=http://localhost:3000 pnpm verify:browser: passed with TEAM_CONTRACT_OK:2 after filtering /team to Business"
+        ]
+      },
+      "notes": [
+        "/team now uses TransparentNavbar and TeamRoster instead of getTeamMembers/assetUrl.",
+        "TeamRoster is a client component with local placeholder data, department filtering, live counts, and team-card-filter-in transitions.",
+        "Placeholder cards use /placeholders/team-member.svg so image paths are easy to replace when CMS records are wired in."
+      ]
     }
   ]
 }
