@@ -1,5 +1,5 @@
-import { PublicContentPage } from "@/components/site/content-sections"
+import { WhoWeAreEditorialPage } from "@/components/site/about-editorial-pages"
 
 export default function WhoWeArePage() {
-  return <PublicContentPage pageKey="whoWeAre" label="Who we are" title="Student-led solar racing." />
+  return <WhoWeAreEditorialPage />
 }

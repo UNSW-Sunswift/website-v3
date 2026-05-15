@@ -1,5 +1,5 @@
-import { PublicContentPage } from "@/components/site/content-sections"
+import { PartnersPageContent } from "@/components/site/partners-page"
 
 export default function PartnersPage() {
-  return <PublicContentPage pageKey="partners" label="Partners" image="/placeholders/lab.svg" />
+  return <PartnersPageContent />
 }

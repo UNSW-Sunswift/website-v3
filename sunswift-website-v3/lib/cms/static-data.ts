@@ -69,12 +69,14 @@ export const fallbackRecruitmentRoles: RecruitmentRole[] = [
 export const achievementsOverview =
   "Since 1996, Sunswift Racing has pushed the boundaries of what student-led innovation can achieve in sustainable transport. From breaking world records to placing on the global stage, each milestone reflects our passion for engineering, endurance, and impact."
 
+// Descriptions below are ported verbatim from https://sunswift.webflow.io/about-us/achievements.
+// Preserve the original wording, capitalisation, punctuation, and unit annotations.
 export const achievements: Achievement[] = [
   {
     year: "2023",
     title: "Bridgestone World Solar Challenge '23",
     vehicle: "SR-7",
-    description: "Sunswift 7 placed first overall in the Cruiser Class.",
+    description: "Sunswift 7 placed first overall in the cruiser class.",
     image: "/placeholders/vehicle-sunswift-7.svg",
     kind: "race",
   },
@@ -92,7 +94,7 @@ export const achievements: Achievement[] = [
     title: "Guinness World Record '22",
     vehicle: "SR-7",
     description:
-      "Sunswift 7 achieved the fastest 1,000 km by an electric car on a single charge.",
+      "Sunswift 7 achieved the fastest 1000 km achieved by an electric car on a single charge.",
     image: "/placeholders/vehicle-sunswift-7.svg",
     kind: "record",
   },
@@ -101,7 +103,7 @@ export const achievements: Achievement[] = [
     title: "Bridgestone World Solar Challenge '19",
     vehicle: "VIolet",
     description:
-      "Sunswift placed 2nd overall in the Cruiser Class and finished first across the line in Adelaide.",
+      "Sunswift placed 2nd overall in the Cruiser class, and finished first across the line in Adelaide.",
     image: "/placeholders/vehicle-violet.svg",
     kind: "race",
   },
@@ -110,7 +112,7 @@ export const achievements: Achievement[] = [
     title: "Guinness World Record '18",
     vehicle: "VIolet",
     description:
-      "Lowest energy consumption driving Trans-Australia from Perth to Sydney by an electric car.",
+      "Lowest Energy Consumption Driving Trans-Australia (Perth to Sydney) - Electric Car.",
     image: "/placeholders/vehicle-violet.svg",
     kind: "record",
   },
@@ -118,7 +120,7 @@ export const achievements: Achievement[] = [
     year: "2017",
     title: "Bridgestone World Solar Challenge '17",
     vehicle: "VIolet",
-    description: "3rd in Practicality Judging of the Cruiser Class at the World Solar Challenge.",
+    description: "3rd in Practicality Judging of Cruiser Class in World Solar Challenge.",
     image: "/placeholders/vehicle-violet.svg",
     kind: "race",
   },
@@ -135,7 +137,7 @@ export const achievements: Achievement[] = [
     title: "FIA Land Speed Record",
     vehicle: "eVe",
     description:
-      "Sunswift eVe broke the record for the fastest electric car over 500 km, averaging 107 km/h.",
+      "Sunswift eVe breaks the record for the fastest electric car over 500 kilometres (310mi), with an average speed of 107 kilometres per hour (66mph). The previous record of 73 kilometres per hour (45mph) was set in 1988.",
     image: "/placeholders/vehicle-eve.svg",
     kind: "record",
   },
@@ -144,7 +146,7 @@ export const achievements: Achievement[] = [
     title: "Bridgestone World Solar Challenge '13",
     vehicle: "eVe",
     description:
-      "Sunswift eVe took line honours and 3rd overall in the Cruiser Class, including a top speed of 128 km/h.",
+      "Sunswift eVe Line Honours and 3rd overall in Cruiser Class, including a top speed of 128 kilometres per hour (80mph).",
     image: "/placeholders/vehicle-eve.svg",
     kind: "race",
   },
@@ -160,7 +162,7 @@ export const achievements: Achievement[] = [
     year: "2011",
     title: "Guinness World Record '11",
     vehicle: "IVy",
-    description: "Fastest solar-powered vehicle: 88.8 km/h.",
+    description: "Fastest Solar Powered Vehicle: 88.8 kilometres per hour (55.2mph).",
     image: "/placeholders/vehicle-ivy.svg",
     kind: "record",
   },
@@ -169,7 +171,7 @@ export const achievements: Achievement[] = [
     title: "World Solar Challenge '09",
     vehicle: "IVy",
     description:
-      "Sunswift IV finished 1st in the Silicon Challenge Class and 4th overall.",
+      "Sunswift IV finished 1st in the Silicon Challenge Class and 4th overall at 3:08pm on 29 October.",
     image: "/placeholders/vehicle-ivy.svg",
     kind: "race",
   },
@@ -178,7 +180,7 @@ export const achievements: Achievement[] = [
     title: "Engineers Australia",
     vehicle: "SR-III",
     description:
-      "Jaycar Sunswift III broke the world record for a solar car journey from Perth to Sydney, finishing in 5.5 days and breaking the previous record by 3 days.",
+      "Jaycar Sunswift III broke the world record for a solar car journey from Perth to Sydney. The team finished the journey in 5.5 days, breaking the previous record by 3 days.",
     image: "/placeholders/vehicle-iii.svg",
     kind: "record",
   },
@@ -187,7 +189,7 @@ export const achievements: Achievement[] = [
     title: "World Solar Challenge '07",
     vehicle: "SR-III",
     description:
-      "Placed 4th in the Adventure Challenge, 9th overall, and won the Freescale Technical Innovation Award.",
+      "Placed 4th in the Adventure Challenge. Placed 9th overall in the World Solar Challenge. Prestigious Freescale Technical Innovation Award (Most efficient).",
     image: "/placeholders/vehicle-iii.svg",
     kind: "race",
   },
@@ -196,7 +198,7 @@ export const achievements: Achievement[] = [
     title: "World Solar Challenge '05",
     vehicle: "SR-III",
     description:
-      "UNSW Sunswift III was the 9th car, and the first with silicon solar cells, to cross the line.",
+      "UNSW Sunswift III was the 9th car (and the first with silicon solar cells) to cross the line, arriving in 5 days.",
     image: "/placeholders/vehicle-iii.svg",
     kind: "race",
   },
@@ -204,7 +206,7 @@ export const achievements: Achievement[] = [
     year: "2003",
     title: "SunRace '03",
     vehicle: "SR-II",
-    description: "2nd place.",
+    description: "2nd Place.",
     image: "/placeholders/vehicle-ii.svg",
     kind: "race",
   },
@@ -212,7 +214,7 @@ export const achievements: Achievement[] = [
     year: "2002",
     title: "SunRace '02",
     vehicle: "SR-II",
-    description: "2nd place.",
+    description: "2nd Place.",
     image: "/placeholders/vehicle-ii.svg",
     kind: "race",
   },
@@ -226,10 +228,19 @@ export const achievements: Achievement[] = [
   },
   {
     year: "1999",
+    title: "Federal Government",
+    vehicle: "SR-II",
+    description:
+      "NRMA Sunswift II participated in a trade exhibition in Taipei, on request from the Federal Government.",
+    image: "/placeholders/vehicle-ii.svg",
+    kind: "showcase",
+  },
+  {
+    year: "1999",
     title: "CitiPower SunRace '99",
     vehicle: "SR-II",
     description:
-      "Three days after completing the Perth-Sydney record attempt, NRMA Sunswift II entered the CitiPower SunRace and obtained third place.",
+      "Three days after completing the Perth-Sydney record attempt the team entered the CitiPower SunRace. NRMA Sunswift II obtained third place in a highly competitive field of five entries, proving the car's reliability and the team's dedication after five continuous weeks on the road.",
     image: "/placeholders/vehicle-ii.svg",
     kind: "race",
   },
@@ -238,7 +249,7 @@ export const achievements: Achievement[] = [
     title: "Transcontinental Record Attempt '99",
     vehicle: "SR-II",
     description:
-      "NRMA Sunswift II completed 4,012 km in ten days despite five days of bad weather, generating $2.4 million worth of publicity.",
+      "The car 'NRMA Sunswift II' completed 4,012 kilometres (2,493 mi) in ten days, despite five days of bad weather. Even though the record of 8½ days was not broken, the attempt was still regarded to be a success with $2.4 million worth of publicity generated.",
     image: "/placeholders/vehicle-ii.svg",
     kind: "record",
   },
@@ -246,7 +257,8 @@ export const achievements: Achievement[] = [
     year: "1999",
     title: "World Solar Challenge '99",
     vehicle: "SR-II",
-    description: "NRMA Sunswift II finished 18th out of 48 international entries.",
+    description:
+      "NRMA Sunswift II finished a respectable 18th out of 48 international entries.",
     image: "/placeholders/vehicle-ii.svg",
     kind: "race",
   },
@@ -255,7 +267,7 @@ export const achievements: Achievement[] = [
     title: "World Solar Challenge '96",
     vehicle: "SR-I",
     description:
-      "Sunswift finished 9th out of 46 entries, marking UNSW's first entry in a solar car event.",
+      "Sunswift finished 9th out of 46 entries. This was the University's first entry in a solar car event amongst the prestigious and competitive entries from Honda Motors Corporation, the Swiss entry from Biel, and Mitsubishi Materials Corporation.",
     image: "/placeholders/vehicle-i.svg",
     kind: "archive",
   },
@@ -284,7 +296,7 @@ export const vehicles: Vehicle[] = [
   {
     slug: "sunswift-7",
     name: "SR-7",
-    years: "2020-Current",
+    years: "2020-2025",
     summary: "World Champion.",
     image: "/placeholders/vehicle-sunswift-7.svg",
     specs: {

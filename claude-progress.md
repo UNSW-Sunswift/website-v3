@@ -496,7 +496,7 @@ Verification:
 - Added a top vignette overlay (`data-homepage-top-vignette`) at the head
   of the vehicles gallery. It mirrors the bottom fade but inverted:
   `linear-gradient(180deg, #000 0% → rgba(10,12,14,0.92) 30% →
-  rgba(10,12,14,0.55) 70% → transparent 100%)` so the transparent
+rgba(10,12,14,0.55) 70% → transparent 100%)` so the transparent
   navbar sits on a smooth black-to-image transition. Sits at `z-[15]`,
   below the navbar (`z-50`) and the dim/yellow accents on hover.
 - Added an eighth vehicle card to `lib/cms/static-data.ts` representing
@@ -542,7 +542,7 @@ Verification:
 
 - Vehicle gallery card names now anchor to the right edge of each card
   (`right-4 sm:right-6`) instead of the left, with `writing-mode:
-  vertical-rl` still driving the top-to-bottom reading direction.
+vertical-rl` still driving the top-to-bottom reading direction.
 - Switched the gallery name typography to true **Inter Thin**:
   - `app/layout.tsx` now loads `Inter` via `next/font/google` with weights
     `["100", "200", "300", "400", "500", "600", "700"]`, exposes it as
@@ -553,7 +553,7 @@ Verification:
 - Added a bottom vignette overlay to the vehicles gallery footer area
   via `data-homepage-vignette`: a pointer-events-none absolute layer
   with `linear-gradient(180deg, transparent → rgba(10,12,14,0.55) →
-  rgba(10,12,14,0.92) → #000)` so the `Seven cars. One vision.`
+rgba(10,12,14,0.92) → #000)` so the `Seven cars. One vision.`
   headline rests on a smooth fade-to-black.
 - Harness extended in `scripts/test-homepage-design.mjs`:
   - Scoped a card-name span match (`data-vehicle-name … </span>`) and
@@ -563,7 +563,7 @@ Verification:
     weight `"100"`, exposes `--font-inter`, and applies the variable
     class to `<html>`.
   - Asserts `.vehicle-name-vertical` declares Inter and `font-weight:
-    100` in `globals.css`.
+100` in `globals.css`.
   - Asserts the gallery footer area renders a `data-homepage-vignette`
     overlay that is `pointer-events-none` with a vertical
     `linear-gradient(180deg, …, #000)` fade.
@@ -608,7 +608,7 @@ Verification:
 - Raised the vehicle card content footer's bottom padding so the year +
   name baseline clears the absolutely-positioned `Seven cars. One vision.`
   footer overlay. Card content footer now reserves `h-[220px] pb-44
-  sm:h-[260px] sm:pb-56` (was `h-[160px] pb-32 sm:h-[200px] sm:pb-40`).
+sm:h-[260px] sm:pb-56` (was `h-[160px] pb-32 sm:h-[200px] sm:pb-40`).
 - Removed the yellow `+` indicator from the top-right of each vehicle card
   — hover/click intent is already communicated through image brightness,
   the yellow year-kicker tint, the summary reveal, and the `Open →` cue.
@@ -661,7 +661,7 @@ Known limits:
   has bottom padding (`pb-32 sm:pb-40`) so the year/name lift above the
   footer overlay.
 - Footer is now `pointer-events-none absolute inset-x-0 bottom-0 z-20
-  bg-transparent` — fully transparent, layered above the cards rather
+bg-transparent` — fully transparent, layered above the cards rather
   than below them. Soft `text-shadow` keeps the headline + helper copy
   readable over any card image underneath.
 - Hovered/clicked cards now bump `z-10`/`z-20` so their bottom gradient
@@ -783,7 +783,7 @@ Verification:
 - Existing dev server on `http://localhost:3000` was reused because it already
   held the Next dev lock; a second server on 3001 could not start.
 - `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
-  scripts/verify-browser.mjs`: passed on desktop/mobile homepage checks and
+scripts/verify-browser.mjs`: passed on desktop/mobile homepage checks and
   `/achievements`, including `ACHIEVEMENTS_CONTRACT_OK:2023->2011`.
 - Additional `agent-browser` scrolled-state pass on `/achievements` captured an
   annotated screenshot after vertical scrolling and confirmed the horizontal
@@ -821,7 +821,7 @@ Verification:
 - `./node_modules/.bin/eslint`: passed.
 - `./node_modules/.bin/next build`: passed and generated `/achievements`.
 - `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
-  scripts/verify-browser.mjs`: passed; `/achievements` returned
+scripts/verify-browser.mjs`: passed; `/achievements` returned
   `ACHIEVEMENTS_CONTRACT_OK:2023->2005` with viewport-fit checks.
 - Additional desktop scrolled-state `agent-browser` check on `/achievements`
   passed with `cardHeight: 132`, `railBottom: 879`, `yearRailBottom: 920`,
@@ -832,3 +832,1136 @@ Known limits:
 - `pnpm` wrappers remain blocked by the local Corepack keyid/signature error on
   Node 25.8.0, so local project binaries were used again.
 - LocalStack-dependent AWS/CDK checks remain intentionally deferred.
+
+## 2026-05-15 - Achievements Scroll Transition + Webflow Text Porting
+
+- Added a cinematic scroll-driven transition from the achievements intro section into
+  the timeline:
+  - Intro background image parallaxes upward at 38% of scroll speed with a subtle
+    scale as the user scrolls away from the opener.
+  - Intro headline and overview text fade out and drift upward (opacity 1→0 over the
+    first 52% of the intro's scroll range; translateY 0→-48px).
+  - Bottom vignette deepens as the intro exits, creating a seamless visual hand-off
+    into the dark timeline stage.
+  - A "Scroll to explore" label + animated bouncing chevron (accent yellow) sits at
+    the bottom of the intro section and fades away in the first 20% of scrolling.
+  - The sticky timeline stage plays a blur-and-rise entrance animation the first time
+    it becomes active (`.achievements-stage-revealed` keyframe).
+  - All effects are guarded by `@media (prefers-reduced-motion: reduce)`.
+- Ported fuller milestone copy from https://sunswift.webflow.io/about-us/achievements:
+  - FIA Land Speed Record 2014 (eVe): added context that the previous record of 73
+    km/h had stood since 1988.
+  - World Solar Challenge 2009 (IVy): added the precise crossing time (3:08 pm on
+    29 October).
+  - World Solar Challenge 2005 (SR-III): clarified "first with silicon solar cells"
+    and "arriving in 5 days".
+  - Added missing 1999 Federal Government Trade Exhibition (SR-II, Taipei) as a new
+    `showcase` achievement entry.
+  - CitiPower SunRace 1999 (SR-II): expanded to match full Webflow description
+    including "highly competitive field" and "five continuous weeks on the road".
+  - Transcontinental Record Attempt 1999 (SR-II): expanded to include the failed
+    record context and publicity figure.
+  - World Solar Challenge 1999 (SR-II): added "a respectable" qualifier from Webflow.
+  - World Solar Challenge 1996 (SR-I): expanded to name the Honda, Mitsubishi, and
+    Biel competitors per Webflow.
+
+Verification:
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed and generated `/achievements`.
+
+Known limits:
+
+- `pnpm` wrappers remain blocked by the Corepack keyid/signature error on Node 25.8.0.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred.
+
+## 2026-05-15 - Cinematic Achievements Intro Transition (v2)
+
+User feedback was that the previous achievements intro transition was not
+noticeable enough. Rewrote the intro section as a 240svh pinned scroll stage so
+the choreography has room to play, and added five layered effects driven by a
+shared `introExit` (0→1) progress value plus three named phases
+(`phaseScatter`, `phaseWipe`, `phaseHandoff`):
+
+1. Background image dramatic zoom — scale 1 → 1.45 with a -2.2° rotate, fading
+   to 0 opacity and brightness 0.15 by the time the wipe fires.
+2. Headline word-by-word scatter — the seven words of "A timeline of solar
+   racing milestones." each translate upward (0 → -220px), blur (0 → 22px), and
+   fade (1 → 0) on staggered start/duration tied to `phaseScatter`.
+3. Kicker + overview text — fade and translate upward in sync with the headline
+   scatter so the entire copy block dissolves.
+4. Yellow accent wipe — a 2px horizontal yellow line with a yellow box-shadow
+   glow sweeps from left to right (translateX -100% → 0) at mid-transition.
+5. Year stamp reveal — "1996 → 2026" emerges centered, scales 0.85 → 1.1, and
+   then fades out as the void overlay takes over.
+6. Void overlay — a `bg-[#0a0c0e]` layer fades in over `phaseHandoff`, creating
+   a clean hand-off to the timeline section below.
+
+The intro section uses `sticky top-0 h-svh` inside a 240svh tall outer wrapper,
+which gives ~140svh of scroll distance for the transition (≈1.4 viewports of
+deliberate scrolling). All choreography is guarded by
+`prefers-reduced-motion: reduce` via the existing media query block.
+
+Updates also added homepage-design contract assertions for the new transition:
+
+- `height: "240svh"` on the intro section
+- `sticky top-0 h-svh` inner stage
+- `phaseScatter`, `phaseWipe`, `phaseHandoff` derived progress values
+- `data-achievements-wipe` accent line element
+- `headlineWords.map` per-word spans driven by `headlineWordOpacity`,
+  `headlineWordY`, `headlineWordBlur`
+- `1996 → 2026` year stamp content
+
+Verification (frontend-only this session; LocalStack/Docker checks remain
+deferred):
+
+- `node scripts/test-homepage-design.mjs`: passed with new transition
+  assertions.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed and generated `/achievements`.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
+scripts/verify-browser.mjs`: passed with
+  `ACHIEVEMENTS_CONTRACT_OK:2023->2007`.
+- Manual `agent-browser` screenshot capture confirmed:
+  - Top of page renders kicker + giant headline + overview + scroll hint.
+  - Scrolling 30% of the viewport begins the dim/zoom.
+  - Scrolling 100% reveals the giant "1996 → 2026" year stamp with the yellow
+    accent wipe across the middle of the screen.
+
+Known limits:
+
+- `pnpm` wrappers remain blocked by the Corepack keyid/signature error on
+  Node 25.8.0; local project binaries were used again.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred.
+
+## 2026-05-15 - Achievement Card Vehicle Visibility + Verbatim Webflow Text Port
+
+User reported two issues with `/achievements`:
+
+1. The vehicle name was being clipped off the bottom of every milestone card —
+   long titles wrapped to 2-3 lines and pushed the vehicle label outside the
+   card's fixed height. Confirmed visually in an `agent-browser` screenshot.
+2. The milestone descriptions still did not match the Webflow source verbatim
+   (e.g. "Sunswift placed 2nd overall in the Cruiser class, and finished first
+   across the line in Adelaide." was rephrased as "Cruiser Class" without the
+   comma; the Optus copy was paraphrased; FIA 2014 had units shortened).
+
+### Card layout fix
+
+Restructured the card as a flex column so the vehicle name is always pinned to
+the bottom of the card via `mt-auto`:
+
+- Card now uses `flex flex-col h-[clamp(7.5rem,18svh,10.5rem)]` instead of the
+  former free-flow layout with `h-[clamp(5.75rem,14svh,8.25rem)]`.
+- Title uses `line-clamp-2` with `max-w-[18ch]` so it can never grow beyond two
+  lines and push other content out of view.
+- Vehicle label uses `mt-auto pt-2 text-accent-yellow/65` (active card uses
+  full `text-accent-yellow`), exposed via the new `data-achievement-vehicle`
+  hook for browser verification.
+
+### Verbatim Webflow text port
+
+Replaced all 23 milestone descriptions with the verbatim Webflow source text,
+preserving original capitalisation, punctuation, and metric/imperial unit
+annotations. Examples:
+
+- BWSC '23: "Sunswift 7 placed first overall in the cruiser class." (lowercase
+  'c' restored).
+- BWSC '19: "Sunswift placed 2nd overall in the Cruiser class, and finished
+  first across the line in Adelaide." (capital C + comma restored).
+- Guinness '22: "Sunswift 7 achieved the fastest 1000 km achieved by an
+  electric car on a single charge." (verbatim, including the source's
+  duplicated 'achieved').
+- Guinness '18: "Lowest Energy Consumption Driving Trans-Australia (Perth to
+  Sydney) - Electric Car." (title-case form restored).
+- FIA 2014: full kilometre + imperial unit annotation restored, including
+  "73 kilometres per hour (45mph) was set in 1988".
+- WSC '07: bullet form restored as three sentences with "(Most efficient)"
+  annotation.
+- SunRace '03/'02: "2nd Place." (capital P restored).
+- 1999 trade exhibition: renamed from "Federal Government Trade Exhibition" to
+  just "Federal Government" to match the Webflow section heading.
+- WSC '96, Transcontinental '99, CitiPower '99, FIA 2014, BWSC '13, Guinness
+  '11, WSC '09, Engineers Australia '07, WSC '05 all updated to verbatim.
+
+A leading comment in `lib/cms/static-data.ts` documents the verbatim contract
+so future agents do not paraphrase the source again.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs`: updated the locked card-height clamp
+  pattern, and added new assertions for `data-achievement-vehicle`,
+  `mt-auto pt-2 ... tracking-[0.22em]`, and `line-clamp-2` on the cards.
+- `scripts/verify-browser.mjs`: added a per-card visibility check after the
+  scrolled-state assertions — every visible card must contain a
+  `[data-achievement-vehicle]` element with non-empty text whose
+  `getBoundingClientRect()` sits entirely within the card's rect (rejects
+  `ACHIEVEMENTS_VEHICLE_LABEL_CLIPPED:YYYY:...`).
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed and generated `/achievements`.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
+scripts/verify-browser.mjs`: passed including the new vehicle-clipping check
+  (`ACHIEVEMENTS_CONTRACT_OK:2023->2007`).
+- Manual `agent-browser` screenshot at scrolled-state confirmed all visible
+  cards display title + vehicle name in accent yellow ("VIOLET", "EVE", "IVY"
+  visible at the bottom of each card; active card's vehicle in full
+  accent-yellow).
+
+### Known limits
+
+- `pnpm` wrappers remain blocked by the Corepack keyid/signature error on
+  Node 25.8.0; local project binaries were used again.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred.
+
+## 2026-05-15 - Achievements Year Rail Hover Polish + Year Stamp Centering
+
+User reported two polish issues on `/achievements`:
+
+1. Hovering over year markers in the 2023–2024 region of the bottom rail did
+   not reveal the year, and the visible inline year labels were hard to read.
+2. The arrow in the mid-transition `1996 → 2026` year stamp sat too low — it
+   was not vertically centered with the digits.
+
+### Year rail polish (hover + readability)
+
+- Bumped inactive marker opacity from 42% to 70% (with hover/focus snapping
+  to 100%), and increased the inline year label color from `text-white/70`
+  to `text-white/80` so the indexed years are easier to read against the
+  dark background.
+- Inactive dot now scales 1.5× and switches to `bg-accent-yellow` on
+  `group-hover` and `group-focus-visible`, matching the active state's
+  affordance.
+- Added a popover-style hover tooltip on every marker (`-top-7` above the dot)
+  with `border-accent-yellow/40`, dark backdrop, and `text-accent-yellow`
+  year copy. The tooltip uses `group-hover` / `group-focus-visible` so any
+  year is readable on hover even when the inline indexed label is hidden.
+- The previously locked inline-label visibility logic (every 4th marker +
+  active + endpoints) is preserved; only the hidden labels are augmented by
+  the new hover tooltip.
+- Active inline label now renders in `text-accent-yellow` instead of plain
+  white for tighter focus state continuity.
+
+### Year stamp centering
+
+- Replaced `items-baseline` with `items-center` on the
+  `1996 → 2026` row so the arrow centers vertically with the digits rather
+  than aligning to their baselines.
+- Increased arrow font size from `clamp(1.2rem,3vw,2.4rem)` to
+  `clamp(1.6rem,4vw,3.4rem)` for better visual weight against the massive
+  digits.
+- Wrapped the arrow in `flex items-center justify-center leading-none
+tracking-[0]` so its rendered glyph sits at the row's mid-line.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed and generated `/achievements`.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
+scripts/verify-browser.mjs`: passed with `ACHIEVEMENTS_CONTRACT_OK:2023->2007`
+  including the per-card vehicle-clipping guard.
+- Manual `agent-browser` checks:
+  - Mid-transition screenshot at `introExit ≈ 0.5` confirmed the arrow now
+    sits at the visual midline of `1996` and `2026`.
+  - `agent-browser hover 'button[aria-label="Jump to 2022: Optus Remote
+Driving Initiative"]'` followed by a screenshot confirmed the dot turns
+    accent-yellow and a `2022` tooltip pops above the rail.
+
+### Known limits
+
+- `pnpm` wrappers remain blocked by the Corepack keyid/signature error on
+  Node 25.8.0; local project binaries were used again.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred.
+
+## 2026-05-15 - Consistent Milestone Display (Persistent Top-Left Copy)
+
+User reported that the very first milestone in the timeline (2023 Bridgestone
+World Solar Challenge) did not display the kicker / giant year / title block
+in the top-left, whereas scrolled milestones (e.g. 2018 VIolet Guinness World
+Record) did. They asked for the layout to be consistent across the whole
+timeline.
+
+### Root cause
+
+Two crossfading opacities drove the inconsistency:
+
+- `detailOpacity = max(0, 1 - progress / 0.08)` — the bottom "Now viewing"
+  description faded out almost immediately when scrolling.
+- `minimalOpacity = min(1, max(0, (progress - 0.035) / 0.12))` — the top-left
+  kicker + giant year + title only faded _in_ after some scroll progress, so
+  it was literally hidden when the first milestone was active.
+
+### Fix
+
+Made both copy blocks always visible:
+
+```ts
+const detailOpacity = 1;
+const minimalOpacity = 1;
+```
+
+Now every milestone — including the first one (2023) — renders the same way:
+
+- Top-left at `top-[22svh]`: `{vehicle} / {kind}` kicker + giant year + title.
+- Above the cards row: `Now viewing` label + active description.
+- Cards row + year rail unchanged.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs`: replaced the loose "fading current-copy"
+  wording with two new assertions that lock the constant opacities:
+  - `const detailOpacity = 1`
+  - `const minimalOpacity = 1`
+- `scripts/verify-browser.mjs`: removed the old `afterCurrentOpacity <
+beforeCurrentOpacity && afterMinimalOpacity > beforeMinimalOpacity` check
+  (which required the crossfade) and replaced it with three stronger checks:
+  - `afterCurrentOpacity >= 0.95 && afterMinimalOpacity >= 0.95 &&
+beforeCurrentOpacity >= 0.95 && beforeMinimalOpacity >= 0.95` (both
+    blocks must stay persistently visible)
+  - `minimalCopy.textContent` must include the active year both before and
+    after scrolling (so the top-left block always reflects the active
+    milestone)
+  - `currentCopy.textContent` must update between before and after scrolling
+    (so the description tracks the active milestone, never staying stale)
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed with new opacity-constant
+  assertions.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed and generated `/achievements`.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
+scripts/verify-browser.mjs`: passed with `ACHIEVEMENTS_CONTRACT_OK:
+2023->2007`, the new copy-persistence checks, and the per-card vehicle
+  visibility check.
+- Manual `agent-browser` screenshots confirmed the start of the timeline
+  (active 2023) now shows `SR-7 / RACE` kicker + giant `2023` + title +
+  description — identical layout to the 2011 IVY Guinness Record state.
+
+### Known limits
+
+- `pnpm` wrappers remain blocked by the Corepack keyid/signature error on
+  Node 25.8.0; local project binaries were used again.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred.
+
+## 2026-05-15 - Editorial About Pages from Webflow Source
+
+Rebuilt the public `Who We Are` and `Our Story` pages as dark editorial
+front-end pages that match the current welcome, achievements, and vehicle
+gallery direction.
+
+### Implementation
+
+- Added repo-managed `content/about-pages.json` with text copied from the
+  Webflow source pages:
+  - `https://sunswift.webflow.io/about-us/who-we-are`
+  - `https://sunswift.webflow.io/about-us/our-story`
+- Added `components/site/about-editorial-pages.tsx` with:
+  - a shared dark hero treatment
+  - image placeholder frames for future Sunswift photography
+  - the redesigned `Who We Are` page
+  - the long-form `Our Story` page with a sticky section navigator
+- Replaced `/who-we-are` with the new editorial implementation.
+- Added the new `/our-story` route.
+- Added `Our Story` to the About dropdown and shared footer navigation.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts that:
+  - both about routes render the editorial components
+  - the shared about content file exists with locked Webflow phrases
+  - the about dropdown includes `Our Story`
+  - the new pages use placeholder imagery and sticky navigation hooks
+- `scripts/verify-browser.mjs` now opens `/who-we-are` and `/our-story`,
+  verifies key Webflow text is present, checks image placeholder counts, and
+  confirms the shared nav appears on both pages.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed and generated `/our-story`.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
+scripts/verify-browser.mjs`: passed with `ABOUT_PAGE_OK:who-we-are` and
+  `ABOUT_PAGE_OK:our-story`.
+- Manual `agent-browser` screenshot/eval on `/our-story` confirmed all four
+  story chapters plus `WSC 2011 Team` text render, with 28 images/placeholders.
+
+### Known limits
+
+- Placeholder images are intentionally used until real Sunswift photography is
+  provided.
+- `pnpm` wrappers remain blocked by the Corepack keyid/signature error on
+  Node 25.8.0; local project binaries were used again.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Homepage Recruitment CTA Section
+
+Added a new bottom-of-landing-page recruitment section that links through to
+`/recruitment` and uses the headline `Embrace Tomorrow`.
+
+### Implementation
+
+- Added `components/site/homepage-recruitment.tsx`.
+- Updated `app/page.tsx` to load `getRecruitmentRoles("published")` and pass
+  those CMS/database-backed roles into the homepage recruitment section.
+- Marked the homepage `force-dynamic` while it pulls published recruitment
+  roles.
+- The section renders three discipline dropdowns:
+  - Design
+  - Engineering
+  - Business
+- Discipline dropdowns use a rotating `ChevronDown` icon to match the site's
+  dropdown language.
+- Role cards are populated from the published recruitment role data by matching
+  `role.team` to the discipline. Disciplines with no published roles show a
+  database-ready empty state so future DB records can populate them without a
+  layout change.
+- Added `data-homepage-recruitment` and role/discpline hooks for browser
+  verification.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts:
+  - the homepage order is Hero → ZoomReveal → About → Records → Recruitment
+  - the homepage pulls roles via `getRecruitmentRoles("published")`
+  - the recruitment CTA exposes CMS/data hooks
+  - `Design`, `Engineering`, and `Business` dropdowns exist
+  - role cards and empty-state cards have verification hooks
+- `scripts/verify-browser.mjs` now checks the homepage for:
+  - `Embrace Tomorrow`
+  - all three discipline labels
+  - at least three role cards
+  - `data-recruitment-source="cms"`
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed; homepage is dynamic (`ƒ /`).
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `HOMEPAGE_CONTRACT_OK`, `ACHIEVEMENTS_CONTRACT_OK:2023->2007`,
+  `ABOUT_PAGE_OK:who-we-are`, and `ABOUT_PAGE_OK:our-story`.
+
+### Known limits
+
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+- The current fallback CMS data contains Engineering and Business role cards;
+  Design displays the DB-ready empty state until a published Design role exists.
+
+### Follow-up polish
+
+- Removed the yellow `Recruitment` kicker above `Embrace Tomorrow`.
+- Rebalanced the section into a centered intro/CTA followed by the discipline
+  dropdowns below, instead of the previous sticky left rail.
+- Added a scroll-driven transition using CSS custom properties:
+  - headline/CTA translate up and fade in
+  - discipline panel rises, sharpens from blur, and fades in
+  - background yellow glow scales subtly as the section enters
+- Added `data-homepage-recruitment-intro` for visual verification.
+- Updated `scripts/test-homepage-design.mjs` to lock the removed kicker,
+  centered CTA, and scroll-transition implementation.
+- Updated `scripts/verify-browser.mjs` with `RECRUITMENT_TRANSITION_OK`, which
+  verifies the transition changes on scroll and the CTA is centered.
+
+### Follow-up verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `RECRUITMENT_TRANSITION_OK:0->1` on desktop and mobile.
+
+## 2026-05-15 - Recruitment Hub Dropdowns + Role Family Summary
+
+Implemented the missing recruitment-page stream dropdowns and updated the
+homepage `Embrace Tomorrow` section to summarize role families rather than only
+listing current CMS role cards.
+
+### Implementation
+
+- Added `components/site/recruitment-content.ts` as shared recruitment stream
+  data for:
+  - Design / Media
+  - Engineering
+  - Business
+- Rebuilt `/recruitment` as a general recruitment hub:
+  - dark editorial hero with `Join Sunswift Racing.`
+  - apply / view roles CTAs
+  - general information inspired by the Webflow business, media, and
+    engineering role pages
+  - dropdowns for Design, Engineering, and Business
+  - role-family tags inside each dropdown
+  - CMS/database-backed role cards grouped into the matching dropdown
+- Updated the homepage `Embrace Tomorrow` section so the visible cards summarize
+  possible team roles:
+  - Engineering: software, electrical, mechanical, renewables, chemical
+  - Design: design, media, content, photography, videography, copywriting
+  - Business: finance, marketing, operations, partnerships, logistics, strategy
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the shared recruitment stream
+  data, homepage role-family cards, and `/recruitment` hub dropdown/card hooks.
+- `scripts/verify-browser.mjs` now opens `/recruitment` and checks
+  `RECRUITMENT_HUB_OK`, including stream dropdowns, family labels, and CMS role
+  cards.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `RECRUITMENT_HUB_OK:3`.
+
+### Known limits
+
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+- The in-app Browser plugin runtime was not exposed after tool discovery, so
+  verification used the existing Vercel `agent-browser` flow.
+
+## 2026-05-15 - Persistent Compact UNSW Footer
+
+Added a persistent footer through the root layout so every page gets the same
+UNSW/Sunswift contact block.
+
+### Implementation
+
+- Added local footer logo assets:
+  - `public/brand/unsw-sydney.webp`
+  - `public/brand/unsw-sydney-dark.png`
+- Updated `SiteFooter` to a compact dark-theme footer bar:
+  - small UNSW crest/wordmark mark
+  - `Sunswift Racing`
+  - `Room G14, Blockhouse (G6), University Mall, UNSW, Kensington NSW 2052`
+  - compact `Stay connected` CTA linking to
+    `https://linktr.ee/sunswiftracing`
+  - `Copyright © 2025` and `Credits`
+- Moved `<SiteFooter />` into `app/layout.tsx` so the footer is persistent even
+  on transparent-navbar pages such as the homepage, achievements, vehicles,
+  and editorial about pages.
+- Removed the footer from `PageFrame` to avoid duplicate footers.
+- After feedback, reduced the footer from a large contact section into a thin
+  compact bar and switched the dark footer to the white UNSW wordmark asset.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the root layout renders the
+  persistent footer, the footer uses the dark UNSW logo asset, includes the
+  address/copyright/credits copy, and links `Stay connected` to Linktree.
+- `scripts/verify-browser.mjs` now includes a `SITE_FOOTER_OK` contract for
+  the shared footer on checked routes.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+
+### Known limits
+
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Recruitment Dark Hub + Available Roles
+
+Updated the recruitment flow so `/recruitment` is now a dark, transparent-nav
+hub and the CMS role cards live on a separate quick-scan page.
+
+### Implementation
+
+- Reworked `/recruitment` to use the dark page theme and `TransparentNavbar`.
+- Removed the visible yellow `Recruitment hub` heading text.
+- Changed the Design, Engineering, and Business stream rows into links to
+  `/recruitment/available-roles#design`, `#engineering`, and `#business`.
+- Added `/recruitment/available-roles` as a separate page that groups published
+  CMS/database role cards by stream.
+- Added recruitment dropdowns to both the transparent navbar and shared site
+  shell, with links for:
+  - Recruitment Hub
+  - Available Roles
+- Added stable stream slugs to the shared recruitment stream data.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts that the recruitment hub no
+  longer fetches or renders inline role cards, and that the available roles page
+  owns the CMS role-card hooks.
+- `scripts/verify-browser.mjs` now opens `/recruitment/available-roles` and
+  checks `AVAILABLE_ROLES_OK` in addition to the revised `RECRUITMENT_HUB_OK`.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `RECRUITMENT_HUB_OK:3` and `AVAILABLE_ROLES_OK:3`.
+
+### Known limits
+
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+- The repo still has a mixed dirty worktree from earlier frontend work; no
+  unrelated files were reverted.
+
+## 2026-05-15 - Split Role Pages + Partners Grid
+
+Split the available roles flow into three dedicated stream pages and rebuilt
+`/partners` as a dark editorial partners page based on the Webflow source page.
+
+### Implementation
+
+- Changed `/recruitment/available-roles` into a quick stream chooser instead of
+  the card grid.
+- Added dedicated role pages:
+  - `/recruitment/available-roles/design-roles`
+  - `/recruitment/available-roles/engineering-roles`
+  - `/recruitment/available-roles/business-roles`
+- Updated `/recruitment` stream rows to link directly into those dedicated role
+  pages.
+- Expanded the recruitment dropdown in both nav implementations so it includes
+  Recruitment Hub, Available Roles, Design Roles, Engineering Roles, and
+  Business Roles.
+- Replaced the generic `/partners` content shell with a new dark page:
+  - transparent navbar and full-screen editorial hero
+  - Webflow overview copy preserved
+  - contact CTA
+  - cycling partner banner
+  - dense placeholder partner grid sourced from the Webflow partner collection
+    names/links
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the role-page split, nav role
+  links, partners marquee, and placeholder partner grid.
+- `scripts/verify-browser.mjs` now opens the three dedicated role pages and
+  `/partners`, checking `ROLE_STREAM_OK` and `PARTNERS_OK`.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `AVAILABLE_ROLES_OK:3`, `ROLE_STREAM_OK:engineering:2`,
+  `ROLE_STREAM_OK:design:0`, `ROLE_STREAM_OK:business:1`, and
+  `PARTNERS_OK:35`.
+
+### Known limits
+
+- Partner logo cards are intentional placeholders until final logo assets are
+  integrated.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+- The repo still has a mixed dirty worktree from earlier frontend work; no
+  unrelated files were reverted.
+
+## 2026-05-15 - Partners Liquid Glass + Footer Rebalance
+
+Polished the recruitment dropdown, partners page, and persistent footer.
+
+### Implementation
+
+- Removed the superseded `Available Roles` row from both recruitment nav
+  dropdowns.
+- Kept the `/recruitment/available-roles` index route available, but the nav now
+  only exposes:
+  - Recruitment Hub
+  - Design Roles
+  - Engineering Roles
+  - Business Roles
+- Reworked the `/partners` placeholder grid to a desktop 4-column layout.
+- Updated partner cards to use the current liquid-glass language:
+  translucent white surface, hairline border, inset highlight, deeper shadow,
+  and `backdrop-blur-xl`.
+- Changed the partner cycling banner into smaller placeholder cards for every
+  partner instead of large text bars.
+- Increased the UNSW footer logo and widened its layout column so it reads
+  noticeably larger.
+- Reduced the `Sunswift Racing` footer heading size so the footer hierarchy
+  leads with the UNSW mark.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts that the generic Available
+  Roles dropdown item is absent, the partners grid is `lg:grid-cols-4`, partner
+  marquee cards exist, partners use liquid-glass blur, and the footer logo/title
+  sizing contract is preserved.
+- `scripts/verify-browser.mjs` now checks the rendered UNSW logo width, footer
+  title size, compact marquee card count, and desktop 4-column partners grid.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `SITE_FOOTER_OK`, `RECRUITMENT_HUB_OK:3`, `ROLE_STREAM_OK:*`, and
+  `PARTNERS_OK:35`.
+
+### Known limits
+
+- Partner logos remain placeholders until final logo assets are integrated.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+- No GitHub connector action was needed; the request was local frontend
+  implementation only.
+
+## 2026-05-15 - Recruitment Business/Media Alternative Form CTA
+
+Changed the recruitment hub secondary hero CTA from the superseded available
+roles shortcut into a placeholder Google Forms link for alternative
+business/media applications.
+
+### Implementation
+
+- Added a placeholder external Google Forms URL constant to `/recruitment`.
+- Changed the secondary hero CTA label to `Business/media form`, opening the
+  placeholder form in a new tab.
+- Updated the intake guidance copy so engineering continues through
+  UNSW ChallENG/VIP pathways while business/media applicants can use the
+  alternative form for faster routing.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the recruitment page exposes
+  the alternative business/media CTA, includes the placeholder form URL, and
+  renders the `Business/media form` label.
+- `scripts/verify-browser.mjs` now checks the rendered recruitment hub for the
+  same placeholder CTA via `data-alternative-applications-link`.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `RECRUITMENT_HUB_OK:3`, `AVAILABLE_ROLES_OK:3`, all role-stream checks, and
+  `PARTNERS_OK:35`.
+
+### Known limits
+
+- The Google Forms URL is intentionally a placeholder:
+  `https://forms.gle/sunswift-business-media-placeholder`.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Partners Square Logo Grid
+
+Adjusted the partners grid so it reads more like the Webflow square logo wall
+reference while staying in the current dark liquid-glass theme.
+
+### Implementation
+
+- Constrained the partner grid to `max-w-[76rem]` so the 4-column desktop
+  layout no longer stretches into wide rectangles.
+- Changed partner cards to `aspect-square` tiles with centered placeholder
+  mark/name content.
+- Simplified the placeholder metadata into a small bottom-right index so each
+  card behaves more like a logo tile than an info card.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the grid width constraint and
+  square-card class.
+- `scripts/verify-browser.mjs` now checks the rendered partners grid width and
+  verifies the first visible partner cards have a near-1:1 aspect ratio.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `PARTNERS_OK:35`.
+
+### Known limits
+
+- Partner logos remain placeholder initials until final logo assets are
+  integrated.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Footer Logo Cache Bust + Vignette Transition
+
+Updated the persistent footer so UNSW branding changes render reliably and the
+footer blends into the page with a vignette instead of a hard dividing line.
+
+### Implementation
+
+- Added `footerUnswLogoSrc` with a versioned
+  `/brand/unsw-sydney-dark.png?v=20260515-footer` public asset path.
+- Set the footer UNSW `Image` to `unoptimized` so it bypasses the Next image
+  optimizer cache and reads the current public asset.
+- Removed the footer's hard `border-t` line.
+- Added a dark top vignette via a `::before` gradient and a soft upward shadow
+  so the footer fades into the page.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the footer logo uses the
+  versioned public asset path, bypasses the image optimizer, has no hard top
+  border, and includes the vignette classes.
+- `scripts/verify-browser.mjs` now checks the rendered footer image URL has
+  the version token, the footer border width is zero, and the pseudo-element
+  vignette gradient is present.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `SITE_FOOTER_OK` across the checked public routes.
+
+### Known limits
+
+- If the logo file changes again and a browser still shows a stale cached
+  image, bump the version token in `footerUnswLogoSrc`.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Homepage Records Carousel Handoff + Animated Recruitment Gradient
+
+Added a more cinematic landing-page transition between the light about section
+and the dark records section, then tightened the records and recruitment visual
+language.
+
+### Implementation
+
+- Converted `HomepageRecords` to a client component with a scroll-driven sticky
+  handoff stage.
+- Added a vertical carousel transition headed `Moving records forward.` that
+  scrolls through the three record metrics while the background fades from the
+  light page canvas into the dark records surface.
+- Reworked the records content from three bulky cards into a cleaner dark
+  editorial row layout with metric, explanation, year, and image aligned per
+  record.
+- Added an animated white/yellow gradient sweep to the `Embrace Tomorrow`
+  headline in the homepage recruitment section.
+- Fixed a decorative transition image that initially caused horizontal overflow
+  in browser verification.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the records handoff hooks,
+  scroll variables, `Moving records forward.` headline, and animated recruitment
+  gradient hook/keyframes.
+- `scripts/verify-browser.mjs` now checks the records carousel actually moves,
+  the dark fade progresses, and the Embrace Tomorrow gradient animation is
+  active.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `RECORDS_TRANSITION_OK:0.000%->-66.000%` on desktop and mobile.
+
+### Known limits
+
+- The records transition still uses placeholder vehicle imagery until real
+  Sunswift photography/renders are integrated.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Single-Stage Records Cycle + Recruitment Background Animation
+
+Refined the previous landing-page records transition after feedback that the
+yellow text sweep was distracting and the transition still had an unaccounted
+white section.
+
+### Implementation
+
+- Removed the yellow animated text sweep from the `Embrace Tomorrow` headline.
+- Kept motion in the recruitment area by moving the animation to the background
+  glow (`homepage-recruitment-background`) instead of clipping through text.
+- Rebuilt `HomepageRecords` into one sticky scroll stage rather than a
+  transition plus a separate records block.
+- The single records stage now cycles through all three record achievements as
+  the user scrolls:
+  - 1,000 km single-charge Guinness record
+  - 107 km/h FIA solar speed record
+  - seven cars built since 1996
+- Added a final in-stage handoff message into `Embrace tomorrow.` before the
+  next recruitment section enters.
+- Removed the separate post-transition records row section that was causing the
+  visual rhythm to feel split.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts that records are a single
+  client-side sticky section with carousel and handoff variables, and that
+  Embrace Tomorrow does not use `bg-clip-text` or `text-transparent`.
+- `scripts/verify-browser.mjs` now checks the carousel reaches
+  `-200.000svh`, the dark fade progresses, and the records handoff opacity
+  changes before recruitment.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `RECORDS_TRANSITION_OK:0.000svh->-200.000svh` on desktop and mobile.
+
+### Known limits
+
+- The records stage still uses placeholder vehicle imagery until final assets
+  are available.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Records Contrast + Duplicate Handoff Fix
+
+Fixed two follow-up issues in the homepage records transition.
+
+### Implementation
+
+- Removed the `Embrace tomorrow.` text from the records handoff overlay so the
+  recruitment headline only appears once.
+- Kept the records handoff as a visual-only dark/yellow fade into the
+  recruitment section.
+- Added scroll-driven typography colour variables:
+  - `--records-text-color`
+  - `--records-muted-color`
+  - `--records-rule-color`
+- The records stage now starts with dark text on the light canvas and resolves
+  to white text as the dark background fades in.
+- Reduced the bottom dark vignette on the records stage so it does not muddy the
+  initial light state.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the records text/muted colour
+  variables and rejects duplicate `Embrace tomorrow.` text inside records.
+- `scripts/verify-browser.mjs` now checks the records text colour changes from
+  dark to white during the transition and rejects duplicate recruitment
+  headline text in the records stage.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `RECORDS_TRANSITION_OK:0.000svh->-200.000svh` on desktop and mobile.
+
+### Known limits
+
+- The records stage still uses placeholder vehicle imagery until final assets
+  are available.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Records To Recruitment Handoff Polish
+
+Smoothed the final scroll moment between the records stage and the Embrace
+Tomorrow recruitment section.
+
+### Implementation
+
+- Added `--records-content-opacity` and `--records-content-y` so the last
+  record content fades and drifts out before the sticky records stage releases.
+- Strengthened the records handoff overlay into a visual-only dark/yellow veil
+  that clears the stage before recruitment text enters.
+- Reworked the recruitment background glow so its animated child layer drifts
+  slightly (`translate3d(-7%, 3%, 0)` to `translate3d(8%, -5%, 0)`) while the
+  parent still follows scroll-driven scale/opacity.
+- Wrapped the glow in an overflow-hidden absolute parent and made the animated
+  child absolute to avoid mobile horizontal overflow.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the records content-clearing
+  variable and that the recruitment glow actually drifts rather than only
+  blurring in place.
+- `scripts/verify-browser.mjs` now checks records content opacity decreases
+  during the handoff, while preserving the existing carousel, dark fade, text
+  colour, and no-duplicate-headline checks.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001 with
+  `RECORDS_TRANSITION_OK:0.000svh->-200.000svh` on desktop and mobile.
+
+### Known limits
+
+- The records stage still uses placeholder vehicle imagery until final assets
+  are available.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Mobile Navigation Recovery
+
+Added phone-width navigation so the site chrome no longer disappears when the
+viewport is resized below the desktop breakpoint.
+
+### Implementation
+
+- Added a native `details`/`summary` mobile menu to `TransparentNavbar`.
+- Added the same mobile menu pattern to the shared `SiteHeader` in
+  `site-shell.tsx`.
+- The mobile menus expose About Us, standard public links, Recruitment stream
+  pages, and Join the team.
+- Mobile menu panels are constrained with `w-[min(22rem,calc(100vw-2rem))]`
+  so they stay inside phone viewports.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts both header variants expose
+  `data-mobile-nav`, use the `Menu` icon, and constrain the menu panel width.
+- `scripts/verify-browser.mjs` now checks the homepage mobile nav exists and
+  is not `display: none` at phone width.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001.
+- Manual `agent-browser` check at `390x844`: opened `[data-mobile-nav]`, menu
+  was open, included Recruitment/Partners/Join the team, and the panel stayed
+  fully inside the viewport (`22px` to `374px` on a `390px` viewport).
+
+### Known limits
+
+- This pass fixes the shared navigation only; individual page layout polish at
+  phone width can be handled section by section.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Records To Embrace Tomorrow Seam Fix
+
+Removed the visible horizontal boundary between the homepage records section
+and the Embrace Tomorrow recruitment section.
+
+### Implementation
+
+- Removed the yellow radial overlay from the records handoff so the records
+  transition resolves into a dark-only field.
+- Removed yellow radial gradients anchored to the top edge of the recruitment
+  section.
+- Moved the recruitment glow down behind the headline and added a top dark mask.
+- Shifted the recruitment section start upward with matching internal top
+  spacing, so the physical section boundary sits in the dark/off-focus area
+  rather than across the headline viewport.
+- Switched the recruitment wrapper to `overflow-x-clip overflow-y-visible` so
+  the upward dark veil can extend across the boundary without reintroducing
+  horizontal overflow.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now rejects the old top-anchored yellow
+  recruitment gradients and the yellow records handoff radial.
+- The same contract checks that the recruitment glow remains lower behind the
+  headline with an upward dark veil.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001.
+- Targeted `agent-browser` screenshot at `2048x1224` and records progress
+  `0.965`: recruitment top moved to the dark upper region (`75px`) while the
+  headline stayed in view, removing the visible line through the Embrace
+  Tomorrow area.
+
+### Known limits
+
+- The records stage still uses placeholder vehicle imagery until final assets
+  are available.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred per the
+  frontend-only instruction.
+
+## 2026-05-15 - Homepage Glow Clip + Footer Vignette Polish
+
+Fixed the clipped left edge in the homepage Embrace Tomorrow glow and restored
+the footer vignette fade on the home page.
+
+### Implementation
+
+- Reworked the Embrace Tomorrow glow wrapper so it no longer clips its own
+  radial gradient at the left edge.
+- Kept the recruitment section horizontally clipped at the section boundary to
+  avoid mobile overflow while allowing the glow itself to feather naturally.
+- Enlarged the inner glow layer with negative inset and a softer radial falloff.
+- Strengthened the shared footer's top vignette, increased its fade height, and
+  raised the footer stacking context so the fade renders over the preceding
+  homepage section.
+
+### Harness updates
+
+- `scripts/test-homepage-design.mjs` now asserts the unclipped recruitment glow
+  sizing/negative inset and the stronger footer vignette contract.
+
+### Verification
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3001 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3001.
+- Targeted `agent-browser` screenshot at `2048x1224` and records progress
+  `0.965`: the Embrace Tomorrow glow no longer has an abrupt left cutoff.
+- Targeted footer `agent-browser` check confirmed the footer vignette is
+  present with `before:-top-32`, `before:h-32`, and `z-index: 20`; screenshot
+  saved to `screenshot-1778849638862.png`.
+
+### Known limits
+
+- This was a frontend-only pass; LocalStack-dependent AWS/CDK checks remain
+  intentionally deferred per the user's instruction.

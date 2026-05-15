@@ -1,0 +1,1103 @@
+{
+  "importedAt": "2026-05-15T07:27:37.015Z",
+  "pages": {
+    "whoWeAre": {
+      "sourceUrl": "https://sunswift.webflow.io/about-us/who-we-are",
+      "title": "Who We Are",
+      "overview": "Sunswift Racing has been redefining the future of automotive technology since 1996. Our hard-working team’s dedication to developing world-class prototype electric cars has helped us progress technology through partnerships and collaborations with industry leaders. Behind the scenes, our team of innovators strive day and night to change the future of sustainable transport.",
+      "sections": [
+        {
+          "title": "Our Team",
+          "icon": "group",
+          "body": "Led by Team Principal Professor Richard Hopkins, Sunswift Racing is an organisation with a multi-faceted team. This includes Academics, a Senior Leadership Team, Executive Leadership Team, and Undergraduate Students. With over 80 committed members, the team brings together students from STEM, design, business, and media disciplines. This broad collaboration ensures that every aspect of vehicle development and communication progresses seamlessly.",
+          "image": "/placeholders/team-member.svg"
+        },
+        {
+          "title": "Our Cars",
+          "icon": "directions_car",
+          "body": "The development of a car from scratch is only possible through the support of a wide network - including industry partners, sponsors, and long-time friends of the team. Whether it’s through technical expertise, materials, funding, or mentorship, each contribution plays a crucial role. Our vehicles bring together innovations in composite manufacturing, solar array design, and large-scale cloud technologies, all made possible by this collaborative ecosystem.",
+          "image": "/placeholders/vehicle-sunswift-7.svg"
+        },
+        {
+          "title": "Our Vision",
+          "icon": "lightbulb",
+          "body": "We want to attain a future with sustainable design by creating meaningful designs with real-world application. Going beyond concepts, we see rendered designs come to life through unique cars that are constantly evolving and improving as technology progresses.",
+          "image": "/placeholders/lab.svg"
+        }
+      ],
+      "gallery": [
+        "/placeholders/garage.svg",
+        "/placeholders/vehicle-sunswift-7.svg",
+        "/placeholders/vehicle-violet.svg",
+        "/placeholders/vehicle-eve.svg",
+        "/placeholders/vehicle-ivy.svg",
+        "/placeholders/vehicle-iii.svg",
+        "/placeholders/vehicle-ii.svg"
+      ],
+      "discover": [
+        {
+          "title": "Our Achievements",
+          "body": "From world records to race victories, we’re proud of what we’ve accomplished. See how Sunswift is setting new standards in solar car innovation.",
+          "href": "/achievements",
+          "cta": "Explore Achievements",
+          "image": "/placeholders/vehicle-sunswift-7.svg"
+        },
+        {
+          "title": "Our Story",
+          "body": "What started as a student project has grown into a global name in solar racing. Learn how Sunswift began - and where we’re headed next.",
+          "href": "/our-story",
+          "cta": "Read More",
+          "image": "/placeholders/garage.svg"
+        }
+      ]
+    },
+    "ourStory": {
+      "sourceUrl": "https://sunswift.webflow.io/about-us/our-story",
+      "title": "Our Story",
+      "tabs": [
+        {
+          "id": "story-1",
+          "title": "The Dawn of Sunswift I"
+        },
+        {
+          "id": "story-2",
+          "title": "The Rebirth of Sunswift II"
+        },
+        {
+          "id": "story-3",
+          "title": "Sunswift III: Triple Threat"
+        },
+        {
+          "id": "story-4",
+          "title": "Sunswift IVy: Race to the Finish"
+        }
+      ],
+      "articles": [
+        {
+          "id": "story-1",
+          "title": "The Dawn of Sunswift I",
+          "summary": "What started as a wild thesis idea at the uni bar launched a legacy of solar racing. Meet Sunswift I - the car that turned a student dream into a national contender.",
+          "author": "Tina Wu, Yuseph Ma & Jason Zhao",
+          "date": "May 31, 2019",
+          "image": "/placeholders/vehicle-i.svg",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Since its founding in 1996, Sunswift has travelled almost 25,000 km across the Australian continent powered by sunlight. Now we go back in time to see just how far Sunswift has come from its humble beginnings right here at UNSW."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Like any other fourth-year engineering student faced with the prospect of choosing their thesis topic, Sunswift founder Byron Kennedy decided to go to the uni bar."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "None of the prescribed topics interested him – they were all much too theoretical, in his opinion. He wanted to do something, build something. And after talking about it with a group of friends, an idea formed, nebulous, uncertain, crazy."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“I went to one of the professors at the time…and said we want to build a solar car,” Byron recalls."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Now three world records, seven different cars and hundreds of students, academics and alumni later, Sunswift has made a name for itself not only as the darling of UNSW’s Engineering faculty, but also a leader of solar energy development and innovation."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Professor John Storey, Chief Scientist of the Bridgestone World Solar Challenge (BWSC) Officials team and one of the first academics whom Byron approached, had leapt at the idea of creating a solar car racing team at UNSW. He himself had tried and failed to secure university funding to participate in the World Solar Challenge (WSC), the precursor to the BWSC, in the 80s and early 90s."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Byron came into my office and said that he wanted to start a UNSW team. I was absolutely delighted,” says John. “I do remember he was really enthusiastic, really positive, and we chatted about what was going to be required.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“I probably sounded a bit negative about his chances of success given the fact that I hadn’t succeeded in getting the university on board.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "As to why UNSW approved Byron’s proposal rather than John’s, Sunswift’s founder put it down to luck and support from the right people, and that the university was perhaps more eager to support a student-led endeavour."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "And it just snowballed from there. A group of three quickly became a team of almost 30 other students and academics, with people coming from electronics, mechanics, biomedical engineering, design, finance, marketing, and more. 16 of them went on to compete in the 1996 World Solar Challenge. But first, they needed a car."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "The Car"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift’s first car came from a deal between UNSW’s photovoltaics department and the Aurora Vehicle Association, who gave the department a solar car that came fifth in the 1993 WSC in exchange for some cells."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“It wasn’t in too good a condition,” says Byron. “We had to replace all of the chassis - it had cracks and stuff in it by the time we got it. It was a fairly big overhaul.”"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "By “big overhaul”, Byron meant putting in a new motor, an electronic controller, tweaking up the solar array, replacing the battery and adding a GPS, which was an all-new technology at the time. In fact, three students from the School of Geomatic Engineering had travelled the entire route of the WSC before the actual competition in order to survey the vertical profile of the Stuart Highway. This information allowed the Sunswift team to strategise their own drive later in the year."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Byron says that the GPS technology they used was very advanced for its time. The surveying team used a Differential Global Positioning System (DGPS) to record and analyse the designated route for the race, which, unlike the more common Global Positioning System, a DGPS utilises two receivers to more accurately pinpoint its location. This means that the DGPS can take measurements accurate to 10cm, while the GPS on its own totals only 15m. The project ended up using 9 GPS receivers in total, which was worth $200,000 at the time."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The Sunswift car was also fitted with one of the most efficient solar cells at the time, manufactured right here at the Photovoltaic Special Research Centre in UNSW. Its solar array was rated as one of the best in the race, with a solar cell efficiency of 18.5 per cent. These cells, which had been adapted specially for solar vehicles in response to the increased manufacture of solar cars, have long been used by other solar car racing teams. It was only proper for Sunswift to take advantage of the university’s cutting-edge technology too. All-in-all, Sunswift I ran on approximately 1160 watts of power, the equivalent of a hair dryer."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The modifications to the chassis, various safety improvements and the installation of a larger assemblage of batteries than what was used by Aurora also meant that Sunswift I was the heaviest car out of all 46 solar vehicles in the WSC."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Despite the level of sophistication required in the engineering of this car, Sunswift always has been a student project, according to John. “I never had any input into any of the design or the changes to the car, and I think they rather liked it that way too,” he says. “They had their own ideas, and they did it their way.”"
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "The World Solar Challenge"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "About 15 months later in October 1996, Sunswift I was ready for the road. The team was now finally able to meet their original goal of competing in one of the world’s premier solar car racing competitions: The WSC."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The WSC, held tri-annually for cars with solar-charged batteries, invited competitors throughout the globe to race across Australia’s scorching outback from Darwin to Adelaide. It was founded by two Australians, Hans Tholstrup and Larry Perkins, who had driven across the continent in their own self-built solar car. Competitors at the time included not only other national and international universities, but also corporate big names such as Honda and General Motors."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "In his foreword to Speed of Light, a book dedicated to the 1996 WSC, David Roche wrote that solar car racing was valuable to racers in so many ways. It provided a statement of making progress in the field of ecology, provided a key tool in learning the technicalities of solar engineering, and was an invaluable opportunity for teams, particularly student-teams, to obtain project-management and leadership skills."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Now, with five support vehicles (two of which were sponsored by Toyota) and a core team of 16, which included an all-female driver team, Sunswift started the long haul from Sydney to Darwin as a test drive before the race in the Northern Territory – about 3000km in two weeks."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Byron says that the all-female driver team was chosen specifically to be gender-inclusive, saying that it “brought a nice amount of balance to the team.” The women came from different areas of university, including aerospace engineering, textiles and marketing. Byron says that there was also evidence that females were better at handling the hot track conditions and are generally lighter."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "As with every race, there were a few (kangaroo-shaped) bumps on the road. The first accident occurred when the axle snapped and the car went sideways across the road before coming to a stop by a tree. Though the driver was unhurt, this accident set them back considerably as they were forced to travel at a reduced speed for the rest of the day, compounded by their loss of the car’s front wheels along the way."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Following that, a support vehicle provided by Toyota also suffered a hit. “The Prado was pulling the trailer and hit a kangaroo one night, as happens on those sorts of races,” says Byron. But the accidents didn’t end there."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“The trailer was then pulled by another smaller ute and it did a jack-knife, and I can’t even remember what happened there,” Byron laughs."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "John Ransom, a team member of Sunswift I, admits that although they were funny at the time, the accidents had been extremely dangerous. “It’s actually frightening what happened. We’re lucky no one got killed, to be honest,” he says."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Nevertheless, a couple of brake failures, some tyre issues (which were resolved with the lucky help of a passing German cyclist) and a second axle breakage at the finish line later, Sunswift came a formidable 9th place after seven full days on the road."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "On top of Sunswift’s above average performance in its first-ever race, this result and the process it took to get there contributed greatly to the early research of solar vehicles, photovoltaics technologies, the WSC and, most importantly, laid a foundation for the future of Sunswift."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "From its humble beginnings at the campus uni bar, Sunswift has now become an organisation whose impact is felt across the country and shaped the lives of hundreds of students, scientists and engineers in the field, to which Byron adamantly attests."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Sunswift is the best thing I’ve ever done,” he says. “The friendships you make last for a lifetime.”"
+            }
+          ]
+        },
+        {
+          "id": "story-2",
+          "title": "The Rebirth of Sunswift II",
+          "summary": "Born from a cancelled race and a bold phone call, Sunswift II became UNSW’s first self-built solar car - chasing records, dominating headlines, and laying the foundation for future innovations.",
+          "author": "Tina Wu, Yuseph Ma & Jason Zhao",
+          "date": "July 10, 2019",
+          "image": "/placeholders/vehicle-ii.svg",
+          "blocks": [
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift II’s road to fame began with an angry phone call."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The year was 1998. The World Solar Challenge (WSC) originally scheduled to be held in October was just cancelled. John Ransom, Sunswift’s second Project Manager, was devastated."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“I was just working 7 days a week,” says John, recalling the preparation the Sunswift II team had completed leading up to the WSC. “I was working from 10 o’clock in the morning to 3 or 4 the next morning. I basically dropped out of civil engineering.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "After the Darwin-to-Adelaide solar race was cancelled, the team was in uproar. Many students had made plans to work or study after the 1998 WSC was supposed to have finished. “They really put a lot of people at a loose end,” says John."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "He then decided to call Hans Tholstrup, the founder of the WSC. “I was crying to him about how it was. I was very angry,” he continues. “I might have said a few things to some people that with a bit of maturity and years behind me I regret.”"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Tholstrup recommended John to attempt the Transcontinental Record from Perth to Sydney, timing the drive to occur during Christmas and the New Year when news cycles were slow. The Transcontinental Record from Perth to Sydney was set by Dick Smith in 1994, who had travelled approximately 4000km across the country within 8.5 days at an average speed of 60km/hr."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Kaylene Askew, then Executive Project Manager of Sunswift, says it was the right decision to take on the Record. “I think everyone felt that was a pretty good move from a media perspective since it was the only car in the race.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Indeed, the attempt generated $2.4 million worth of publicity. “We had 3 helicopters following the car,” John recalls. “We were on every news channel.” The ABC made a documentary on them, with a film crew following their journey for weeks. TV Asahi, a Japanese television network, met up with them in South Australia for a day. NRMA and Toyota were prime sponsors of the attempt."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“I got my 15 minutes of fame,” he laughs."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "However, Sunswift II failed to break the record after they were set back by five days of bad weather, meeting thunder, rain and dust storms. Shane Stone, Sunswift II’s Chief Engineer and Race Strategist, remembers “the great downpour” with amusement."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We were basically out of battery at one third of the trip and limping for a good couple of days,” says Shane. Relying on the Nullarbor Plain’s flat land, the drivers altered their race strategy with their new goal now to get home safe."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“When you have extremely flat land, you can actually see these bright stripes across the road,” Shane explains. The drivers then paced the car to keep it driving at a constant speed in time with these stripes, hopping from one to the other."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "At one stage, the canopy of the car blew off completely from the weather. Team members had to brave the weather and search for it, according to Kaylene."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The all-female driving team eventually crossed the finish line at the Sydney Opera House where Dick Smith, Tholstrup and police escorts were waiting. Sunswift II was only two days out from beating the record, travelling at a top speed of 70km/hr."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "It was only a few days before Sunswift II entered another race: the Sydney-to-Melbourne CitiPower SunRace."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "But first, we need to go back to the beginning."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "A New Beginning"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "After John took up the reins of Sunswift II, the Project Manager came up with a bold new vision: to build their own solar car from scratch. Sunswift I, although “a beautiful car”, had been purchased second-hand from the Aurora Vehicle Association in 1996."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We don’t want to just race Aurora’s car, as good as it is,” says John. “We’re here to try and build our own car.\""
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Even if we come last, we’d rather come last in our own car than win in a car we’ve picked up from someone else and driven away.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "John’s vision for the design of this new car came from his other passion: motorcycling. The inside of Sunswift II was lovingly modelled on a Ducati 916 motorbike and the chromoly space frame chassis had an Öhlins suspension, painted gold."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "It also used Michelin ultra-low rolling resistance radial tyres, regenerative rear brakes, lithium ion batteries and a CSIRO 3kW electric wheel motor. The solar array was made up of BP Saturn solar cells."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The university’s support did not come easily at first. “We sort of forced the university into supporting us,” says John. “It was either you’re going to support us and we’re going to be a professional outfit, or we’re going to bring great embarrassment to you."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Whether we’re doing it on a shoestring budget or we’re a laughingstock or we’re one of the best teams.”"
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "The Evolution of Sunswift II"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift II’s first prototype was never raced but underwent significant testing with the lamination process, using epoxy-fibreglass lamination on both sides of the cells."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The second version went on to complete the Transcontinental Record attempt, using the same lamination process. Its solar array suffered from some delamination during the attempt. Despite this, the team persisted in using the car to drive 1790km in the CitiPower Sunrace just a few days later."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The rules of the SunRace forced them to swap their lithium ion batteries for a 100kg lead acid battery, which, combined with the “subjective” penalties they received (one for passing notes between cars), led them to come third out of five entries after five continuous weeks on the road."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "John then left the team, going on to compete in solar races in the US. His position was taken up by Chris Tucker and Sunswift II’s lifespan continued."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "For using the CSIRO wheel motor, Sunswift II was requested by the Federal government to participate in a trade exhibition in Taipei, Taiwan in 1999. Sunswift 2.3 was built by way of repairing the damage to the solar array that occurred during transit."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "This version went on to race in the eagerly-awaited 1999 World Solar Challenge. Its solar array consisted of BP Saturn cells, cut and shingled to prevent loss from busbar shading. The cells were then sprayed with Conformal Coating."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift 2.3 also competed in the 2000 SunRace. However, the vehicle’s solar array was irreparably damaged after it crashed into a Give Way sign as it swerved to avoid hitting the car that was braking in front of it."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“It was pretty scary, because these things are prototype cars,” says Shane. “You can design for it, but not like a regular road car that’s been tested in a crash.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "And it was after this event that Sunswift’s final incarnation came to life."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "The TopCell Project"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift is known for being the first and only solar racing team to have made their own solar cells. Sunswift II’s TopCell Project was the brainchild of this endeavour."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Under this project, the team worked with silicon wafer supplier Topsil to manufacture buried contact cells to construct a new solar array in preparation for the 2001 WSC. The team ended up making over 4000 solar cells."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Meanwhile, the team was also developing an innovative cell encapsulation technique which allowed the solar panels to mould to the curved shape of the car and minimise aerodynamic drag."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "This project involved constructing a mould that could withstand the pressure from the lamination technique and creating a telemetry system that monitored the temperature of the process. One prototype of the encapsulation technique involved a solid steel beer keg, which was used to conduct a scaled-down vacuum testing of the lamination process. The solar array that emerged from this venture (after multiple test-runs) generated 1350W."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift 2.4 went on to race in the SunRace again in 2002 and 2003, coming an impressive 2ndin both."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Unfortunately, however, the car suffered severe damage after its trailer jack-knifed on the way to the WSC 2003, which wrote them off competing in the race that year."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Despite Sunswift II’s sudden end, the hard work that went into Sunswift’s very first self-built car did not go to waste – parts of Sunswift II were re-used in later models. “When Sunswift III beat the Transcontinental Record, I went down to have a look,” says John. “They had the wheel motor that we built. I was really proud of it.”"
+            }
+          ]
+        },
+        {
+          "id": "story-3",
+          "title": "Sunswift III: Triple Threat",
+          "summary": "Crashing in testing, finishing a race unofficially, then smashing a national record - Sunswift III’s story is one of bold design, resilience, and redemption.",
+          "author": "Tina Wu, Yuseph Ma & Jason Zhao",
+          "date": "August 31, 2019",
+          "image": "/placeholders/vehicle-iii.svg",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Aggressive.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "That’s the word that David Snowdon, Chief Electrical Engineer of Sunswift III, uses the most when describing the first version of one of Sunswift’s most illustrious solar cars in the history of the team."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "This was the car that crashed during testing for the 2005 World Solar Challenge (WSC) only to come 9th after completing the race unofficially, broke the Transcontinental Record by three days, and was redesigned into a second version that won them the prestigious Freescale Technical Innovation Award for most efficient car: the triple threat."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "The Crash"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "It happened like this. Sunswift 3.1 was undergoing a test-drive just prior to the WSC 2005. The testing road was rough and undivided. Difficulty with the steering made the car swerve significantly from its course and rather than risk colliding into any on-coming traffic, the driver made the correct decision to drive off the road."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "In retrospect, David admits that the team was “too ambitious” when building the model’s first iteration, which was a “complete redesign” from Sunswift II."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We tried to do too much with it,” says David. “It meant that it was six metres long and two metres wide and we didn’t build our own solar array.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Indeed, the team had decided not to follow in the footsteps of their predecessor of constructing their own solar cells, instead using highly powerful Gochermann panels with laser-cut Sunpower cells. These panels were almost 12m2 in size and produced around two kW."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“With encapsulation you just need so much iteration in order to really get it right,” David explains. “It’s just not really within the scope of our project to get those arrays right.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "As a result, the car was designed around the flatness of the solar panels from the outset and lacked the curvaceousness of its predecessor, leading to compromises on the aerodynamics."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "One key weakness of Sunswift 3.1 lay in its carbon fibre structural spats in the suspension system. The spats’ aerodynamics bearings were integrated with the mechanical components of the car that held the wheels in place."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“The structural spats were a cool idea, but I don’t think we did a good job of executing it,” says David. “We did a really good job of building the moulds and the carbon fibre U-shaped pieces, but we really didn’t do a very good job in the mechanical adhering that would keep them in place.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Indeed, the suspension system was badly damaged after the crash, with the spats being the point of failure. The car’s push-pull tank steering also turned out to be too unwieldy, which made the car difficult to drive in a straight line and caused the vehicle to veer off-course."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "After the crash, Sunswift missed the scrutineering for the WSC and were unable to compete. The team was desolate."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Everyone was so down on themselves,” David recalls. “We all went back to the youth hostel and felt sorry for ourselves.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "However, all was not lost. David’s friend from a rival racing team, Nuon, came to their garage the next morning and encouraged them to get back on the road – a show of solidarity within the solar racing community."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“He was like, ‘What are you guys doing? Let’s get up! Let’s fix this!’,” says David. The Nuon team then assisted them in finding a welder to fix several giant steel parts onto the car."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We just over-engineered everything to make sure it was 100 per cent solid,” he continues. “We then worked overnight the following night, patched up the holes in the array, swapped out the broken panels.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Despite this accident, the car turned out to be incredibly efficient and well-performing. Sunswift III was allowed to complete the race unofficially and became the 9th vehicle to cross the finish line, completing the course in five days even though they essentially started “from the back of the pack”."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We were pretty happy with having finished it all, because the car was only really running properly by day three or four,” says David."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "The Second Transcontinental Record Attempt"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Armed with their newly consolidated solar car, Sunswift III decided to give the Perth-to-Sydney drive another go in January 2007, eight years after the team’s first attempt."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "After a bit of a membership reshuffle in the team, Sunswift thought that attempting the record again would provide an opportunity for a much-needed test-run before the WSC 2007."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Most had never been involved in a race,” says Andrew Wrigley, then electrical engineer on the team."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We had seen from previous challenges that it is not always the fastest solar car that wins. Reliability and team performance were just as important."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“On more than one occasion I have seen two teams neck and neck for a prime finishing position, and the team that won out in the end was able to change their tyres on the car faster."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“That was what made the real difference in the end: which team could keep their car on the road for as long as possible and make any maintenance or control stop well-organised and efficient."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Those are the sorts of things we hoped to improve with [the Transcontinental Record attempt].”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "In preparation of the attempt, the team made a few minor improvements to reduce the weight of the vehicle by modifying its brakes and steering. Mark Smith, mechanical engineer and driver of Sunswift 3.2, recalls that emphasis was placed on improving the control of the car."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "To do this, Mark redesigned the steering bellcranks so that there was less steering rack deflection under steering loads. The push-pull tank steering was also removed, which greatly improved the control of the car."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The team set off in a fleet formation with three support cars accompanying Sunswift III. To help offset the carbon emissions from this large fleet, the team decided to donate to not-for-profit climate action group Green Fleet to plant 25 native trees."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Despite some overcast weather, the successful mechanical modifications meant that the car completed the Perth-to-Sydney route in five and a half days, breaking Dick Smith’s previous record by almost three whole days, crossing the finish line at Circular Quay."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Andrew says that the attempt was about more than breaking the record. “After a few years of unsuccessful WSC attempts, we needed to prove that Sunswift could safely complete a solar car race,” he says."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "Saving the Suspension"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Despite the success of the attempt, however, the team approached the construction of Sunswift III’s next iteration with caution."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“There was a bit of an erosion of the trust that the university had in the team,” says Mark. “There was not a lot of good history in the previous experiences."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“The second incarnation of Sunswift III was going to…try to build that trust a bit more, to ensure the continuation of the project.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Mark led the project of rehauling Sunswift 3.1’s suspension system in preparation of the WSC 2007. “What we set out to do was to build a really solid suspension system that wasn’t going to give us any failures and maintain the high level of aerodynamics that [Sunswift 3.1] had.”"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The fifth-year engineering student spent several months welding and fabricating chromoly high-performance steel in the workshop by himself, working regularly, in the usual Sunswift fashion, from 10am to 11pm."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“It was a really excellent personal challenge,” he says. “I knew that what I was doing was obviously going to support someone – keep someone alive for the duration of the race.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift 3.2 turned out to be a very robust car and the handling had improved significantly by the WSC 2007. Mark drove a third of the 3000km route and can personally attest to the stability of the newer iteration."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Like previous models before it, Sunswift 3.2 was built with a rather limiting seating position and drivers were required to lay down in the cockpit with their head in a bubble. Although they retained Sunswift 3.1’s efficient back-to-back seater model, the car was only driven by one person at a time."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Coming from rural NSW with some experience in truck-driving and a semi-trailer licence, Mark also had no problem adapting to the heat that’s often associated with driving in the vehicle’s tight and compact space."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“From memory, I had this sort of feeling that it wouldn’t be a very pleasant experience, but it was good,” says Mark. “There was always a little bit of radio chat, a little bit of banter.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift III placed 9th overall in the WSC 2007 and 4th in the Adventure Class Challenge, reaching a top speed of up to 100km/hr. The team also won the CSIRO’s Freescale Technical Innovation Award for most efficient car out of 41 international competitors."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "To the team’s surprise, Sunswift was awarded the Engineers Australia Engineering Excellence Award for Education and Training that year."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "After these impressive feats, however, Mark remains humble with a philosophy that underpinned the team’s outlook after the crash of the WSC 2005: to prioritise safety over victory."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“I didn’t set out to do anything extremely ground-breaking,” says Mark. “Just to build a good, solid, well-designed, well-analysed piece of equipment.”"
+            }
+          ]
+        },
+        {
+          "id": "story-4",
+          "title": "Sunswift IVy: Race to the Finish",
+          "summary": "Faced with shutdown, one student rebuilt the team from scratch - leading Sunswift IVy to a Guinness World Record and a race victory that secured the team’s future.",
+          "author": "Tina Wu, Yuseph Ma & Jason Zhou",
+          "date": "October 3, 2019",
+          "image": "/placeholders/vehicle-ivy.svg",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Clara Mazzone was sitting nervously in the Dean of Engineering's office. She was the last remaining Sunswift team member after the 2007 World Solar Challenge (WSC), and by default, Sunswift’s newest Project Manager."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "As the team’s only representative, Clara was invited to meet with faculty members to discuss one thing: Sunswift’s future."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "And in this meeting, the faculty did not shy away from raising one distinct possibility."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Sunswift was going to shut down."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Although the victory of breaking the Transcontinental Record in 2007 was fresh as the dust still settling on the route’s desert-road track, the university had thought that the solar car team had perhaps served its purpose."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "All of its successes – in racing; in testing the boundaries of sustainable technology; in showing just what extraordinary feats a group of dedicated university students can achieve – all of it was coming to an end."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Clara, however, was not so easily convinced. The second-year Renewable Energy engineering student had a plan."
+            },
+            {
+              "type": "heading",
+              "level": "h3",
+              "text": "The Plan"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Step one – recruit more members."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“At the time there was…no team,” says Graham Doig, then Sunswift IV, or IVy’s, Head of Aerodynamics. “It’s hard to understate the mountain Clara had to climb. Most of the ‘old guard’ had left and a new car had to be built from scratch.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Clara began repopulating the team by approaching several Sunswift alumni to mentor the team – David Snowdon, Chief Engineer of Sunswift III, was one of them. Graham, who had worked on previous iterations of the car, was another."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "A strong recruitment drive saw about 30 new members swell the ranks, and just like that, Sunswift IVy was up and raring to go."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Step two – develop a solid business plan."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Clara recognised that for the future of the team to survive, simply building a car was not enough. They needed to look at the bigger picture, to make sure that Sunswift’s impact can be felt beyond the race track."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“How do you actually effectively run a team and what does that look like and how do you motivate people?” asks Clara. “What does a culture mean? How do we make sure the culture that we support internally is also what we say we are?”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "To answer these questions, Clara used the WSC 2009 launch night as a way to present the team’s renewed professionalism to UNSW and potential sponsors."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "With each member clad in corporate attire complete with engraved, magnetic name tags on their breast pockets, first impressions were everything. And although the car was late to its own launch, the team’s efforts appeared to have paid off when they received a final $20,000 for their race funds after the launch."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Clara and the Sunswift Business Team also increased the scope of the team’s education outreach programs. Sunswift travelled to various fairs and schools in regional New South Wales for the dual purpose of testing the car on the road and educating students about the future of sustainable technology."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“It was really important for us to educate the public, especially children, about the promise of renewable energy and the importance of energy efficiency,” says Kristen Casalenuovo, IVy’s Business Lead. “It was definitely a highlight of my time.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Step three – build a well-performing car."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The 2009 WSC saw a significant change in the car design rules. For the first time, drivers were required to sit at almost an upright position with the seat angle not more than 27˚, posing a few challenges for the team in optimising the car’s aerodynamics."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Graham, with a group of engineering students, undertook the project to design the car. The design was completely digital and finished without access to a wind tunnel."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We had to simply rely on our best training to ensure that the values for aerodynamic resistance and stability were within performance and safety margins,” he says."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "From prototype to the final model, the team had successfully reduced the aerodynamic resistance of the car by 50 per cent."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“I have little doubt that it was the ideal car for that race at that time in that class,” says Graham."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The Head of Aerodynamics also took a few liberties with the aesthetic design of the car, integrating the indicator lights with IVy’s famous “bat wing” swoop on the rear for the vehicle just “to look dramatic”."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“There was perhaps some suspicion from some of the team that we were making a car that was a little out of step with other designs that had been successful,” he explains. “Well…we didn’t just want the best-performing car, we wanted the best-looking car too!”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Step four – make safety a priority."
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "A few days before the car was due to race in the 2009 WSC, the team had a serious discussion about the potential safety limitations of the vehicle. The car was not yet complete."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We ended up having a team meeting going ‘are we being sensible, are we putting a car on the road that could endanger people’s lives?” says Clara."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "And even after the team ultimately made the decision to drive the car, Clara continued to prioritise the safety and wellbeing of team members while on the race."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“I was really strict with everyone,” she says. “Sometimes I look back and go, ‘Oh gosh. I made them sit down and watch, before the race, videos on what sleep deprivation does to you and driving while drunk’.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "These talks proved useful, however, when IVy became the first silicon car to cross the finish line, with the race as smooth as can be."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "With this victory behind them, IVy successfully escaped from cancellation."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "The Guinness World Record"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "In 2010, the team turned their attention to their next project: the Guinness World Record attempt for fastest land speed – then held by General Motors’ Sunraycer for reaching a top speed of 79km/hr in 1988."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The team had first considered completing this record in 2006 during the Sunswift III era, according to Graham, but the “idea went on the backburner” as Sunswift III retired and the team focused their efforts on building IVy."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "But the team decided that now was the right time to give this record a go. “We wanted to see what the car was capable of doing,” said Daniel Friedman, IVy’s second Project Manager. “That’s when we decided to have another crack at the World Record.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The team spent months looking for the perfect location for the Guinness World Record attempt. Their search eventually led them to the HMAS Albatross in Nowra, NSW, an active navy base."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The rules of the attempt required the car to complete two runs in opposite directions on a near-flat track with the battery pack removed, which meant the car must commence from a standing start."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Barton Mawer, a professional solar racer, was selected to be the driver for this attempt as his slight stature allowed him to fit in IVy’s tight seating pod."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Barton is a renowned racer and had previously competed in Australia, Europe and America, bringing in his expertise to complete the attempt without any issues."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“Cutting-edge development excites me,” he says. “I got sucked in by the team’s vision and excitement.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Despite the overcast weather during their mid-morning start, IVy reached a top-speed of 88.7km/hr, breaking Sunraycer’s record by almost 10km/hr."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "The WSC 2011"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "By the time the WSC 2011 arrived, IVy had been fitted with a rebuilt chassis, a new array and had undergone some mechanical modifications."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "The race that year, however, was marred with bushfires, rain and thunderstorms. As a result of the bushfires, teams were stopped mid-race, forcing them to put up camp before the day’s end and losing a couple of hours on the road."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“If it weren’t for the officials of the race, we probably would have tried to drive through the bushfire,” laughs Kristen, a driver in the WSC 2011."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "For Jono Pye, IVY’s Assistant Project Manager, however, the highlight of the entire race was the moment they overtook the MIT solar team."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“We’d been chasing them – we had issues on the first day, so we were taking over the rest of the pack until only MIT was in front of us,” he says, laughing. “They had a flat tyre and we stopped at the control point."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“So we were on the start line, itching to go…and they managed to swap the wheel out and get out like 30 seconds in front of us just to make us drain the battery."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“But then I got to make the call on the radio: ‘MIT this is Sunswift, do you copy? We’re about to overtake you’."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“In the next half an hour we overtook them and took the lead in the race.”"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Seven days later, IVy came 1st in the Production Challenge Class and 6th overall."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "For Graham, who was not on the team in 2011 but became an academic supervisor in 2013, this win was a turning point in Sunswift’s solar racing history - one that guaranteed Sunswift’s future."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“This result really solidified that Sunswift was a top-tier contender that could pull out consistent results,” he says."
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "“I think, even more than the [Guiness World Record attempt], this secured the university’s long-term support for the project.”"
+            },
+            {
+              "type": "image"
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "WSC 2009 (Global Green Challenge) Team Members"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Clara Mazzone, Jono Pye, Alex Boulgakov, Etienne Le Sueur, David Snowdon, Irving Tjiptowarsono, Daniel Friedman, Campbell McLaren, Luke Bycroft, Yi Syuen Lim, Sam Paterson, Helga Prochaska, Glen Summers, Authur Collins, Joe Wolfe, Caitlin Trethewy, John Durrant, Claudia Williams, Scott McDaid, Nick Kerrigan, Tim Wardrop, Graham Doig."
+            },
+            {
+              "type": "heading",
+              "level": "h1",
+              "text": "WSC 2011 Team Members"
+            },
+            {
+              "type": "paragraph",
+              "level": "p",
+              "text": "Daniel Friedman, Sam Paterson, Jono Pye, Etienne Le Sueur, Tommy Heyser, Campbell McLaren, Robby Hutchinson, Kelvin To, Karina Hudson, Kristen Casalenuovo, Alexandra Boulgakov, Glen Summers, Irving Tjiptowarsono, David Favaloro, Charith Perera and Andrew Delmar, Nick Clark, Professor Joe Wolfe, David Snowdon, Scott McDaid, Luke Bycroft, Nick Kerrigan and Matt Cumming."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

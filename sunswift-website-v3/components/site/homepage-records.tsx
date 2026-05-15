@@ -1,4 +1,7 @@
+"use client"
+
 import Image from "next/image"
+import { useEffect, useRef, type CSSProperties } from "react"
 
 type Record = {
   id: string
@@ -16,8 +19,7 @@ const records: Record[] = [
     metric: "1,000",
     unit: "km",
     title: "Furthest distance by an EV on a single charge.",
-    body:
-      "Sunswift 7 carried four occupants over 1,000 km on a single charge at the Australian Automotive Research Centre, certified by Guinness World Records.",
+    body: "Sunswift 7 carried four occupants over 1,000 km on a single charge at the Australian Automotive Research Centre, certified by Guinness World Records.",
     year: "2022",
     image: "/placeholders/vehicle-sunswift-7.svg",
   },
@@ -26,8 +28,7 @@ const records: Record[] = [
     metric: "107",
     unit: "km/h",
     title: "Fastest solar-powered electric vehicle.",
-    body:
-      "Sunswift eVe set the FIA-ratified record for the fastest electric vehicle averaging over 500 km without recharging, an industry first for solar racing.",
+    body: "Sunswift eVe set the FIA-ratified record for the fastest electric vehicle averaging over 500 km without recharging, an industry first for solar racing.",
     year: "2014",
     image: "/placeholders/vehicle-eve.svg",
   },
@@ -36,79 +37,283 @@ const records: Record[] = [
     metric: "7",
     unit: "cars built",
     title: "Three decades of solar engineering.",
-    body:
-      "Seven generations of student-built solar vehicles since 1996, with the eighth in production — a continuous record of innovation out of UNSW Sydney.",
-    year: "1996 — Today",
+    body: "Seven generations of student-built solar vehicles since 1996, with the eighth in production - a continuous record of innovation out of UNSW Sydney.",
+    year: "1996 - Today",
     image: "/placeholders/vehicle-violet.svg",
   },
 ]
 
+type RecordsStyle = CSSProperties & {
+  "--records-progress"?: number
+  "--records-carousel-y"?: string
+  "--records-dark-opacity"?: number
+  "--records-light-opacity"?: number
+  "--records-copy-y"?: string
+  "--records-copy-opacity"?: number
+  "--records-image-scale"?: number
+  "--records-handoff-opacity"?: number
+  "--records-handoff-y"?: string
+  "--records-content-opacity"?: number
+  "--records-content-y"?: string
+  "--records-text-color"?: string
+  "--records-muted-color"?: string
+  "--records-rule-color"?: string
+}
+
+function clamp(value: number, min = 0, max = 1) {
+  return Math.min(max, Math.max(min, value))
+}
+
 export function HomepageRecords() {
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) {
+      return
+    }
+
+    let frame = 0
+
+    const update = () => {
+      frame = 0
+      const rect = section.getBoundingClientRect()
+      const distance = Math.max(section.offsetHeight - window.innerHeight, 1)
+      const progress = clamp(-rect.top / distance)
+      // Tightened timeline so the records → recruitment handoff is fully resolved
+      // (content cleared, dark veil at 100%) BEFORE the recruitment section enters
+      // the viewport. This removes the visible overlap where the recruitment glow
+      // used to bleed through while the records headline was still on screen.
+      const carouselProgress = clamp((progress - 0.08) / 0.5)
+      const handoffProgress = clamp((progress - 0.58) / 0.3)
+      const contentClear = clamp((progress - 0.66) / 0.12)
+      const copyClear = clamp((progress - 0.6) / 0.12)
+      const easedCarousel = 1 - Math.pow(1 - carouselProgress, 3)
+      const easedHandoff = 1 - Math.pow(1 - handoffProgress, 3)
+
+      section.style.setProperty("--records-progress", progress.toFixed(4))
+      section.style.setProperty(
+        "--records-carousel-y",
+        `${(-easedCarousel * (records.length - 1) * 100).toFixed(3)}svh`
+      )
+      section.style.setProperty(
+        "--records-dark-opacity",
+        String(clamp((progress - 0.04) / 0.3))
+      )
+      section.style.setProperty(
+        "--records-light-opacity",
+        String(1 - clamp((progress - 0.02) / 0.28))
+      )
+      section.style.setProperty(
+        "--records-copy-y",
+        `${((1 - Math.min(progress / 0.16, 1)) * 42 - easedHandoff * 24).toFixed(3)}px`
+      )
+      section.style.setProperty("--records-copy-opacity", String(1 - copyClear))
+      section.style.setProperty(
+        "--records-image-scale",
+        String(1 + easedCarousel * 0.08)
+      )
+      section.style.setProperty(
+        "--records-handoff-opacity",
+        String(easedHandoff)
+      )
+      section.style.setProperty(
+        "--records-handoff-y",
+        `${((1 - easedHandoff) * 18).toFixed(3)}px`
+      )
+      section.style.setProperty(
+        "--records-content-opacity",
+        String(1 - contentClear)
+      )
+      section.style.setProperty(
+        "--records-content-y",
+        `${(-handoffProgress * 20).toFixed(3)}px`
+      )
+      const textRamp = clamp((progress - 0.1) / 0.28)
+      const textChannel = Math.round(12 + textRamp * 243)
+      const mutedChannel = Math.round(74 + textRamp * 112)
+      const ruleAlpha = 0.18 + textRamp * 0.08
+      section.style.setProperty(
+        "--records-text-color",
+        `rgb(${textChannel}, ${textChannel}, ${textChannel})`
+      )
+      section.style.setProperty(
+        "--records-muted-color",
+        `rgb(${mutedChannel}, ${mutedChannel}, ${mutedChannel})`
+      )
+      section.style.setProperty(
+        "--records-rule-color",
+        `rgba(${textChannel}, ${textChannel}, ${textChannel}, ${ruleAlpha.toFixed(3)})`
+      )
+    }
+
+    const requestUpdate = () => {
+      if (frame === 0) {
+        frame = window.requestAnimationFrame(update)
+      }
+    }
+
+    update()
+    window.addEventListener("scroll", requestUpdate, { passive: true })
+    window.addEventListener("resize", requestUpdate)
+
+    return () => {
+      if (frame !== 0) {
+        window.cancelAnimationFrame(frame)
+      }
+      window.removeEventListener("scroll", requestUpdate)
+      window.removeEventListener("resize", requestUpdate)
+    }
+  }, [])
+
   return (
     <section
+      ref={sectionRef}
       data-homepage-records
-      className="relative overflow-hidden bg-[#0a0c0e] text-white"
+      data-homepage-records-transition
+      className="relative h-[390svh] bg-[#0a0c0e] text-white"
+      style={
+        {
+          "--records-progress": 0,
+          "--records-carousel-y": "0svh",
+          "--records-dark-opacity": 0,
+          "--records-light-opacity": 1,
+          "--records-copy-y": "42px",
+          "--records-copy-opacity": 1,
+          "--records-image-scale": 1,
+          "--records-handoff-opacity": 0,
+          "--records-handoff-y": "36px",
+          "--records-content-opacity": 1,
+          "--records-content-y": "0px",
+          "--records-text-color": "rgb(12, 12, 12)",
+          "--records-muted-color": "rgb(74, 74, 74)",
+          "--records-rule-color": "rgba(12, 12, 12, 0.18)",
+        } as RecordsStyle
+      }
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06)_0%,transparent_55%)]" />
+      <div className="sticky top-0 h-svh overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[#f6f5f1]"
+          style={{ opacity: "var(--records-light-opacity)" }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_70%_22%,rgba(245,208,0,0.12)_0%,transparent_30%),linear-gradient(180deg,#111417_0%,#07080a_66%,#0a0c0e_100%)]"
+          style={{ opacity: "var(--records-dark-opacity)" }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-[30svh] bg-[linear-gradient(180deg,#f6f5f1_0%,rgba(246,245,241,0.56)_48%,transparent_100%)]"
+          style={{ opacity: "var(--records-light-opacity)" }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-[24svh] bg-[linear-gradient(0deg,#0a0c0e_0%,rgba(10,12,14,0.48)_50%,transparent_100%)]"
+          style={{ opacity: "var(--records-dark-opacity)" }}
+        />
 
-      <div className="relative mx-auto max-w-[92rem] px-4 pt-24 pb-12 sm:px-6 sm:pt-32 lg:pt-40">
-        <h2 className="max-w-3xl text-4xl font-light leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
-          Records that move
-          <br className="hidden sm:inline" /> the world forward.
-        </h2>
-        <p className="mt-8 max-w-xl text-base leading-7 text-white/55 sm:text-lg">
-          Three decades of engineering have produced FIA-ratified and world
-          records in solar mobility — each one a step toward sustainable
-          transport, set by students.
-        </p>
-      </div>
-
-      <div className="relative mx-auto max-w-[92rem] px-4 pb-32 sm:px-6">
-        <div className="grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm lg:grid-cols-3">
-          {records.map((record) => (
-            <article
-              key={record.id}
-              data-homepage-record
-              className="group relative flex flex-col bg-[#0a0c0e]/95 p-8 transition-colors duration-500 hover:bg-[#101316] sm:p-10"
+        <div className="relative mx-auto grid h-full max-w-[92rem] items-center gap-8 px-4 sm:px-6 lg:grid-cols-[0.86fr_1.14fr]">
+          <div
+            className="relative z-20 max-w-2xl"
+            style={{
+              opacity:
+                "calc(var(--records-copy-opacity) * var(--records-content-opacity))",
+              transform:
+                "translate3d(0, calc(var(--records-copy-y) + var(--records-content-y)), 0)",
+              color: "var(--records-text-color)",
+            }}
+          >
+            <p
+              className="font-mono text-[0.68rem] tracking-[0.28em] uppercase"
+              style={{ color: "var(--records-muted-color)" }}
             >
-              <div className="relative aspect-[5/3] w-full overflow-hidden rounded-lg border border-white/5 bg-[#13171b]">
-                <Image
-                  src={record.image}
-                  alt=""
-                  fill
-                  className="object-cover opacity-90 transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
-                  sizes="(min-width: 1024px) 28vw, 100vw"
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,12,14,0)_55%,rgba(10,12,14,0.65)_100%)]" />
-              </div>
+              Continue
+            </p>
+            <h2 className="mt-5 text-[clamp(3.8rem,10vw,10rem)] leading-[0.86] font-thin tracking-normal">
+              Moving records forward.
+            </h2>
+            <p
+              className="mt-8 max-w-xl text-base leading-7 sm:text-lg"
+              style={{ color: "var(--records-muted-color)" }}
+            >
+              Scroll through the milestones that pushed Sunswift from student
+              prototype to globally recognised solar racing team.
+            </p>
+          </div>
 
-              <div className="mt-8 flex items-baseline gap-2">
-                <span className="text-6xl font-light leading-none tracking-tight text-white sm:text-7xl">
-                  {record.metric}
-                </span>
-                <span className="text-base font-light tracking-wide text-white/55 sm:text-lg">
-                  {record.unit}
-                </span>
-              </div>
+          <div
+            className="relative z-10 h-svh overflow-hidden"
+            style={{
+              opacity: "var(--records-content-opacity)",
+              transform: "translate3d(0, var(--records-content-y), 0)",
+            }}
+          >
+            <div
+              data-homepage-records-carousel
+              className="homepage-records-carousel"
+              style={{
+                transform: "translate3d(0, var(--records-carousel-y), 0)",
+                color: "var(--records-text-color)",
+              }}
+            >
+              {records.map((record) => (
+                <article
+                  key={record.id}
+                  data-homepage-record
+                  className="grid h-svh items-center gap-8 py-24 lg:grid-cols-[0.95fr_1.05fr]"
+                >
+                  <div>
+                    <span className="font-mono text-[0.65rem] tracking-[0.28em] text-accent-yellow/75 uppercase">
+                      {record.year}
+                    </span>
+                    <div className="mt-7 flex items-baseline gap-3">
+                      <span className="text-[clamp(5rem,13vw,12rem)] leading-none font-thin tracking-normal">
+                        {record.metric}
+                      </span>
+                      <span
+                        className="text-lg font-light sm:text-2xl"
+                        style={{ color: "var(--records-muted-color)" }}
+                      >
+                        {record.unit}
+                      </span>
+                    </div>
+                    <h3 className="mt-7 max-w-xl text-2xl leading-tight font-light sm:text-4xl">
+                      {record.title}
+                    </h3>
+                    <p
+                      className="mt-6 max-w-xl text-sm leading-6 sm:text-base sm:leading-7"
+                      style={{ color: "var(--records-muted-color)" }}
+                    >
+                      {record.body}
+                    </p>
+                  </div>
 
-              <h3 className="mt-6 text-xl font-light leading-snug text-white sm:text-2xl">
-                {record.title}
-              </h3>
+                  <div
+                    className="relative aspect-[16/11] w-full overflow-hidden border bg-white/[0.035] shadow-[0_34px_120px_rgba(0,0,0,0.26)] lg:aspect-square"
+                    style={{ borderColor: "var(--records-rule-color)" }}
+                  >
+                    <Image
+                      src={record.image}
+                      alt=""
+                      fill
+                      className="object-cover opacity-82 [filter:grayscale(0.42)_contrast(1.05)]"
+                      sizes="(min-width: 1024px) 34vw, 100vw"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,12,14,0)_52%,rgba(10,12,14,0.72)_100%)]" />
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
 
-              <p className="mt-4 text-sm leading-6 text-white/55 sm:text-base sm:leading-7">
-                {record.body}
-              </p>
-
-              <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-5">
-                <span className="font-mono text-[0.65rem] uppercase tracking-[0.28em] text-white/40">
-                  Ratified
-                </span>
-                <span className="font-mono text-[0.65rem] uppercase tracking-[0.28em] text-white/70">
-                  {record.year}
-                </span>
-              </div>
-            </article>
-          ))}
+          <div
+            data-homepage-records-handoff
+            className="pointer-events-none absolute inset-x-0 -bottom-[40svh] z-30 h-[180svh] bg-[linear-gradient(180deg,rgba(10,12,14,0)_0%,rgba(10,12,14,0.62)_24%,rgba(10,12,14,0.94)_50%,#0a0c0e_68%,#0a0c0e_100%)]"
+            style={{
+              opacity: "var(--records-handoff-opacity)",
+            }}
+          />
         </div>
       </div>
     </section>
