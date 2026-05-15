@@ -709,3 +709,41 @@ Known limits:
 
 - The component filename/data hook still says `zoom` for compatibility with
   the existing harness, but the behavior no longer zooms the headline.
+
+## 2026-05-15 - About Dropdown + Achievements Timeline
+
+- Selected `about-dropdown-achievements-timeline` after the user requested an
+  About Us dropdown and a new achievements page based on the old Webflow
+  achievements content.
+- Baseline `./init.sh`: passed before changes.
+- Scraped the current Webflow achievements page at
+  `https://sunswift.webflow.io/about-us/achievements` and converted its
+  overview + 1996-2023 milestone copy into repo-managed static data.
+- Updated both transparent and shared nav bars so `About Us` is a dropdown
+  containing `Who We Are` (`/who-we-are`) and `Achievements` (`/achievements`).
+- Added `/achievements` with `AchievementsTimeline`: a dark vehicles-style
+  page with full-bleed active media, horizontal snap-scrolling milestone cards,
+  and active year/title/description changing as the rail scrolls.
+- Extended `pnpm test:homepage-design` to enforce the dropdown, achievements
+  route, timeline hooks, horizontal scrolling, active state, and key Webflow
+  achievement copy.
+- Extended `pnpm verify:browser` to verify the homepage dropdown and the
+  achievements page in a real browser, including horizontal timeline scroll
+  changing the active year.
+
+Verification:
+
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm build`: passed; `/achievements` generated as a static route.
+- `pnpm verify:browser`: passed; homepage dropdown exposed `Who We Are` and
+  `Achievements`, `/achievements` rendered the timeline, and horizontal scroll
+  changed active year from 2023 to 1996.
+- Final `./init.sh`: passed with LocalStack DynamoDB/S3, AWS build/test,
+  frontend typecheck/lint, and homepage design contract.
+
+Known limits:
+
+- Achievement media currently reuses placeholder vehicle SVGs. Swap each
+  milestone's `image` field for final image/video preview assets when ready.

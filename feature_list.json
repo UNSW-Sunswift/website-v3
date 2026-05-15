@@ -445,6 +445,36 @@
       ]
     },
     {
+      "id": "about-dropdown-achievements-timeline",
+      "priority": 18,
+      "title": "About dropdown and horizontal achievements timeline",
+      "status": "complete",
+      "description": "Convert About Us navigation into a dropdown containing Who We Are and Achievements, then add a new /achievements page using Webflow-sourced milestone copy in a dark horizontal scroll timeline styled like the vehicles gallery with active media changing as the timeline scrolls.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "./init.sh: passed with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
+          "pnpm test:homepage-design: passed with About dropdown and achievements timeline assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm build: passed and generated /achievements",
+          "pnpm verify:browser: passed; homepage dropdown showed Who We Are and Achievements, /achievements rendered the horizontal timeline, and timeline scroll changed active year from 2023 to 1996"
+        ]
+      },
+      "notes": [
+        "Achievement content is repo-managed in lib/cms/static-data.ts and was sourced from https://sunswift.webflow.io/about-us/achievements.",
+        "Timeline cards use placeholder vehicle renders until final media/video previews are available."
+      ]
+    },
+    {
       "id": "opal-minimal-hero-scroll-contract",
       "priority": 4,
       "title": "Opal-style minimal homepage hero and scroll verification",

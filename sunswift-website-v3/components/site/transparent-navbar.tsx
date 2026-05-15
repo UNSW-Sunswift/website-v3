@@ -1,7 +1,6 @@
 import Link from "next/link"
 
 const navItems = [
-  { href: "/who-we-are", label: "About Us" },
   { href: "/team", label: "Our Team" },
   { href: "/vehicles", label: "Vehicles" },
   { href: "/partners", label: "Partners" },
@@ -24,6 +23,30 @@ export function TransparentNavbar() {
           Sunswift Racing
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
+          <div data-about-dropdown className="group relative">
+            <button
+              type="button"
+              className="text-sm font-medium text-white/85 transition-colors duration-300 hover:text-accent-yellow group-focus-within:text-accent-yellow group-hover:text-accent-yellow"
+            >
+              About Us
+            </button>
+            <div className="pointer-events-none absolute left-1/2 top-full w-52 -translate-x-1/2 pt-4 opacity-0 transition-[opacity,transform] duration-300 ease-out group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="border border-white/15 bg-black/60 p-2 shadow-2xl shadow-black/35 backdrop-blur-xl">
+                <Link
+                  href="/who-we-are"
+                  className="block px-3 py-2 text-sm text-white/80 transition-colors duration-300 hover:text-accent-yellow"
+                >
+                  Who We Are
+                </Link>
+                <Link
+                  href="/achievements"
+                  className="block px-3 py-2 text-sm text-white/80 transition-colors duration-300 hover:text-accent-yellow"
+                >
+                  Achievements
+                </Link>
+              </div>
+            </div>
+          </div>
           {navItems.map((item) => (
             <Link
               key={item.href}

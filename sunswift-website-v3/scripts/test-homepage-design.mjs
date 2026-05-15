@@ -10,9 +10,12 @@ const records = readFileSync(join(root, "components/site/homepage-records.tsx"),
 const zoomReveal = readFileSync(join(root, "components/site/homepage-zoom-reveal.tsx"), "utf8");
 const vehiclesPage = readFileSync(join(root, "app/(public)/vehicles/page.tsx"), "utf8");
 const vehiclesGallery = readFileSync(join(root, "components/site/vehicles-gallery.tsx"), "utf8");
+const achievementsPage = readFileSync(join(root, "app/(public)/achievements/page.tsx"), "utf8");
+const achievementsTimeline = readFileSync(join(root, "components/site/achievements-timeline.tsx"), "utf8");
 const siteShell = readFileSync(join(root, "components/site/site-shell.tsx"), "utf8");
 const themeProvider = readFileSync(join(root, "components/theme-provider.tsx"), "utf8");
 const globalsCss = readFileSync(join(root, "app/globals.css"), "utf8");
+const staticData = readFileSync(join(root, "lib/cms/static-data.ts"), "utf8");
 
 const failures = [];
 
@@ -90,6 +93,12 @@ assert(/bg-transparent/.test(navbar), "Navbar must be transparent.");
 for (const label of ["About Us", "Our Team", "Vehicles", "Partners", "Media", "Recruitment", "Contact"]) {
   assert(navbar.includes(label), `Navbar must include the ${label} link.`);
 }
+assert(/data-about-dropdown/.test(navbar), "Transparent navbar must expose the About Us dropdown.");
+assert(/>\s*About Us\s*<\/button>/.test(navbar), "Transparent navbar About Us item must be a dropdown button.");
+assert(navbar.includes("Who We Are"), "Transparent navbar About Us dropdown must include Who We Are.");
+assert(navbar.includes("/who-we-are"), "Transparent navbar Who We Are dropdown item must link to /who-we-are.");
+assert(navbar.includes("Achievements"), "Transparent navbar About Us dropdown must include Achievements.");
+assert(navbar.includes("/achievements"), "Transparent navbar Achievements dropdown item must link to /achievements.");
 
 const aboutFlat = about.replace(/\s+/g, " ");
 assert(about.includes("data-homepage-about"), "About section must expose data-homepage-about for verification.");
@@ -179,7 +188,6 @@ assert(/pointer-events-none/.test(topVignetteBlock), "Top vignette must be point
 assert(/top-0/.test(topVignetteBlock), "Top vignette must be anchored to the top of the gallery.");
 assert(/linear-gradient\(180deg,\s*#000/.test(topVignetteBlock), "Top vignette must start from black at the top and fade downward.");
 
-const staticData = readFileSync(join(root, "lib/cms/static-data.ts"), "utf8");
 assert(/slug:\s*"sunswift-8"/.test(staticData), "Vehicles dataset must include the sunswift-8 entry.");
 
 const expectedNames = [
@@ -225,6 +233,32 @@ assert(/hover:text-accent-yellow/.test(siteShell), "Shared site shell nav links 
 
 assert(/hover:bg-accent-yellow/.test(navbar), "Transparent navbar Join CTA must swap to accent-yellow on hover.");
 assert(/hover:text-accent-yellow/.test(navbar), "Transparent navbar links must hover to accent-yellow.");
+
+assert(/data-about-dropdown/.test(siteShell), "Shared site shell must expose the About Us dropdown.");
+assert(siteShell.includes("Who We Are"), "Shared site shell About Us dropdown must include Who We Are.");
+assert(siteShell.includes("/achievements"), "Shared site shell About Us dropdown must link to Achievements.");
+
+assert(achievementsPage.includes("<TransparentNavbar />"), "Achievements route must render the transparent navbar.");
+assert(achievementsPage.includes("<AchievementsTimeline"), "Achievements route must mount the AchievementsTimeline component.");
+assert(/data-achievements-page/.test(achievementsTimeline), "Achievements timeline must expose data-achievements-page.");
+assert(/data-achievements-timeline/.test(achievementsTimeline), "Achievements timeline must expose data-achievements-timeline.");
+assert(/data-achievement-card/.test(achievementsTimeline), "Achievements timeline must mark each horizontal card.");
+assert(/data-active-year/.test(achievementsTimeline), "Achievements page must expose the active year.");
+assert(/overflow-x-auto/.test(achievementsTimeline), "Achievements timeline must horizontally scroll.");
+assert(/snap-x/.test(achievementsTimeline), "Achievements timeline must use horizontal snap scrolling.");
+assert(/setActiveIndex/.test(achievementsTimeline), "Achievements timeline must update active state as the user scrolls.");
+assert(/activeAchievement\?\.image|achievement\.image/.test(achievementsTimeline), "Achievements timeline must render media driven by the active achievement data.");
+assert(/achievementsOverview/.test(staticData), "Static data must include the Webflow-sourced achievements overview.");
+assert(/export const achievements/.test(staticData), "Static data must export achievements.");
+for (const phrase of [
+  "Bridgestone World Solar Challenge '23",
+  "Optus Remote Driving Initiative",
+  "Guinness World Record '22",
+  "FIA Land Speed Record",
+  "World Solar Challenge '96",
+]) {
+  assert(staticData.includes(phrase), `Achievements data must include ${phrase}.`);
+}
 
 if (failures.length > 0) {
   console.error("Homepage design contract failed:");

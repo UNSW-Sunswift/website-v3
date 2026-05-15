@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 
 const baseUrl = process.env.VERIFY_URL ?? "http://localhost:3000";
+const achievementsUrl = new URL("/achievements", baseUrl).toString();
 
 const homepageContract = `(() => new Promise((resolve, reject) => {
   const main = document.querySelector("main[data-homepage]");
@@ -21,7 +22,7 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
     return;
   }
 
-  const requiredLinks = ["About Us", "Our Team", "Vehicles", "Partners", "Media", "Recruitment", "Contact"];
+  const requiredLinks = ["About Us", "Who We Are", "Achievements", "Our Team", "Vehicles", "Partners", "Media", "Recruitment", "Contact"];
   const navText = navbar.textContent || "";
   const missingLink = requiredLinks.find((label) => !navText.includes(label));
   if (missingLink) {
@@ -115,7 +116,10 @@ const pageIsHealthy = `(() => {
     .filter((element) => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
-      const expectedMotion = element.matches(".homepage-hero-image, .homepage-zoom-render, .homepage-zoom-sweep") || element.closest(".homepage-zoom-render");
+      const expectedMotion =
+        element.matches(".homepage-hero-image, .homepage-zoom-render, .homepage-zoom-sweep") ||
+        element.closest(".homepage-zoom-render, [data-achievements-timeline]") ||
+        (element.closest("[data-achievements-page]") && style.position === "absolute");
       return !expectedMotion && rect.width > 0 && rect.height > 0 && style.position !== "fixed" && (rect.left < -1 || rect.right > window.innerWidth + 1);
     })
     .slice(0, 3)
@@ -194,6 +198,47 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
   });
 }))()`;
 
+const achievementsContract = `(() => new Promise((resolve, reject) => {
+  const page = document.querySelector("[data-achievements-page]");
+  const rail = document.querySelector("[data-achievements-timeline]");
+  const cards = Array.from(document.querySelectorAll("[data-achievement-card]"));
+
+  if (!page || !rail) {
+    reject(new Error("MISSING_ACHIEVEMENTS_TIMELINE"));
+    return;
+  }
+
+  if (cards.length < 18) {
+    reject(new Error("MISSING_ACHIEVEMENT_CARDS:" + cards.length));
+    return;
+  }
+
+  const text = document.body.innerText;
+  for (const phrase of ["A timeline of solar racing milestones", "Bridgestone World Solar Challenge '23", "Guinness World Record '22", "World Solar Challenge '96"]) {
+    if (!text.includes(phrase)) {
+      reject(new Error("MISSING_ACHIEVEMENT_COPY:" + phrase));
+      return;
+    }
+  }
+
+  const beforeYear = page.getAttribute("data-active-year");
+  rail.scrollLeft = rail.scrollWidth;
+  rail.dispatchEvent(new Event("scroll", { bubbles: true }));
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const afterYear = page.getAttribute("data-active-year");
+
+      if (!beforeYear || !afterYear || beforeYear === afterYear) {
+        reject(new Error(\`ACHIEVEMENTS_SCROLL_STATIC:\${beforeYear}->\${afterYear}\`));
+        return;
+      }
+
+      resolve(\`ACHIEVEMENTS_CONTRACT_OK:\${beforeYear}->\${afterYear}\`);
+    });
+  });
+}))()`;
+
 const commands = [
   ["open", baseUrl],
   ["set", "viewport", "1440", "1000"],
@@ -212,6 +257,12 @@ const commands = [
   ["eval", homepageContract],
   ["eval", scrollEffectWorks],
   ["eval", focusRevealEffectWorks],
+  ["screenshot", "--annotate"],
+  ["snapshot", "-i"],
+  ["open", achievementsUrl],
+  ["wait", "--load", "networkidle"],
+  ["eval", pageIsHealthy],
+  ["eval", achievementsContract],
   ["screenshot", "--annotate"],
   ["snapshot", "-i"],
 ];

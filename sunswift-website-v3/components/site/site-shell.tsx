@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
-  { href: "/who-we-are", label: "About Us" },
   { href: "/team", label: "Our Team" },
   { href: "/vehicles", label: "Vehicles" },
   { href: "/partners", label: "Partners" },
@@ -25,6 +24,30 @@ export function SiteHeader() {
           Sunswift Racing
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
+          <div data-about-dropdown className="group relative">
+            <button
+              type="button"
+              className="text-sm font-medium text-black/75 transition-colors duration-300 hover:text-accent-yellow group-focus-within:text-accent-yellow group-hover:text-accent-yellow"
+            >
+              About Us
+            </button>
+            <div className="pointer-events-none absolute left-1/2 top-full w-52 -translate-x-1/2 pt-4 opacity-0 transition-[opacity,transform] duration-300 ease-out group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="border border-black/10 bg-white/75 p-2 shadow-2xl shadow-black/10 backdrop-blur-xl">
+                <Link
+                  href="/who-we-are"
+                  className="block px-3 py-2 text-sm text-black/75 transition-colors duration-300 hover:text-accent-yellow"
+                >
+                  Who We Are
+                </Link>
+                <Link
+                  href="/achievements"
+                  className="block px-3 py-2 text-sm text-black/75 transition-colors duration-300 hover:text-accent-yellow"
+                >
+                  Achievements
+                </Link>
+              </div>
+            </div>
+          </div>
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -64,6 +87,18 @@ export function SiteFooter() {
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <Link
+            href="/who-we-are"
+            className="text-sm text-black/70 transition-colors duration-300 hover:text-accent-yellow"
+          >
+            Who We Are
+          </Link>
+          <Link
+            href="/achievements"
+            className="text-sm text-black/70 transition-colors duration-300 hover:text-accent-yellow"
+          >
+            Achievements
+          </Link>
           {navItems.map((item) => (
             <Link
               key={item.href}
