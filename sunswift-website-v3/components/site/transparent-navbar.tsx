@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowUpRight, ChevronDown, Menu } from "lucide-react"
 
+import { SunswiftBrandLogo } from "@/components/site/brand-logo"
 import {
   recruitmentStreamHref,
   recruitmentStreams,
@@ -23,9 +24,10 @@ export function TransparentNavbar() {
       <div className="mx-auto flex h-16 max-w-[92rem] items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
-          className="text-sm font-semibold tracking-wide text-white/95 transition-colors duration-300 hover:text-accent-yellow"
+          className="block transition-opacity duration-300 hover:opacity-80"
+          aria-label="Sunswift Racing home"
         >
-          Sunswift Racing
+          <SunswiftBrandLogo priority className="w-32 sm:w-40" />
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
           <div data-about-dropdown className="group relative">

@@ -1,5 +1,5 @@
-import { PublicContentPage } from "@/components/site/content-sections"
+import { MediaHighlightsPage } from "@/components/site/media-highlights-page"
 
 export default function MediaPage() {
-  return <PublicContentPage pageKey="media" label="Media" image="/placeholders/garage.svg" />
+  return <MediaHighlightsPage />
 }

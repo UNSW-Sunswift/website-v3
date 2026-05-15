@@ -2009,3 +2009,86 @@ CMS integration for a later pass.
 
 - The team cards are placeholder front-end records only; the revised CMS-backed
   roster, real headshots, and member data remain deferred.
+
+## 2026-05-15 - Media Highlights + Contact Redesign
+
+Updated the media and contact pages to match the current dark public website
+language.
+
+### Implementation
+
+- Replaced `/media`'s generic content shell with a dedicated
+  `MediaHighlightsPage`.
+- Mirrored the Webflow Highlights content structure: AWS media spotlight,
+  Sunswift 7 four-part world-record journey, partnership spotlight links, team
+  highlights, and two partner video preview placeholders.
+- Replaced `/contact`'s old light PageFrame layout with a dark
+  `ContactPageContent`.
+- Removed any contact form path and made the primary contact action a direct
+  `mailto:richard.hopkins1@unsw.edu.au` link.
+
+### Harness updates
+
+- Extended `scripts/test-homepage-design.mjs` to assert `/media` uses the new
+  highlights page, preserves the Webflow highlights wording, and avoids public
+  shadcn UI.
+- Extended `scripts/test-homepage-design.mjs` to assert `/contact` is email-only
+  and contains no form, input, or textarea elements.
+- Extended `scripts/verify-browser.mjs` to browser-check `/media` and `/contact`
+  with `MEDIA_HIGHLIGHTS_OK` and `CONTACT_OK` contracts.
+
+### Verification
+
+- Startup `./init.sh`: passed before feature work with LocalStack DynamoDB/S3,
+  AWS build/test, frontend typecheck/lint, and homepage design contract.
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed with one existing unrelated
+  `homepage-recruitment.tsx` unused variable warning.
+- `pnpm build`: passed.
+- `VERIFY_URL=http://localhost:3002 pnpm verify:browser`: passed against
+  `next start`, including `MEDIA_HIGHLIGHTS_OK:6:3` and `CONTACT_OK`.
+- Final `./init.sh`: passed after media/contact implementation with LocalStack
+  DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design
+  contract.
+
+### Known limits
+
+- Media visual assets remain designed placeholders; final video thumbnails and
+  production media imagery are still deferred.
+
+## 2026-05-15 - Sunswift Racing Wordmark Logo
+
+Added the requested Sunswift Racing wordmark as a transparent SVG and replaced
+the plain text wordmark in public chrome.
+
+### Implementation
+
+- Added `/public/brand/sunswift-racing-wordmark.svg`.
+- Used `#ffd401` for the yellow Sunswift letters.
+- Set the top line as Open Sans bold with expanded spacing, and the bottom line
+  as Alta with a serif fallback and wider spacing.
+- Added `SunswiftBrandLogo` for consistent sizing.
+- Updated `TransparentNavbar`, `SiteHeader`, and `SiteFooter` to render the
+  wordmark while retaining accessible labels.
+- Added a dark backing only in the light sticky header so the white portions of
+  the transparent logo remain visible.
+
+### Harness updates
+
+- Extended `scripts/test-homepage-design.mjs` to assert the wordmark SVG path,
+  transparent background, requested yellow, font names, expanded spacing, alt
+  text, and usage in navigation/footer code.
+
+### Verification
+
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed with one existing unrelated
+  `homepage-recruitment.tsx` unused variable warning.
+- `pnpm build`: passed.
+- `VERIFY_URL=http://localhost:3002 pnpm verify:browser`: passed against
+  `next start` after replacing the nav/footer wordmarks.
+- Final `./init.sh`: passed after wordmark implementation with LocalStack
+  DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design
+  contract.

@@ -1254,6 +1254,68 @@
         "TeamRoster is a client component with local placeholder data, department filtering, live counts, and team-card-filter-in transitions.",
         "Placeholder cards use /placeholders/team-member.svg so image paths are easy to replace when CMS records are wired in."
       ]
+    },
+    {
+      "id": "media-highlights-contact-redesign",
+      "priority": 43,
+      "title": "Media highlights and contact redesign",
+      "status": "complete",
+      "description": "Replace the generic media and contact pages with current-theme dark public pages: media mirrors the Webflow Highlights structure and contact routes enquiries directly to Richard Hopkins by email with no form.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "./init.sh: passed after media/contact implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
+          "pnpm test:homepage-design: passed with media highlights and contact email-only assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed with one existing unrelated homepage-recruitment unused variable warning",
+          "pnpm build: passed",
+          "VERIFY_URL=http://localhost:3002 pnpm verify:browser: passed against next start with MEDIA_HIGHLIGHTS_OK:6:3 and CONTACT_OK"
+        ]
+      },
+      "notes": [
+        "/media now renders MediaHighlightsPage instead of the generic PublicContentPage shell.",
+        "MediaHighlightsPage preserves the Webflow highlights backbone: AWS media spotlight, Sunswift 7 four-part journey, partnership spotlight links, team highlights, and two video preview placeholders.",
+        "/contact now renders ContactPageContent with mailto:richard.hopkins1@unsw.edu.au and no form/input/textarea elements."
+      ]
+    },
+    {
+      "id": "sunswift-wordmark-logo",
+      "priority": 44,
+      "title": "Sunswift Racing wordmark logo",
+      "status": "complete",
+      "description": "Add a transparent Sunswift Racing wordmark based on the supplied reference and use it in public navigation and footer surfaces.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "./init.sh: passed after wordmark implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
+          "pnpm test:homepage-design: passed with wordmark SVG colour, font, spacing, transparency, and usage assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed with one existing unrelated homepage-recruitment unused variable warning",
+          "pnpm build: passed",
+          "VERIFY_URL=http://localhost:3002 pnpm verify:browser: passed against next start after replacing nav/footer wordmarks"
+        ]
+      },
+      "notes": [
+        "Added /brand/sunswift-racing-wordmark.svg with transparent background, #ffd401 yellow, Open Sans bold top line, and Alta/fallback serif bottom line.",
+        "Added the SunswiftBrandLogo component for consistent sizing.",
+        "TransparentNavbar, SiteHeader, and SiteFooter now use the logo asset while retaining accessible Sunswift Racing labels."
+      ]
     }
   ]
 }

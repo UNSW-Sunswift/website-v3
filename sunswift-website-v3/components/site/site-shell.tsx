@@ -8,6 +8,7 @@ import {
   Menu,
 } from "lucide-react"
 
+import { SunswiftBrandLogo } from "@/components/site/brand-logo"
 import {
   recruitmentStreamHref,
   recruitmentStreams,
@@ -30,9 +31,10 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-[92rem] items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
-          className="text-sm font-semibold tracking-wide text-black transition-colors duration-300 hover:text-accent-yellow"
+          className="block bg-black px-2 py-1 transition-opacity duration-300 hover:opacity-85"
+          aria-label="Sunswift Racing home"
         >
-          Sunswift Racing
+          <SunswiftBrandLogo className="w-28 sm:w-32" />
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
           <div data-about-dropdown className="group relative">
@@ -278,9 +280,10 @@ export function SiteFooter() {
 
         <div className="min-w-0">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">
-            <h2 className="shrink-0 text-base leading-none font-light tracking-normal text-white sm:text-lg">
+            <h2 className="sr-only shrink-0 text-base leading-none font-light tracking-normal text-white sm:text-lg">
               Sunswift Racing
             </h2>
+            <SunswiftBrandLogo className="w-28 shrink-0 sm:w-32" />
             <p className="truncate text-xs leading-5 text-white/48 sm:text-sm">
               Room G14, Blockhouse (G6), University Mall, UNSW, Kensington NSW
               2052

@@ -5,6 +5,8 @@ const achievementsUrl = new URL("/achievements", baseUrl).toString()
 const whoWeAreUrl = new URL("/who-we-are", baseUrl).toString()
 const ourStoryUrl = new URL("/our-story", baseUrl).toString()
 const teamUrl = new URL("/team", baseUrl).toString()
+const mediaUrl = new URL("/media", baseUrl).toString()
+const contactUrl = new URL("/contact", baseUrl).toString()
 const recruitmentUrl = new URL("/recruitment", baseUrl).toString()
 const availableRolesUrl = new URL(
   "/recruitment/available-roles",
@@ -903,6 +905,86 @@ const teamContract = `(() => new Promise((resolve, reject) => {
   });
 }))()`
 
+const mediaHighlightsContract = `(() => {
+  const page = document.querySelector("[data-media-highlights-page]");
+  const spotlight = document.querySelector("[data-media-spotlight]");
+  const journey = document.querySelector("[data-media-journey]");
+  const partnerships = document.querySelectorAll("[data-media-partnership]");
+  const teamHighlights = document.querySelectorAll("[data-media-team-highlight]");
+  const videoCards = document.querySelectorAll("[data-media-video-card]");
+
+  if (!page || !spotlight || !journey) {
+    throw new Error("MISSING_MEDIA_HIGHLIGHTS_PAGE");
+  }
+
+  const text = document.body.textContent || "";
+  for (const phrase of [
+    "Highlights.",
+    "Amazon Web Services & Sunswift Racing: Solar powered journey across the Australian Outback",
+    "Sunswift 7's Journey to a World Record",
+    "Part 1: New Beginnings",
+    "Part 2: Silver Linings",
+    "Part 3: Test. Break. Fix. Repeat.",
+    "Part 4: World Record Attempt",
+    "Partnership Spotlights",
+    "Auto-UX Partners with UNSW Sunswift Racing",
+    "Optiver partners with UNSW Sunswift Racing to drive innovation for a better future",
+    "Team Highlights",
+    "Sunswift at AWS Summit 2024",
+    "Sunswift & Optus Remote Driving Initiative"
+  ]) {
+    if (!text.includes(phrase)) {
+      throw new Error("MISSING_MEDIA_COPY:" + phrase);
+    }
+  }
+
+  if (partnerships.length < 6) {
+    throw new Error("MISSING_MEDIA_PARTNERSHIPS:" + partnerships.length);
+  }
+
+  if (teamHighlights.length < 3) {
+    throw new Error("MISSING_MEDIA_TEAM_HIGHLIGHTS:" + teamHighlights.length);
+  }
+
+  if (videoCards.length !== 2) {
+    throw new Error("MISSING_MEDIA_VIDEO_CARDS:" + videoCards.length);
+  }
+
+  return "MEDIA_HIGHLIGHTS_OK:" + partnerships.length + ":" + teamHighlights.length;
+})()`
+
+const contactContract = `(() => {
+  const page = document.querySelector("[data-contact-page]");
+  const emailLink = document.querySelector("[data-contact-email-link]");
+
+  if (!page || !emailLink) {
+    throw new Error("MISSING_CONTACT_PAGE");
+  }
+
+  const href = emailLink.getAttribute("href") || "";
+  if (href !== "mailto:richard.hopkins1@unsw.edu.au") {
+    throw new Error("CONTACT_EMAIL_HREF_WRONG:" + href);
+  }
+
+  const text = document.body.textContent || "";
+  for (const phrase of [
+    "Contact us.",
+    "Email Richard Hopkins",
+    "richard.hopkins1@unsw.edu.au",
+    "Room G14, Blockhouse (G6), University Mall, UNSW, Kensington NSW 2052"
+  ]) {
+    if (!text.includes(phrase)) {
+      throw new Error("MISSING_CONTACT_COPY:" + phrase);
+    }
+  }
+
+  if (document.querySelector("form,input,textarea")) {
+    throw new Error("CONTACT_FORM_PRESENT");
+  }
+
+  return "CONTACT_OK";
+})()`
+
 const commands = [
   ["open", baseUrl],
   ["set", "viewport", "1440", "1000"],
@@ -955,6 +1037,20 @@ const commands = [
   ["eval", pageIsHealthy],
   ["eval", siteFooterContract],
   ["eval", teamContract],
+  ["screenshot", "--annotate"],
+  ["snapshot", "-i"],
+  ["open", mediaUrl],
+  ["wait", "--load", "networkidle"],
+  ["eval", pageIsHealthy],
+  ["eval", siteFooterContract],
+  ["eval", mediaHighlightsContract],
+  ["screenshot", "--annotate"],
+  ["snapshot", "-i"],
+  ["open", contactUrl],
+  ["wait", "--load", "networkidle"],
+  ["eval", pageIsHealthy],
+  ["eval", siteFooterContract],
+  ["eval", contactContract],
   ["screenshot", "--annotate"],
   ["snapshot", "-i"],
   ["open", recruitmentUrl],

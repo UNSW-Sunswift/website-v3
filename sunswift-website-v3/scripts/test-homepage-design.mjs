@@ -11,6 +11,14 @@ const navbar = readFileSync(
   join(root, "components/site/transparent-navbar.tsx"),
   "utf8"
 )
+const brandLogo = readFileSync(
+  join(root, "components/site/brand-logo.tsx"),
+  "utf8"
+)
+const brandLogoSvg = readFileSync(
+  join(root, "public/brand/sunswift-racing-wordmark.svg"),
+  "utf8"
+)
 const about = readFileSync(
   join(root, "components/site/homepage-about.tsx"),
   "utf8"
@@ -49,6 +57,19 @@ const partnersPage = readFileSync(
 )
 const partnersPageContent = readFileSync(
   join(root, "components/site/partners-page.tsx"),
+  "utf8"
+)
+const mediaPage = readFileSync(join(root, "app/(public)/media/page.tsx"), "utf8")
+const mediaHighlightsPage = readFileSync(
+  join(root, "components/site/media-highlights-page.tsx"),
+  "utf8"
+)
+const contactPage = readFileSync(
+  join(root, "app/(public)/contact/page.tsx"),
+  "utf8"
+)
+const contactPageContent = readFileSync(
+  join(root, "components/site/contact-page.tsx"),
   "utf8"
 )
 const teamPage = readFileSync(join(root, "app/(public)/team/page.tsx"), "utf8")
@@ -414,6 +435,29 @@ assert(
 assert(
   /lg:hidden/.test(navbar) && /calc\(100vw-2rem\)/.test(navbar),
   "Transparent navbar mobile menu must be phone-width constrained and visible below desktop."
+)
+assert(
+  navbar.includes("<SunswiftBrandLogo") &&
+    siteShell.includes("<SunswiftBrandLogo"),
+  "Public navigation and footer must use the Sunswift brand logo asset instead of plain text wordmarks."
+)
+assert(
+  brandLogo.includes("/brand/sunswift-racing-wordmark.svg") &&
+    brandLogo.includes('alt="Sunswift Racing"'),
+  "BrandLogo component must render the transparent Sunswift Racing wordmark SVG with accessible alt text."
+)
+assert(
+  brandLogoSvg.includes("#ffd401") &&
+    brandLogoSvg.includes("Open Sans") &&
+    brandLogoSvg.includes("font-weight=\"700\"") &&
+    brandLogoSvg.includes("Alta") &&
+    brandLogoSvg.includes("letter-spacing=\"14\"") &&
+    brandLogoSvg.includes("letter-spacing=\"68\""),
+  "Sunswift wordmark SVG must preserve the requested yellow, Open Sans bold top line, Alta bottom line, and expanded letter spacing."
+)
+assert(
+  !/<rect\b/.test(brandLogoSvg),
+  "Sunswift wordmark SVG must have a transparent background, not an embedded black rectangle."
 )
 
 assert(
@@ -1615,6 +1659,79 @@ assert(
 assert(
   !teamRoster.includes("@/components/ui"),
   "Public team roster must not use shadcn UI; shadcn styling is reserved for admin."
+)
+
+assert(
+  mediaPage.includes("<MediaHighlightsPage />"),
+  "Media route must render the dedicated highlights page."
+)
+assert(
+  !mediaPage.includes("PublicContentPage"),
+  "Media route must not use the generic public content shell."
+)
+assert(
+  mediaHighlightsPage.includes("data-media-highlights-page") &&
+    mediaHighlightsPage.includes("data-media-spotlight") &&
+    mediaHighlightsPage.includes("data-media-journey") &&
+    mediaHighlightsPage.includes("data-media-partnerships") &&
+    mediaHighlightsPage.includes("data-media-team-highlights") &&
+    mediaHighlightsPage.includes("data-media-video-spotlights"),
+  "Media highlights page must expose section hooks for browser verification."
+)
+for (const phrase of [
+  "Amazon Web Services & Sunswift Racing: Solar powered journey across the Australian Outback",
+  "Sunswift 7's Journey to a World Record",
+  "Part 1: New Beginnings",
+  "Part 2: Silver Linings",
+  "Part 3: Test. Break. Fix. Repeat.",
+  "Part 4: World Record Attempt",
+  "Auto-UX Partners with UNSW Sunswift Racing",
+  "Driving Greater Energy Efficiency with UNSW's Sunswift Racing and Altium",
+  "Optiver partners with UNSW Sunswift Racing to drive innovation for a better future",
+  "Sunswift at AWS Summit 2024",
+  "Sunswift & Optus Remote Driving Initiative",
+]) {
+  assert(
+    mediaHighlightsPage.includes(phrase),
+    `Media highlights page must include Webflow highlights phrase: ${phrase}`
+  )
+}
+assert(
+  /TransparentNavbar/.test(mediaHighlightsPage),
+  "Media highlights page must use the transparent navbar like current dark public pages."
+)
+assert(
+  !mediaHighlightsPage.includes("@/components/ui"),
+  "Public media highlights page must not use shadcn UI; shadcn styling is reserved for admin."
+)
+
+assert(
+  contactPage.includes("<ContactPageContent />"),
+  "Contact route must render the dedicated new-theme contact page."
+)
+assert(
+  !contactPage.includes("PageFrame") && !contactPage.includes("getPublicPage"),
+  "Contact route must not use the old generic PageFrame/content copy path."
+)
+assert(
+  contactPageContent.includes("data-contact-page") &&
+    contactPageContent.includes("data-contact-email-link"),
+  "Contact page must expose browser verification hooks."
+)
+assert(
+  contactPageContent.includes("mailto:") &&
+    contactPageContent.includes("richard.hopkins1@unsw.edu.au"),
+  "Contact page must route enquiries to richard.hopkins1@unsw.edu.au via mailto."
+)
+assert(
+  !/<form\b/.test(contactPageContent) &&
+    !/<input\b/.test(contactPageContent) &&
+    !/<textarea\b/.test(contactPageContent),
+  "Contact page must not render a contact form."
+)
+assert(
+  /TransparentNavbar/.test(contactPageContent),
+  "Contact page must use the transparent navbar and current dark public page language."
 )
 
 if (failures.length > 0) {
