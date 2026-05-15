@@ -200,7 +200,11 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
 
 const achievementsContract = `(() => new Promise((resolve, reject) => {
   const page = document.querySelector("[data-achievements-page]");
+  const introSection = document.querySelector("[data-achievements-intro-section]");
+  const scrollSection = document.querySelector("[data-achievements-scroll-section]");
+  const stage = document.querySelector("[data-achievements-stage]");
   const rail = document.querySelector("[data-achievements-timeline]");
+  const railViewport = document.querySelector("[data-achievements-timeline-viewport]");
   const intro = document.querySelector("[data-achievements-intro]");
   const currentCopy = document.querySelector("[data-achievements-current-copy]");
   const minimalCopy = document.querySelector("[data-achievements-minimal-copy]");
@@ -208,7 +212,7 @@ const achievementsContract = `(() => new Promise((resolve, reject) => {
   const yearProgress = document.querySelector("[data-achievements-year-progress]");
   const cards = Array.from(document.querySelectorAll("[data-achievement-card]"));
 
-  if (!page || !rail) {
+  if (!page || !introSection || !scrollSection || !stage || !rail || !railViewport) {
     reject(new Error("MISSING_ACHIEVEMENTS_TIMELINE"));
     return;
   }
@@ -223,6 +227,13 @@ const achievementsContract = `(() => new Promise((resolve, reject) => {
     return;
   }
 
+  const introRect = introSection.getBoundingClientRect();
+  const scrollRect = scrollSection.getBoundingClientRect();
+  if (scrollRect.top <= introRect.top + window.innerHeight * 0.7) {
+    reject(new Error("ACHIEVEMENTS_INTRO_NOT_SEPARATE"));
+    return;
+  }
+
   const text = document.body.innerText;
   for (const phrase of ["A timeline of solar racing milestones", "Bridgestone World Solar Challenge '23", "Guinness World Record '22", "World Solar Challenge '96"]) {
     if (!text.includes(phrase)) {
@@ -233,19 +244,22 @@ const achievementsContract = `(() => new Promise((resolve, reject) => {
 
   const beforeYear = page.getAttribute("data-active-year");
   const beforeTransform = getComputedStyle(rail).transform;
-  const beforeIntroOpacity = Number(getComputedStyle(intro).opacity);
+  const beforeCurrentOpacity = Number(getComputedStyle(currentCopy).opacity);
   const beforeMinimalOpacity = Number(getComputedStyle(minimalCopy).opacity);
   const beforeProgressWidth = yearProgress.getBoundingClientRect().width;
 
-  const sectionTop = page.getBoundingClientRect().top + window.scrollY;
+  const sectionTop = scrollSection.getBoundingClientRect().top + window.scrollY;
   window.scrollTo(0, sectionTop + Math.max(window.innerHeight * 2.2, 1));
 
   setTimeout(() => {
       const afterYear = page.getAttribute("data-active-year");
       const afterTransform = getComputedStyle(rail).transform;
-      const afterIntroOpacity = Number(getComputedStyle(intro).opacity);
+      const afterCurrentOpacity = Number(getComputedStyle(currentCopy).opacity);
       const afterMinimalOpacity = Number(getComputedStyle(minimalCopy).opacity);
       const afterProgressWidth = yearProgress.getBoundingClientRect().width;
+      const railViewportRect = railViewport.getBoundingClientRect();
+      const yearRailRect = yearRail.getBoundingClientRect();
+      const firstCardRect = cards[0].getBoundingClientRect();
 
       window.scrollTo(0, 0);
 
@@ -259,13 +273,18 @@ const achievementsContract = `(() => new Promise((resolve, reject) => {
         return;
       }
 
-      if (!(afterIntroOpacity < beforeIntroOpacity) || !(afterMinimalOpacity > beforeMinimalOpacity)) {
-        reject(new Error(\`ACHIEVEMENTS_COPY_FADE_STATIC:\${beforeIntroOpacity}->\${afterIntroOpacity}/\${beforeMinimalOpacity}->\${afterMinimalOpacity}\`));
+      if (!(afterCurrentOpacity < beforeCurrentOpacity) || !(afterMinimalOpacity > beforeMinimalOpacity)) {
+        reject(new Error(\`ACHIEVEMENTS_COPY_FADE_STATIC:\${beforeCurrentOpacity}->\${afterCurrentOpacity}/\${beforeMinimalOpacity}->\${afterMinimalOpacity}\`));
         return;
       }
 
       if (!(afterProgressWidth > beforeProgressWidth)) {
         reject(new Error(\`ACHIEVEMENTS_YEAR_PROGRESS_STATIC:\${beforeProgressWidth}->\${afterProgressWidth}\`));
+        return;
+      }
+
+      if (railViewportRect.bottom > window.innerHeight - 32 || yearRailRect.bottom > window.innerHeight - 8 || firstCardRect.height > window.innerHeight * 0.24) {
+        reject(new Error(\`ACHIEVEMENTS_TIMELINE_NOT_FITTED:\${railViewportRect.bottom}/\${yearRailRect.bottom}/\${firstCardRect.height}\`));
         return;
       }
 

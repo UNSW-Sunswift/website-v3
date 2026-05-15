@@ -793,3 +793,42 @@ Known limits:
 
 - `./init.sh` and AWS/CDK checks were intentionally not run because they require
   the LocalStack/Docker harness the user asked to avoid for this session.
+
+## 2026-05-15 - Achievements Intro Separation + Compact Timeline Fit
+
+- Selected a frontend-only follow-up after the user asked for the achievements
+  timeline to stay visible while vertical scrolling, with smaller responsive
+  cards, and for the `A timeline of solar racing milestones.` copy to be its
+  own section instead of sharing the first milestone stage.
+- Skipped `./init.sh` again because this remains frontend-only and the user
+  previously asked not to run LocalStack-dependent testing.
+- Split `AchievementsTimeline` into a standalone intro section followed by a
+  separate scroll-driven sticky timeline section.
+- Reduced milestone cards from large feature cards to compact responsive
+  timeline cards using viewport-aware `clamp()` heights and mobile/tablet/
+  desktop widths.
+- Moved the year rail into the sticky stage flow below the card strip instead
+  of absolutely pinning it, so the cards and timeline rail fit together inside
+  the viewport.
+- Updated static and browser harness checks to require the separate intro
+  section, separate scroll section, compact responsive card sizing, clipped
+  timeline viewport, and timeline/year rail viewport fit.
+
+Verification:
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint`: passed.
+- `./node_modules/.bin/next build`: passed and generated `/achievements`.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
+  scripts/verify-browser.mjs`: passed; `/achievements` returned
+  `ACHIEVEMENTS_CONTRACT_OK:2023->2005` with viewport-fit checks.
+- Additional desktop scrolled-state `agent-browser` check on `/achievements`
+  passed with `cardHeight: 132`, `railBottom: 879`, `yearRailBottom: 920`,
+  and `viewport: 1000`.
+
+Known limits:
+
+- `pnpm` wrappers remain blocked by the local Corepack keyid/signature error on
+  Node 25.8.0, so local project binaries were used again.
+- LocalStack-dependent AWS/CDK checks remain intentionally deferred.

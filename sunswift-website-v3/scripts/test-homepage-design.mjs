@@ -247,6 +247,8 @@ assert(achievementsPage.includes("<AchievementsTimeline"), "Achievements route m
 assert(/data-achievements-page/.test(achievementsTimeline), "Achievements timeline must expose data-achievements-page.");
 assert(/data-achievements-timeline/.test(achievementsTimeline), "Achievements timeline must expose data-achievements-timeline.");
 assert(/data-achievements-stage/.test(achievementsTimeline), "Achievements timeline must expose the sticky scroll stage.");
+assert(/data-achievements-intro-section/.test(achievementsTimeline), "Achievements intro copy must live in its own opening section.");
+assert(/data-achievements-scroll-section/.test(achievementsTimeline), "Achievements scroll-driven timeline must live in a separate scroll section.");
 assert(/data-achievements-intro/.test(achievementsTimeline), "Achievements timeline must expose the intro copy block.");
 assert(/data-achievements-current-copy/.test(achievementsTimeline), "Achievements timeline must expose the fading current-copy block.");
 assert(/data-achievements-minimal-copy/.test(achievementsTimeline), "Achievements timeline must expose minimal copy for the scrolled state.");
@@ -254,6 +256,9 @@ assert(/data-achievements-year-rail/.test(achievementsTimeline), "Achievements t
 assert(/data-achievements-year-progress/.test(achievementsTimeline), "Achievements timeline must include a progress indicator on the bottom year rail.");
 assert(/data-achievement-year-marker/.test(achievementsTimeline), "Achievements timeline must render year markers on the bottom rail.");
 assert(/data-achievement-card/.test(achievementsTimeline), "Achievements timeline must mark each horizontal card.");
+assert(/data-achievements-timeline-viewport/.test(achievementsTimeline), "Achievements timeline must use a clipped viewport so cards stay visible in the sticky stage.");
+assert(/h-\[clamp\(5\.75rem,14svh,8\.25rem\)\]/.test(achievementsTimeline), "Achievement cards must use viewport-aware compact heights.");
+assert(/w-\[58vw\]/.test(achievementsTimeline) && /sm:w-\[31vw\]/.test(achievementsTimeline) && /lg:w-\[17vw\]/.test(achievementsTimeline), "Achievement cards must resize responsively across mobile, tablet, and desktop.");
 assert(/data-active-year/.test(achievementsTimeline), "Achievements page must expose the active year.");
 assert(/window\.addEventListener\("scroll"/.test(achievementsTimeline), "Achievements timeline must listen to vertical scroll events.");
 assert(/section\.offsetHeight - window\.innerHeight/.test(achievementsTimeline), "Achievements timeline must derive progress from vertical scroll distance.");
@@ -264,6 +269,11 @@ assert(!/overflow-x-auto/.test(achievementsTimeline), "Achievements timeline sho
 assert(!/snap-x/.test(achievementsTimeline), "Achievements timeline should not rely on snap-x now that vertical scroll drives the rail.");
 assert(/setTimelineState/.test(achievementsTimeline), "Achievements timeline must update active state as the user scrolls.");
 assert(/activeAchievement\?\.image|achievement\.image/.test(achievementsTimeline), "Achievements timeline must render media driven by the active achievement data.");
+
+const introSectionIdx = achievementsTimeline.indexOf("data-achievements-intro-section");
+const scrollSectionIdx = achievementsTimeline.indexOf("data-achievements-scroll-section");
+const stageIdx = achievementsTimeline.indexOf("data-achievements-stage");
+assert(introSectionIdx >= 0 && scrollSectionIdx > introSectionIdx && stageIdx > scrollSectionIdx, "Achievements intro must appear before the separate sticky timeline section.");
 assert(/achievementsOverview/.test(staticData), "Static data must include the Webflow-sourced achievements overview.");
 assert(/export const achievements/.test(staticData), "Static data must export achievements.");
 for (const phrase of [

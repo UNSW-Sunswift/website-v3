@@ -534,6 +534,37 @@
         "Existing dev server on http://localhost:3000 was reused because it held the Next dev lock; starting a second server on 3001 was blocked by .next/dev/lock.",
         "LocalStack-dependent AWS/CDK checks remain deferred until the harness is available again."
       ]
+    },
+    {
+      "id": "achievements-intro-compact-timeline-fit",
+      "priority": 20,
+      "title": "Achievements intro separation and compact timeline fit",
+      "status": "complete",
+      "description": "Separate the achievements intro copy into its own section and resize the scroll-driven milestone cards so the timeline and year rail remain visible across screen sizes.",
+      "verification": {
+        "required": [
+          "node scripts/test-homepage-design.mjs",
+          "./node_modules/.bin/tsc --noEmit",
+          "./node_modules/.bin/eslint",
+          "./node_modules/.bin/next build",
+          "PATH=\"$PWD/node_modules/.bin:$PATH\" VERIFY_URL=http://localhost:3000 node scripts/verify-browser.mjs"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "node scripts/test-homepage-design.mjs: passed with separate intro/scroll section and compact responsive timeline assertions",
+          "./node_modules/.bin/tsc --noEmit: passed",
+          "./node_modules/.bin/eslint: passed",
+          "./node_modules/.bin/next build: passed and generated /achievements",
+          "VERIFY_URL=http://localhost:3000 node scripts/verify-browser.mjs: passed; /achievements returned ACHIEVEMENTS_CONTRACT_OK:2023->2005 with timeline viewport-fit assertions",
+          "Desktop scrolled-state agent-browser check: cardHeight 132, railBottom 879, yearRailBottom 920, viewport 1000",
+          "./init.sh intentionally not run because LocalStack/Docker testing was excluded for this frontend-only session"
+        ]
+      },
+      "notes": [
+        "The intro section now precedes the sticky scrollytelling stage, so the opening headline is no longer mixed with the first BWSC 2023 milestone view.",
+        "The compact card strip uses clamp-based heights and responsive widths so the cards and year rail fit together in the viewport.",
+        "pnpm wrappers remain blocked by Corepack keyid/signature lookup on Node 25.8.0; local project binaries were used instead."
+      ]
     }
   ]
 }
