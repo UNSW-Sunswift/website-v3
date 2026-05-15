@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -27,23 +27,41 @@ export function SiteHeader() {
           <div data-about-dropdown className="group relative">
             <button
               type="button"
-              className="text-sm font-medium text-black/75 transition-colors duration-300 hover:text-accent-yellow group-focus-within:text-accent-yellow group-hover:text-accent-yellow"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-black/75 transition-colors duration-300 hover:text-accent-yellow group-focus-within:text-accent-yellow group-hover:text-accent-yellow"
+              aria-haspopup="true"
             >
               About Us
+              <ChevronDown
+                aria-hidden="true"
+                className="size-3.5 transition-transform duration-300 ease-out group-focus-within:rotate-180 group-hover:rotate-180"
+              />
             </button>
-            <div className="pointer-events-none absolute left-1/2 top-full w-52 -translate-x-1/2 pt-4 opacity-0 transition-[opacity,transform] duration-300 ease-out group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
-              <div className="border border-black/10 bg-white/75 p-2 shadow-2xl shadow-black/10 backdrop-blur-xl">
+            <div className="pointer-events-none absolute left-1/2 top-full w-[18rem] -translate-x-1/2 translate-y-2 pt-5 opacity-0 transition-[opacity,transform] duration-300 ease-out group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="relative overflow-hidden border border-black/10 bg-white/72 p-1 shadow-[0_28px_80px_rgba(0,0,0,0.16)] backdrop-blur-2xl">
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-yellow to-transparent" />
                 <Link
                   href="/who-we-are"
-                  className="block px-3 py-2 text-sm text-black/75 transition-colors duration-300 hover:text-accent-yellow"
+                  className="group/item flex items-center justify-between gap-4 px-4 py-3.5 text-left transition-colors duration-300 hover:bg-black/[0.04]"
                 >
-                  Who We Are
+                  <span>
+                    <span className="block text-sm font-medium text-black">Who We Are</span>
+                    <span className="mt-1 block text-[0.68rem] uppercase tracking-[0.22em] text-black/45">
+                      Mission
+                    </span>
+                  </span>
+                  <ArrowUpRight className="size-3.5 text-black/35 transition-colors duration-300 group-hover/item:text-accent-yellow" />
                 </Link>
                 <Link
                   href="/achievements"
-                  className="block px-3 py-2 text-sm text-black/75 transition-colors duration-300 hover:text-accent-yellow"
+                  className="group/item flex items-center justify-between gap-4 border-t border-black/10 px-4 py-3.5 text-left transition-colors duration-300 hover:bg-black/[0.04]"
                 >
-                  Achievements
+                  <span>
+                    <span className="block text-sm font-medium text-black">Achievements</span>
+                    <span className="mt-1 block text-[0.68rem] uppercase tracking-[0.22em] text-black/45">
+                      Records
+                    </span>
+                  </span>
+                  <ArrowUpRight className="size-3.5 text-black/35 transition-colors duration-300 group-hover/item:text-accent-yellow" />
                 </Link>
               </div>
             </div>

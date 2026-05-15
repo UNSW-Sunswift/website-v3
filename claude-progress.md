@@ -218,6 +218,7 @@ Known limits:
 - Tightened `pnpm test:homepage-design`: requires the new slogan with the
   period, typing timer + `sr-only` + `data-full-text` + caret hooks in the
   hero, and the records section component + the three record IDs.
+
 - Tightened `pnpm verify:browser`: now waits for `data-typing-complete=true`
   before treating the slogan as ready, and verifies the records section,
   three record cards, and key copy (Guinness World Records, 1,000) on both
@@ -747,3 +748,48 @@ Known limits:
 
 - Achievement media currently reuses placeholder vehicle SVGs. Swap each
   milestone's `image` field for final image/video preview assets when ready.
+
+## 2026-05-15 - Premium About Dropdown + Scroll-Driven Achievements
+
+- Selected a new frontend-only slice after the user requested dropdown polish
+  and a vertical-scroll-driven achievements timeline.
+- Skipped `./init.sh` because the user explicitly said LocalStack is not
+  installed and requested no LocalStack-dependent testing.
+- Baseline frontend checks:
+  - `pnpm test:homepage-design`, `pnpm typecheck`, and `pnpm lint` were blocked
+    by Corepack signature lookup on Node 25.8.0.
+  - Equivalent local binary checks passed:
+    `node scripts/test-homepage-design.mjs`,
+    `./node_modules/.bin/tsc --noEmit`, and `./node_modules/.bin/eslint`.
+- Updated both public nav variants so `About Us` has a chevron dropdown
+  affordance and opens a more editorial glass menu with directional row arrows,
+  labels for Mission/Records, deeper blur, and a yellow top rule.
+- Reworked `/achievements` into a sticky vertical-scroll section: page scroll
+  now translates the horizontal milestone rail, updates the active year, fades
+  the intro/current copy away after scrolling starts, leaves a media-first
+  minimal year/title overlay, and adds a bottom year/progress rail.
+- Updated `pnpm test:homepage-design` and `pnpm verify:browser` contracts to
+  assert the chevron dropdown, vertical-scroll horizontal rail, fading copy,
+  minimal copy state, and bottom year rail.
+
+Verification:
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint`: passed.
+- `./node_modules/.bin/next build`: passed and generated `/achievements`.
+- `pnpm` command wrappers remain blocked by the Corepack keyid/signature error
+  in this environment; local project binaries were used instead.
+- Existing dev server on `http://localhost:3000` was reused because it already
+  held the Next dev lock; a second server on 3001 could not start.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://localhost:3000 node
+  scripts/verify-browser.mjs`: passed on desktop/mobile homepage checks and
+  `/achievements`, including `ACHIEVEMENTS_CONTRACT_OK:2023->2011`.
+- Additional `agent-browser` scrolled-state pass on `/achievements` captured an
+  annotated screenshot after vertical scrolling and confirmed the horizontal
+  timeline/year rail state was visible.
+
+Known limits:
+
+- `./init.sh` and AWS/CDK checks were intentionally not run because they require
+  the LocalStack/Docker harness the user asked to avoid for this session.

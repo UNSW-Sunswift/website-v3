@@ -503,6 +503,37 @@
         "Homepage intentionally bypasses the shared public PageFrame so shadcn-style site chrome stays off the hero.",
         "Shared public route shells and admin dashboard foundations remain unchanged."
       ]
+    },
+    {
+      "id": "premium-about-dropdown-scroll-driven-achievements",
+      "priority": 19,
+      "title": "Premium About dropdown and scroll-driven achievements",
+      "status": "complete",
+      "description": "Polish the About Us dropdown away from a basic shadcn-style menu, add a chevron affordance, and convert the achievements timeline so vertical page scroll drives horizontal milestone movement with fading copy and a bottom year rail.",
+      "verification": {
+        "required": [
+          "node scripts/test-homepage-design.mjs",
+          "./node_modules/.bin/tsc --noEmit",
+          "./node_modules/.bin/eslint",
+          "./node_modules/.bin/next build",
+          "PATH=\"$PWD/node_modules/.bin:$PATH\" VERIFY_URL=http://localhost:3000 node scripts/verify-browser.mjs"
+        ],
+        "last_run": "2026-05-15",
+        "evidence": [
+          "node scripts/test-homepage-design.mjs: passed with chevron dropdown, scroll-driven achievements, fading copy, minimal-copy, and bottom year rail assertions",
+          "./node_modules/.bin/tsc --noEmit: passed",
+          "./node_modules/.bin/eslint: passed",
+          "./node_modules/.bin/next build: passed and generated /achievements",
+          "pnpm wrappers blocked by Corepack keyid/signature lookup on Node 25.8.0; local project binaries were used instead",
+          "VERIFY_URL=http://localhost:3000 node scripts/verify-browser.mjs: passed; /achievements returned ACHIEVEMENTS_CONTRACT_OK:2023->2011",
+          "agent-browser scrolled-state screenshot on /achievements captured after vertical scrolling with horizontal timeline and bottom year rail visible",
+          "./init.sh intentionally not run because LocalStack/Docker testing was excluded for this frontend-only session"
+        ]
+      },
+      "notes": [
+        "Existing dev server on http://localhost:3000 was reused because it held the Next dev lock; starting a second server on 3001 was blocked by .next/dev/lock.",
+        "LocalStack-dependent AWS/CDK checks remain deferred until the harness is available again."
+      ]
     }
   ]
 }

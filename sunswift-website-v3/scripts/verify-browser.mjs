@@ -201,10 +201,20 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
 const achievementsContract = `(() => new Promise((resolve, reject) => {
   const page = document.querySelector("[data-achievements-page]");
   const rail = document.querySelector("[data-achievements-timeline]");
+  const intro = document.querySelector("[data-achievements-intro]");
+  const currentCopy = document.querySelector("[data-achievements-current-copy]");
+  const minimalCopy = document.querySelector("[data-achievements-minimal-copy]");
+  const yearRail = document.querySelector("[data-achievements-year-rail]");
+  const yearProgress = document.querySelector("[data-achievements-year-progress]");
   const cards = Array.from(document.querySelectorAll("[data-achievement-card]"));
 
   if (!page || !rail) {
     reject(new Error("MISSING_ACHIEVEMENTS_TIMELINE"));
+    return;
+  }
+
+  if (!intro || !currentCopy || !minimalCopy || !yearRail || !yearProgress) {
+    reject(new Error("MISSING_ACHIEVEMENTS_SCROLL_UI"));
     return;
   }
 
@@ -222,21 +232,45 @@ const achievementsContract = `(() => new Promise((resolve, reject) => {
   }
 
   const beforeYear = page.getAttribute("data-active-year");
-  rail.scrollLeft = rail.scrollWidth;
-  rail.dispatchEvent(new Event("scroll", { bubbles: true }));
+  const beforeTransform = getComputedStyle(rail).transform;
+  const beforeIntroOpacity = Number(getComputedStyle(intro).opacity);
+  const beforeMinimalOpacity = Number(getComputedStyle(minimalCopy).opacity);
+  const beforeProgressWidth = yearProgress.getBoundingClientRect().width;
 
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
+  const sectionTop = page.getBoundingClientRect().top + window.scrollY;
+  window.scrollTo(0, sectionTop + Math.max(window.innerHeight * 2.2, 1));
+
+  setTimeout(() => {
       const afterYear = page.getAttribute("data-active-year");
+      const afterTransform = getComputedStyle(rail).transform;
+      const afterIntroOpacity = Number(getComputedStyle(intro).opacity);
+      const afterMinimalOpacity = Number(getComputedStyle(minimalCopy).opacity);
+      const afterProgressWidth = yearProgress.getBoundingClientRect().width;
+
+      window.scrollTo(0, 0);
 
       if (!beforeYear || !afterYear || beforeYear === afterYear) {
         reject(new Error(\`ACHIEVEMENTS_SCROLL_STATIC:\${beforeYear}->\${afterYear}\`));
         return;
       }
 
+      if (beforeTransform === afterTransform || afterTransform === "none") {
+        reject(new Error("ACHIEVEMENTS_RAIL_STATIC:" + beforeTransform + "->" + afterTransform));
+        return;
+      }
+
+      if (!(afterIntroOpacity < beforeIntroOpacity) || !(afterMinimalOpacity > beforeMinimalOpacity)) {
+        reject(new Error(\`ACHIEVEMENTS_COPY_FADE_STATIC:\${beforeIntroOpacity}->\${afterIntroOpacity}/\${beforeMinimalOpacity}->\${afterMinimalOpacity}\`));
+        return;
+      }
+
+      if (!(afterProgressWidth > beforeProgressWidth)) {
+        reject(new Error(\`ACHIEVEMENTS_YEAR_PROGRESS_STATIC:\${beforeProgressWidth}->\${afterProgressWidth}\`));
+        return;
+      }
+
       resolve(\`ACHIEVEMENTS_CONTRACT_OK:\${beforeYear}->\${afterYear}\`);
-    });
-  });
+  }, 250);
 }))()`;
 
 const commands = [

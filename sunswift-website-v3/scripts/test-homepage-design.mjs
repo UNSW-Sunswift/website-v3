@@ -94,11 +94,13 @@ for (const label of ["About Us", "Our Team", "Vehicles", "Partners", "Media", "R
   assert(navbar.includes(label), `Navbar must include the ${label} link.`);
 }
 assert(/data-about-dropdown/.test(navbar), "Transparent navbar must expose the About Us dropdown.");
-assert(/>\s*About Us\s*<\/button>/.test(navbar), "Transparent navbar About Us item must be a dropdown button.");
+assert(/<button[^]*About Us[^]*ChevronDown/.test(navbar), "Transparent navbar About Us item must be a dropdown button with a chevron arrow.");
 assert(navbar.includes("Who We Are"), "Transparent navbar About Us dropdown must include Who We Are.");
 assert(navbar.includes("/who-we-are"), "Transparent navbar Who We Are dropdown item must link to /who-we-are.");
 assert(navbar.includes("Achievements"), "Transparent navbar About Us dropdown must include Achievements.");
 assert(navbar.includes("/achievements"), "Transparent navbar Achievements dropdown item must link to /achievements.");
+assert(/ArrowUpRight/.test(navbar), "Transparent navbar dropdown must use directional link arrows instead of plain menu rows.");
+assert(/backdrop-blur-2xl/.test(navbar), "Transparent navbar dropdown must use a deeper glass treatment.");
 
 const aboutFlat = about.replace(/\s+/g, " ");
 assert(about.includes("data-homepage-about"), "About section must expose data-homepage-about for verification.");
@@ -235,6 +237,8 @@ assert(/hover:bg-accent-yellow/.test(navbar), "Transparent navbar Join CTA must 
 assert(/hover:text-accent-yellow/.test(navbar), "Transparent navbar links must hover to accent-yellow.");
 
 assert(/data-about-dropdown/.test(siteShell), "Shared site shell must expose the About Us dropdown.");
+assert(/<button[^]*About Us[^]*ChevronDown/.test(siteShell), "Shared site shell About Us item must be a dropdown button with a chevron arrow.");
+assert(/ArrowUpRight/.test(siteShell), "Shared site shell dropdown must use directional link arrows instead of plain menu rows.");
 assert(siteShell.includes("Who We Are"), "Shared site shell About Us dropdown must include Who We Are.");
 assert(siteShell.includes("/achievements"), "Shared site shell About Us dropdown must link to Achievements.");
 
@@ -242,11 +246,23 @@ assert(achievementsPage.includes("<TransparentNavbar />"), "Achievements route m
 assert(achievementsPage.includes("<AchievementsTimeline"), "Achievements route must mount the AchievementsTimeline component.");
 assert(/data-achievements-page/.test(achievementsTimeline), "Achievements timeline must expose data-achievements-page.");
 assert(/data-achievements-timeline/.test(achievementsTimeline), "Achievements timeline must expose data-achievements-timeline.");
+assert(/data-achievements-stage/.test(achievementsTimeline), "Achievements timeline must expose the sticky scroll stage.");
+assert(/data-achievements-intro/.test(achievementsTimeline), "Achievements timeline must expose the intro copy block.");
+assert(/data-achievements-current-copy/.test(achievementsTimeline), "Achievements timeline must expose the fading current-copy block.");
+assert(/data-achievements-minimal-copy/.test(achievementsTimeline), "Achievements timeline must expose minimal copy for the scrolled state.");
+assert(/data-achievements-year-rail/.test(achievementsTimeline), "Achievements timeline must include a bottom year rail.");
+assert(/data-achievements-year-progress/.test(achievementsTimeline), "Achievements timeline must include a progress indicator on the bottom year rail.");
+assert(/data-achievement-year-marker/.test(achievementsTimeline), "Achievements timeline must render year markers on the bottom rail.");
 assert(/data-achievement-card/.test(achievementsTimeline), "Achievements timeline must mark each horizontal card.");
 assert(/data-active-year/.test(achievementsTimeline), "Achievements page must expose the active year.");
-assert(/overflow-x-auto/.test(achievementsTimeline), "Achievements timeline must horizontally scroll.");
-assert(/snap-x/.test(achievementsTimeline), "Achievements timeline must use horizontal snap scrolling.");
-assert(/setActiveIndex/.test(achievementsTimeline), "Achievements timeline must update active state as the user scrolls.");
+assert(/window\.addEventListener\("scroll"/.test(achievementsTimeline), "Achievements timeline must listen to vertical scroll events.");
+assert(/section\.offsetHeight - window\.innerHeight/.test(achievementsTimeline), "Achievements timeline must derive progress from vertical scroll distance.");
+assert(/rail\.scrollWidth - stage\.clientWidth/.test(achievementsTimeline), "Achievements timeline must translate across the horizontal rail width.");
+assert(/--achievements-track-x/.test(achievementsTimeline), "Achievements timeline must expose a transform variable for the horizontal rail.");
+assert(/translate3d\(-\$\{translateX\}px/.test(achievementsTimeline), "Achievements timeline must translate the rail horizontally from vertical scroll progress.");
+assert(!/overflow-x-auto/.test(achievementsTimeline), "Achievements timeline should be driven by vertical scroll, not manual horizontal overflow.");
+assert(!/snap-x/.test(achievementsTimeline), "Achievements timeline should not rely on snap-x now that vertical scroll drives the rail.");
+assert(/setTimelineState/.test(achievementsTimeline), "Achievements timeline must update active state as the user scrolls.");
 assert(/activeAchievement\?\.image|achievement\.image/.test(achievementsTimeline), "Achievements timeline must render media driven by the active achievement data.");
 assert(/achievementsOverview/.test(staticData), "Static data must include the Webflow-sourced achievements overview.");
 assert(/export const achievements/.test(staticData), "Static data must export achievements.");
