@@ -4,12 +4,15 @@ import { HomepageRecords } from "@/components/site/homepage-records"
 import { HomepageRecruitment } from "@/components/site/homepage-recruitment"
 import { HomepageZoomReveal } from "@/components/site/homepage-zoom-reveal"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
-import { getRecruitmentRoles } from "@/lib/cms/dynamodb"
+import { listCmsRecords } from "@/lib/cms/api"
 
 export const dynamic = "force-dynamic"
+export const metadata = {
+  title: "Home",
+}
 
 export default async function Page() {
-  const roles = await getRecruitmentRoles("published")
+  const roles = await listCmsRecords("roles", "published")
 
   return (
     <main data-homepage>

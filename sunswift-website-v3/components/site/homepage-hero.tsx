@@ -98,11 +98,11 @@ export function HomepageHero() {
     >
       <div className="sticky top-0 h-svh overflow-hidden">
         <Image
-          src="/placeholders/hero-track.svg"
+          src="/vehicle-fleet/vehicle-sunswift-8.jpg"
           alt="Sunswift solar race car"
           fill
           priority
-          className="homepage-hero-image object-cover"
+          className="homepage-hero-image object-cover object-[52%_50%]"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_54%_42%,transparent_0%,rgba(20,24,27,0.08)_31%,rgba(20,24,27,0.58)_100%)]" />

@@ -4,7 +4,10 @@ import Link from "next/link"
 import { ArrowRight, ChevronDown } from "lucide-react"
 import { useEffect, useRef, type CSSProperties } from "react"
 
-import { recruitmentStreams } from "@/components/site/recruitment-content"
+import {
+  recruitmentStreamHref,
+  recruitmentStreams,
+} from "@/components/site/recruitment-content"
 import type { RecruitmentRole } from "@/lib/cms/types"
 
 type HomepageRecruitmentProps = {
@@ -27,7 +30,6 @@ function clamp(value: number, min = 0, max = 1) {
 
 export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
   const sectionRef = useRef<HTMLElement>(null)
-  const publishedRoleCount = roles.length
 
   useEffect(() => {
     const section = sectionRef.current
@@ -91,6 +93,7 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
       ref={sectionRef}
       data-homepage-recruitment
       data-recruitment-source="cms"
+      data-recruitment-role-count={roles.length}
       className="relative z-10 -mt-[104svh] overflow-x-clip overflow-y-visible bg-[#0a0c0e] text-white"
       style={
         {
@@ -179,30 +182,23 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
                   <p className="max-w-sm text-sm leading-6 text-white/52">
                     {stream.summary}
                   </p>
-                  <div
-                    className="grid gap-2 sm:grid-cols-2"
-                    data-homepage-recruitment-roles={stream.name}
+                  <Link
+                    href={recruitmentStreamHref(stream)}
+                    data-homepage-recruitment-role
+                    data-homepage-recruitment-stream-card={stream.name}
+                    className="group/card flex min-h-[8.5rem] flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-left transition-colors duration-300 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
                   >
-                    {stream.families.map((family) => (
-                      <Link
-                        key={family}
-                        href="/recruitment"
-                        data-homepage-recruitment-role
-                        className="group/card flex min-h-[8.5rem] flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-left transition-colors duration-300 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
-                      >
-                        <span className="font-mono text-[0.6rem] tracking-[0.22em] text-accent-yellow uppercase">
-                          {stream.name}
-                        </span>
-                        <span className="mt-4 text-lg leading-snug font-light text-white">
-                          {family}
-                        </span>
-                        <span className="mt-5 flex items-center justify-between border-t border-white/10 pt-3 font-mono text-[0.58rem] tracking-[0.22em] text-white/42 uppercase transition-colors duration-300 group-hover/card:text-accent-yellow">
-                          Explore
-                          <ArrowRight className="size-3.5" />
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
+                    <span className="font-mono text-[0.6rem] tracking-[0.22em] text-accent-yellow uppercase">
+                      {stream.name}
+                    </span>
+                    <span className="mt-4 text-lg leading-snug font-light text-white">
+                      Explore {stream.roleTitle}
+                    </span>
+                    <span className="mt-5 flex items-center justify-between border-t border-white/10 pt-3 font-mono text-[0.58rem] tracking-[0.22em] text-white/42 uppercase transition-colors duration-300 group-hover/card:text-accent-yellow">
+                      Open roles
+                      <ArrowRight className="size-3.5" />
+                    </span>
+                  </Link>
                 </div>
               </details>
             )

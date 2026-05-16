@@ -8,9 +8,22 @@ import {
   rolesForRecruitmentStream,
 } from "@/components/site/recruitment-content"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
-import { getRecruitmentRoles } from "@/lib/cms/dynamodb"
+import { listCmsRecords } from "@/lib/cms/api"
 
 export const dynamic = "force-dynamic"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ stream: string }>
+}) {
+  const { stream: streamPath } = await params
+  const stream = getRecruitmentStreamByRolePath(streamPath)
+
+  return {
+    title: stream?.roleTitle ?? "Available Roles",
+  }
+}
 
 export function generateStaticParams() {
   return recruitmentStreams.map((stream) => ({ stream: stream.rolePath }))
@@ -28,7 +41,7 @@ export default async function RecruitmentStreamRolePage({
     notFound()
   }
 
-  const roles = await getRecruitmentRoles("published")
+  const roles = await listCmsRecords("roles", "published")
   const streamRoles = rolesForRecruitmentStream(roles, stream)
 
   return (
@@ -56,16 +69,6 @@ export default async function RecruitmentStreamRolePage({
                 <p className="max-w-xl text-base leading-7 text-white/58 sm:text-lg">
                   {stream.summary}
                 </p>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {stream.families.map((family) => (
-                    <span
-                      key={family}
-                      className="border border-white/12 px-3 py-2 font-mono text-[0.6rem] tracking-[0.2em] text-white/48 uppercase"
-                    >
-                      {family}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           </div>

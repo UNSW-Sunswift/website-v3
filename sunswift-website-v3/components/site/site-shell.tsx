@@ -31,7 +31,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-[92rem] items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
-          className="block bg-black px-2 py-1 transition-opacity duration-300 hover:opacity-85"
+          className="group block bg-black px-2 py-1"
           aria-label="Sunswift Racing home"
         >
           <SunswiftBrandLogo className="w-28 sm:w-32" />

@@ -1,0 +1,22 @@
+{
+  "publicMedia": [
+    {
+      "key": "public-media/placeholders/sr7-world-record.mp4",
+      "localPath": "/placeholders/sr7-world-record.mp4",
+      "contentType": "video/mp4",
+      "size": 75641586
+    },
+    {
+      "key": "public-media/placeholders/bwsc-23-vid.mp4",
+      "localPath": "/placeholders/bwsc-23-vid.mp4",
+      "contentType": "video/mp4",
+      "size": 66585122
+    },
+    {
+      "key": "public-media/vehicle-fleet/vehicle-ivy.jpg",
+      "localPath": "/vehicle-fleet/vehicle-ivy.jpg",
+      "contentType": "image/jpeg",
+      "size": 10759552
+    }
+  ]
+}

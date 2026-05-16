@@ -15,5 +15,8 @@ aws/**/*.d.ts
 .env.*
 !.env.example
 
+# Ignore upload of big files (.mp4 in public)
+public/*.mp4
+
 # Nested repository metadata
 **/.git/

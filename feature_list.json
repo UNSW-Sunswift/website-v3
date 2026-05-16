@@ -1287,6 +1287,83 @@
       ]
     },
     {
+      "id": "contact-page-social-links",
+      "priority": 47,
+      "title": "Contact page social media column",
+      "status": "complete",
+      "description": "Add a third grid column on /contact between direct email and workshop address for Instagram, Facebook, and LinkedIn outbound links with hooks for verification.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "pnpm test:homepage-design: passed with data-contact-socials and three platform URLs",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed with existing homepage-recruitment unused variable warning"
+        ]
+      },
+      "notes": [
+        "Grid is lg:grid-cols-3; social links match official Sunswift Racing profiles.",
+        "scripts/verify-browser.mjs CONTACT contract expects three [data-contact-social-link] nodes and copy including Message us online / Social media / Instagram."
+      ]
+    },
+    {
+      "id": "media-highlights-horizontal-juicer",
+      "priority": 46,
+      "title": "Media highlights horizontal cards + Juicer sidebar",
+      "status": "complete",
+      "description": "Rebuild /media as Webflow-style horizontal scrolling rows of thumbnail link cards using Webflow-sourced URLs and images in content/media-highlights.json, with a left Juicer.io iframe (unsw-sunswift Facebook feed) replacing the manual social rail.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "pnpm test:homepage-design: passed with JSON-sourced Webflow copy, Juicer sidebar, horizontal row assertions",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed with existing homepage-recruitment unused variable warning",
+          "pnpm build: passed"
+        ]
+      },
+      "notes": [
+        "content/media-highlights.json mirrors https://sunswift.webflow.io/media/highlights; Optus/AWS placeholder # links from Webflow are replaced with real destinations.",
+        "Thumbnails: Webflow uploads CDN for articles; i.ytimg.com hqdefault for YouTube rows."
+      ]
+    },
+    {
+      "id": "sunswift-logo-png-and-media-rebuild",
+      "priority": 45,
+      "title": "Sunswift logo PNG + media highlights rebuild",
+      "status": "complete",
+      "description": "Swap the wordmark for the user-supplied PNG logo with a darken-on-hover and rebuild /media/highlights as a 1:1 of the Webflow source in the new dark theme with a left-hand socials embedder rail and click-to-play YouTube embeds.",
+      "verification": {
+        "required": [
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "pnpm test:homepage-design: passed with new logo path, socials rail, and LiteYouTube assertions",
+          "pnpm typecheck: passed after replacing missing lucide brand icons with inline SVGs",
+          "pnpm lint: passed with the long-standing unrelated homepage-recruitment unused variable warning"
+        ]
+      },
+      "notes": [
+        "Logo moved to /brand/sunswift-logo.png and SunswiftBrandLogo now darkens to brightness-[0.55] on hover.",
+        "Added SocialsRail (Instagram, YouTube, LinkedIn, Facebook, Twitter) sticky on the left at desktop.",
+        "Added LiteYouTube click-to-play embed via youtube-nocookie.com.",
+        "MediaHighlightsPage now renders embeds for the AWS spotlight, the four Sunswift 7 journey parts, the three team highlights, and the AWS Summit + Optus partner spotlights, alongside article hyperlinks.",
+        "YouTube video IDs are placeholders pending the canonical Sunswift Racing channel IDs."
+      ]
+    },
+    {
       "id": "sunswift-wordmark-logo",
       "priority": 44,
       "title": "Sunswift Racing wordmark logo",
@@ -1315,6 +1392,193 @@
         "Added /brand/sunswift-racing-wordmark.svg with transparent background, #ffd401 yellow, Open Sans bold top line, and Alta/fallback serif bottom line.",
         "Added the SunswiftBrandLogo component for consistent sizing.",
         "TransparentNavbar, SiteHeader, and SiteFooter now use the logo asset while retaining accessible Sunswift Racing labels."
+      ]
+    },
+    {
+      "id": "vehicle-overview-carousel-tag-removal-page-titles",
+      "priority": 48,
+      "title": "Vehicle overview carousel, tag removal, and route tab titles",
+      "status": "complete",
+      "description": "Add Webflow-inspired vehicle overview copy and a click-switch achievements/overview carousel, remove vestigial tag chip surfaces, raise vehicle summary contrast, and set page-specific browser tab titles.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "Baseline ./init.sh: passed before implementation",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed with carousel, tag-removal, contrast, and metadata assertions",
+          "pnpm build: passed",
+          "pnpm verify:browser: passed against the running dev server with VEHICLES_OK:8 and route-specific tab titles",
+          "Final ./init.sh: blocked because the Docker daemon was not reachable",
+          "2026-05-16 amendment: pnpm typecheck, pnpm lint, pnpm test:homepage-design, pnpm build, and pnpm verify:browser passed after changing the carousel from hover-scroll to click controls"
+        ]
+      },
+      "notes": [
+        "SR-8 intentionally has no overview for now.",
+        "Vehicle technical specifications now render below the click-switch achievements/overview carousel.",
+        "Recruitment family chip arrays and public family-chip renderers were removed; stream cards remain.",
+        "The previous hover/focus + wheel gesture was removed in favour of explicit Achievements / Overview buttons.",
+        "Not committed because the worktree already contains unrelated and overlapping user changes."
+      ]
+    },
+    {
+      "id": "mobile-timeline-homepage-sr8-handoff",
+      "priority": 49,
+      "title": "Mobile timeline and homepage SR8 image handoff",
+      "status": "complete",
+      "description": "Make the achievements timeline easier to use on mobile with a vertical card layout, revert the media/contact polish changes on request, and replace the homepage SVG hero with the SR8 image while sharing that visual language into the about section.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed with mobile timeline and SR8 handoff assertions",
+          "pnpm build: passed",
+          "pnpm verify:browser: passed against the running dev server with homepage desktop/mobile, ACHIEVEMENTS_MOBILE_OK, media/contact, vehicles, recruitment, and partners checks",
+          "git diff --check: passed",
+          "./init.sh: intentionally skipped because Docker/LocalStack is stopped for RAM constraints in this frontend-only session"
+        ]
+      },
+      "notes": [
+        "Media/contact page touch-ups from this session were reverted; their existing functional contracts remain.",
+        "Homepage hero now uses /vehicle-fleet/vehicle-sunswift-8.jpg instead of /placeholders/hero-track.svg.",
+        "Homepage about section now uses the same SR8 image and #f6f5f1 canvas as the scroll reveal to support a future cinematic render handoff.",
+        "Not committed because the worktree already contains unrelated and overlapping user changes."
+      ]
+    },
+    {
+      "id": "cms-admin-lambda-backend-foundation",
+      "priority": 50,
+      "title": "CMS admin and Lambda backend foundation",
+      "status": "complete",
+      "description": "Implement the CMS replacement foundation with Lambda/API Gateway infrastructure, admin UI refinement for team/roles/partners/assets, CSV import helpers, S3 heavy-media tracking, and LocalStack parity.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:browser",
+          "npm run build in aws",
+          "npm test -- --runInBand in aws"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "Baseline ./init.sh: passed before implementation",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed with CMS facade, admin partners/assets, CSV import, and heavy-media manifest assertions",
+          "pnpm build: passed",
+          "npm run build in aws: passed",
+          "npm test -- --runInBand in aws: passed with API Gateway/Lambda/S3/CloudFront/IAM assertions",
+          "Final ./init.sh: passed with expanded LocalStack services, CMS staging bucket, public assets bucket, AWS build/test, frontend typecheck/lint, and homepage contract",
+          "pnpm verify:browser: passed against the running dev server, including public routes and unauthenticated /admin redirect/login verification",
+          "git diff --check: passed"
+        ]
+      },
+      "notes": [
+        "Admin actions call the CMS API facade; production can use CMS_API_URL while local development falls back to LocalStack DynamoDB/S3 helpers.",
+        "Added /admin/partners and /admin/assets surfaces.",
+        "CDK now defines WebsiteV3CMSApi, CmsAdminHandler, CmsAssetHandler, private staging assets, public assets, CloudFront delivery, and a Next runtime execute-api invoke policy.",
+        "Heavy local media is tracked in content/cms-assets.json and resolved through CMS_PUBLIC_ASSET_BASE_URL / NEXT_PUBLIC_CMS_PUBLIC_ASSET_BASE_URL when configured.",
+        "Lambda image normalization and provider-level direct upload validation remain follow-up deployment hardening.",
+        "Not committed because the worktree already contains unrelated and overlapping user changes."
+      ]
+    },
+    {
+      "id": "cms-admin-dev-login-regression-docs",
+      "priority": 51,
+      "title": "CMS admin developer login, regression testing, and setup docs",
+      "status": "complete",
+      "description": "Add a non-production developer admin login for local testing, regression-test the hidden admin dashboard against LocalStack, document CMS/AWS setup, and align LocalStack seed data with public CMS-backed routes.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:cms-admin",
+          "pnpm verify:browser",
+          "npm run build in aws",
+          "npm test -- --runInBand in aws",
+          "git diff --check"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "./init.sh: passed after expanding LocalStack recruitment and partner seeds",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed with dev-login and CMS admin regression assertions",
+          "pnpm build: passed",
+          "VERIFY_URL=http://localhost:3100 pnpm verify:cms-admin: passed with developer sign-in, dashboard checks, team draft edit persistence, partners admin, and assets admin",
+          "VERIFY_URL=http://localhost:3100 pnpm verify:browser: passed after LocalStack seed alignment, including public recruitment streams, partners grid, and admin login",
+          "npm run build in aws: passed",
+          "npm test -- --runInBand in aws: passed",
+          "git diff --check: passed"
+        ]
+      },
+      "notes": [
+        "The developer credentials provider is enabled only outside production and can be disabled locally with ENABLE_DEV_ADMIN_LOGIN=false.",
+        "The local test account is developer@sunswift.unsw.edu.au.",
+        "Documentation lives in sunswift-website-v3/CMS_ADMIN_SETUP.md.",
+        "Do not run agent-browser browser scripts in parallel; they share browser session state.",
+        "Not committed because the worktree already contains unrelated and overlapping user changes."
+      ]
+    },
+    {
+      "id": "cms-admin-end-user-localstack-test",
+      "priority": 52,
+      "title": "CMS admin end-user test against LocalStack",
+      "status": "complete",
+      "description": "Exercise the hidden admin dashboard as the local developer account, update team members and recruitment role descriptions/open roles through the UI, publish records, and verify public pages reflect the LocalStack-backed CMS data.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "manual agent-browser admin login/import/edit/publish flow",
+          "manual public page reflection checks",
+          "pnpm build",
+          "pnpm verify:cms-admin",
+          "git diff --check"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "./init.sh: passed before the end-user test",
+          "Developer admin login through /admin/login: passed",
+          "Team CSV import through /admin/team: passed with 10 end-user team records",
+          "Team member edit and publish: passed after fixing DynamoDB publish key overwrite",
+          "Recruitment role import/edit/publish through /admin/recruitment: passed for design, engineering, and business roles",
+          "LocalStack DynamoDB query confirmed #published team and role records were written",
+          "Public /team reflected End User Test Captain and Published CMS Team Captain with 11 CMS-backed cards",
+          "Public /recruitment/available-roles reflected the new design role count",
+          "Public design/engineering/business role pages reflected the published role descriptions",
+          "pnpm build: passed",
+          "VERIFY_URL=http://localhost:3100 pnpm verify:cms-admin: passed",
+          "git diff --check: passed"
+        ]
+      },
+      "notes": [
+        "End-user test uncovered and fixed a DynamoDB spread-order bug where publish writes kept the draft type key.",
+        "The fix moves id/type/status after the spread in putTeamMember, putRecruitmentRole, putPartner, and putMediaAsset.",
+        "Static harness now asserts the publish-safe DynamoDB write order.",
+        "The LocalStack data mutations are test data only; rerunning ./init.sh resets the local CMS harness.",
+        "Not committed because the worktree already contains unrelated and overlapping user changes."
       ]
     }
   ]

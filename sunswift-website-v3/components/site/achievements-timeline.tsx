@@ -1,7 +1,15 @@
 "use client"
 
 import Image from "next/image"
-import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react"
+import { RotateCw } from "lucide-react"
+import {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react"
 
 import type { Achievement } from "@/lib/cms/static-data"
 
@@ -10,11 +18,34 @@ type Props = {
   overview: string
 }
 
+const MOBILE_TIMELINE_QUERY = "(max-width: 767px)"
+
+function subscribeMobileTimeline(callback: () => void) {
+  const query = window.matchMedia(MOBILE_TIMELINE_QUERY)
+  query.addEventListener("change", callback)
+
+  return () => query.removeEventListener("change", callback)
+}
+
+function getMobileTimelineSnapshot() {
+  return window.matchMedia(MOBILE_TIMELINE_QUERY).matches
+}
+
+function getServerMobileTimelineSnapshot() {
+  return false
+}
+
 export function AchievementsTimeline({ achievements, overview }: Props) {
   const sectionRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const railRef = useRef<HTMLDivElement>(null)
   const introRef = useRef<HTMLDivElement>(null)
+  const mobileCardRefs = useRef<Array<HTMLElement | null>>([])
+  const isMobileTimeline = useSyncExternalStore(
+    subscribeMobileTimeline,
+    getMobileTimelineSnapshot,
+    getServerMobileTimelineSnapshot,
+  )
   const [timelineState, setTimelineState] = useState({
     activeIndex: 0,
     progress: 0,
@@ -22,9 +53,11 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
   })
   const [introExit, setIntroExit] = useState(0)
   const [timelineRevealed, setTimelineRevealed] = useState(false)
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([])
 
   const { activeIndex, progress, translateX } = timelineState
   const activeAchievement = achievements[activeIndex] ?? achievements[0]
+  const activeHasVideo = Boolean(activeAchievement?.videoMp4?.trim())
   // Both the top-left minimal copy (kicker + year + title) and the bottom description block stay
   // visible across the entire timeline so the first milestone (2023) reads the same way as every
   // subsequent one. We still expose the values to the browser verifier in case a future change
@@ -86,16 +119,18 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
     transform: `translate3d(-${translateX}px, 0, 0)`,
   } as CSSProperties & Record<"--achievements-track-x", string>
 
-  const sectionStyle = {
-    height: `${Math.max(achievements.length * 20, 430)}svh`,
-  }
+  const sectionStyle = isMobileTimeline
+    ? undefined
+    : {
+        height: `${Math.max(achievements.length * 20, 430)}svh`,
+      }
 
   const syncTimeline = useCallback(() => {
     const section = sectionRef.current
     const stage = stageRef.current
     const rail = railRef.current
     const intro = introRef.current
-    if (!section || !stage || !rail) {
+    if (!section) {
       return
     }
 
@@ -106,6 +141,62 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
       const scrollableHeight = Math.max(intro.offsetHeight - window.innerHeight, 1)
       const rawIntroExit = Math.min(1, Math.max(0, -rect.top / scrollableHeight))
       setIntroExit(rawIntroExit)
+    }
+
+    if (isMobileTimeline) {
+      const mobileCards = mobileCardRefs.current.filter(
+        (card): card is HTMLElement => Boolean(card),
+      )
+      const targetY = window.innerHeight * 0.38
+      let nextIndex = 0
+      let bestDistance = Number.POSITIVE_INFINITY
+
+      mobileCards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect()
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          return
+        }
+
+        const cardFocusY = rect.top + rect.height * 0.34
+        const distance = Math.abs(cardFocusY - targetY)
+        if (distance < bestDistance) {
+          bestDistance = distance
+          nextIndex = index
+        }
+      })
+
+      if (mobileCards.length > 0 && bestDistance === Number.POSITIVE_INFINITY) {
+        const sectionRect = section.getBoundingClientRect()
+        nextIndex = sectionRect.top > 0 ? 0 : achievements.length - 1
+      }
+
+      const nextProgress =
+        achievements.length > 1 ? nextIndex / (achievements.length - 1) : 0
+
+      if (section.getBoundingClientRect().top < window.innerHeight * 0.9) {
+        setTimelineRevealed(true)
+      }
+
+      setTimelineState((current) => {
+        if (
+          current.activeIndex === nextIndex &&
+          Math.abs(current.progress - nextProgress) <= 0.002 &&
+          current.translateX === 0
+        ) {
+          return current
+        }
+
+        return {
+          activeIndex: nextIndex,
+          progress: nextProgress,
+          translateX: 0,
+        }
+      })
+      return
+    }
+
+    if (!stage || !rail) {
+      return
     }
 
     const maxScroll = Math.max(section.offsetHeight - window.innerHeight, 1)
@@ -136,7 +227,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
         translateX: nextTranslate,
       }
     })
-  }, [achievements.length])
+  }, [achievements.length, isMobileTimeline])
 
   useEffect(() => {
     syncTimeline()
@@ -148,6 +239,41 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
       window.removeEventListener("resize", syncTimeline)
     }
   }, [syncTimeline])
+
+  useEffect(() => {
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+    achievements.forEach((achievement, index) => {
+      const el = videoRefs.current[index]
+      if (!el || !achievement.videoMp4?.trim()) {
+        return
+      }
+      if (reduced) {
+        el.pause()
+        return
+      }
+      if (index === activeIndex) {
+        void el.play().catch(() => {
+          /* autoplay blocked — user can reload */
+        })
+      } else {
+        el.pause()
+      }
+    })
+  }, [activeIndex, achievements])
+
+  const reloadActiveVideo = useCallback(() => {
+    const el = videoRefs.current[activeIndex]
+    const a = achievements[activeIndex]
+    if (!el || !a?.videoMp4?.trim()) {
+      return
+    }
+    el.pause()
+    el.currentTime = 0
+    void el.play().catch(() => {})
+  }, [activeIndex, achievements])
 
   function focusAchievement(index: number) {
     const section = sectionRef.current
@@ -175,7 +301,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
         data-achievements-intro-section
         data-intro-exit={Math.round(introExit * 1000) / 1000}
         className="relative"
-        style={{ height: "240svh" }}
+        style={{ height: isMobileTimeline ? "145svh" : "240svh" }}
       >
         <div className="sticky top-0 h-svh w-full overflow-hidden">
           {/* Background image: zooms in dramatically and darkens through the transition */}
@@ -189,7 +315,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
             }}
           >
             <Image
-              src={achievements[0]?.image ?? "/placeholders/vehicle-sunswift-7.svg"}
+              src={achievements[0]?.image ?? "/vehicle-fleet/vehicle-sunswift-7.jpeg"}
               alt=""
               fill
               priority
@@ -331,31 +457,161 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
 
       <div ref={sectionRef} data-achievements-scroll-section style={sectionStyle}>
         <div
+          data-achievements-mobile-timeline
+          className="relative z-10 px-4 pb-20 pt-6 md:hidden"
+        >
+          <div className="mx-auto max-w-xl">
+            <div className="mb-8 border-l border-accent-yellow/45 pl-4">
+              <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-accent-yellow">
+                Timeline
+              </p>
+              <h2 className="mt-3 text-3xl font-light leading-tight text-white">
+                Scroll the milestones.
+              </h2>
+            </div>
+
+            <div className="space-y-5">
+              {achievements.map((achievement, index) => {
+                const isActive = index === activeIndex
+                const hasVideo = Boolean(achievement.videoMp4?.trim())
+
+                return (
+                  <article
+                    key={`${achievement.year}-${achievement.title}-mobile`}
+                    ref={(node) => {
+                      mobileCardRefs.current[index] = node
+                    }}
+                    data-mobile-achievement-card
+                    data-achievement-year={achievement.year}
+                    data-active={isActive ? "true" : "false"}
+                    className={[
+                      "relative overflow-hidden rounded-sm border bg-white/[0.035] transition-[border-color,background-color,opacity] duration-500",
+                      isActive
+                        ? "border-accent-yellow/55 bg-white/[0.075]"
+                        : "border-white/10 opacity-82",
+                    ].join(" ")}
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden bg-black/40">
+                      {hasVideo ? (
+                        <video
+                          src={achievement.videoMp4}
+                          poster={achievement.image}
+                          muted
+                          loop
+                          playsInline
+                          preload="metadata"
+                          aria-hidden="true"
+                          className="h-full w-full object-cover opacity-82"
+                        />
+                      ) : (
+                        <Image
+                          src={achievement.image}
+                          alt=""
+                          fill
+                          sizes="100vw"
+                          className="object-cover opacity-82"
+                        />
+                      )}
+                      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(5,6,7,0.78)_100%)]" />
+                      <div className="absolute bottom-3 left-3 flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.22em] text-accent-yellow">
+                        <span>{achievement.vehicle}</span>
+                        <span className="text-white/35">/</span>
+                        <span>{achievement.kind}</span>
+                      </div>
+                    </div>
+
+                    <div className="p-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="font-mono text-4xl font-thin leading-none text-white">
+                          {achievement.year}
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className={[
+                            "mt-2 size-2 rounded-full transition-colors duration-300",
+                            isActive ? "bg-accent-yellow" : "bg-white/30",
+                          ].join(" ")}
+                        />
+                      </div>
+                      <h3 className="mt-4 text-2xl font-light leading-tight text-white">
+                        {achievement.title}
+                      </h3>
+                      <p className="mt-4 text-sm leading-6 text-white/62">
+                        {achievement.description}
+                      </p>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div
           ref={stageRef}
           data-achievements-stage
           className={[
-            "sticky top-0 min-h-svh overflow-hidden",
+            "sticky top-0 hidden min-h-svh overflow-hidden md:block",
             timelineRevealed ? "achievements-stage-revealed" : "achievements-stage-entering",
           ].join(" ")}
         >
           <div className="pointer-events-none absolute inset-0">
-            {achievements.map((achievement, index) => (
-              <Image
-                key={`${achievement.year}-${achievement.title}`}
-                src={achievement.image}
-                alt=""
-                fill
-                priority={index === 0}
-                sizes="100vw"
-                className={[
-                  "object-cover transition-[opacity,transform,filter] duration-[850ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-                  index === activeIndex
-                    ? "scale-[1.04] opacity-70 [filter:grayscale(0.08)_brightness(0.86)]"
-                    : "scale-[1.1] opacity-0 [filter:grayscale(1)_brightness(0.62)]",
-                ].join(" ")}
-              />
-            ))}
+            {achievements.map((achievement, index) => {
+              const isVideo = Boolean(achievement.videoMp4?.trim())
+              const mediaClass = [
+                "absolute inset-0 h-full w-full object-cover transition-[opacity,transform,filter] duration-[850ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                index === activeIndex
+                  ? "scale-[1.04] opacity-70 [filter:grayscale(0.08)_brightness(0.86)]"
+                  : "scale-[1.1] opacity-0 [filter:grayscale(1)_brightness(0.62)]",
+              ].join(" ")
+
+              if (isVideo) {
+                return (
+                  <video
+                    key={`${achievement.year}-${achievement.title}-video`}
+                    ref={(node) => {
+                      videoRefs.current[index] = node
+                    }}
+                    src={achievement.videoMp4}
+                    poster={achievement.image}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-hidden="true"
+                    className={mediaClass}
+                  />
+                )
+              }
+
+              return (
+                <Image
+                  key={`${achievement.year}-${achievement.title}`}
+                  src={achievement.image}
+                  alt=""
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  className={mediaClass}
+                />
+              )
+            })}
           </div>
+
+          {activeHasVideo ? (
+            <div className="pointer-events-auto absolute top-[clamp(12rem,30svh,18rem)] right-5 z-[18] sm:right-8 lg:right-14">
+              <button
+                type="button"
+                data-achievements-video-reload
+                onClick={() => reloadActiveVideo()}
+                className="grid size-11 place-items-center rounded-full border border-white/25 bg-black/35 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-md transition-[background-color,color,border-color] duration-300 hover:border-accent-yellow hover:bg-accent-yellow hover:text-black"
+                aria-label="Restart background video"
+                title="Restart video"
+              >
+                <RotateCw className="size-[1.125rem]" strokeWidth={1.75} />
+              </button>
+            </div>
+          ) : null}
 
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_65%_35%,rgba(255,255,255,0.08)_0%,transparent_58%)]" />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#050607_0%,rgba(5,6,7,0.72)_24%,rgba(5,6,7,0.22)_58%,rgba(5,6,7,0.82)_100%)]" />

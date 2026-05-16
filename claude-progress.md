@@ -2092,3 +2092,472 @@ the plain text wordmark in public chrome.
 - Final `./init.sh`: passed after wordmark implementation with LocalStack
   DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design
   contract.
+
+## 2026-05-16 - Sunswift Logo PNG (brand asset)
+
+Replaced the transparent SVG wordmark in `SunswiftBrandLogo` with the
+user-supplied raster logo for consistent branding in nav/footer surfaces.
+
+### Implementation
+
+- Asset: `public/brand/sunswift-logo.png` (user-provided PNG).
+- `components/site/brand-logo.tsx`: `src` points at the PNG; hover uses
+  `group-hover:brightness-[0.55]` and slight opacity change on the wrapping
+  `Link`’s `group` class.
+
+### Harness (at time of change)
+
+- Design contract asserted `/brand/sunswift-logo.png`, alt text, and darkening
+  hover filter.
+
+### Verification
+
+- `pnpm test:homepage-design`, `pnpm typecheck`, `pnpm lint`: passed alongside
+  other session checks.
+
+## 2026-05-16 - Media highlights horizontal rails + Juicer (Webflow parity)
+
+Mirrored https://sunswift.webflow.io/media/highlights layout: every section is a
+horizontally scrollable strip of linked cards with Webflow CDN or YouTube
+thumbnails. Left column is the same Juicer.io iframe feed as Webflow
+(`unsw-sunswift`), replacing the prior manual social list.
+
+### Implementation
+
+- Added `content/media-highlights.json` with titles, outbound URLs, and
+  `imageSrc` values scraped from the live Webflow HTML (partnership thumbnails,
+  team article art, YouTube `hqdefault` for video rows). Webflow had `href="#"`
+  for Optus and the AWS student piece; Optus now points at the Optus media
+  centre, AWS at the published case study.
+- Rebuilt `MediaHighlightsPage`: `overflow-x-auto` + `snap-x` rows, full-bleed
+  gradient masks, `next/image` cards (`data-media-highlight-card`).
+- Added `components/site/juicer-sidebar.tsx` embedding
+  `https://www.juicer.io/api/feeds/unsw-sunswift/iframe`.
+- `next.config.mjs`: `images.remotePatterns` for `cdn.prod.website-files.com` and
+  `i.ytimg.com`.
+- Removed `components/site/lite-youtube.tsx` and
+  `components/site/socials-rail.tsx` (superseded).
+
+### Harness
+
+- Design contract reads `content/media-highlights.json` for Webflow phrases and
+  canonical URLs; asserts Juicer sidebar + horizontal scroll markers.
+- Browser contract checks Juicer iframe, six scroll rows, ≥18 linked cards, and
+  later (see below) the Media Spotlight YouTube embed.
+
+### Verification
+
+- `pnpm test:homepage-design`, `pnpm typecheck`, `pnpm lint`, `pnpm build`:
+  passed (existing recruitment unused-var warning only).
+
+## 2026-05-16 - Media Spotlight: large featured YouTube embed
+
+User asked for a more prominent Media Spotlight: a big in-page preview of the
+AWS × Sunswift YouTube feature (same video as Webflow:
+`JGSzpsJmfHA`), not only carousel cards.
+
+### Implementation
+
+- `content/media-highlights.json`: `featuredYoutubeId: "JGSzpsJmfHA"` on the
+  `media-spotlight` section (overridable; else ID parsed from the first item’s
+  `watch` URL).
+- `components/site/media-highlights-page.tsx`:
+  - New `MediaSpotlightSection` for `section.id === "media-spotlight"` (replaces
+    generic horizontal-only layout for that section).
+  - Featured block: radial glow, vertical accent lines (sm+), framed
+    `aspect-video` iframe:
+    `https://www.youtube-nocookie.com/embed/{id}?rel=0&modestbranding=1`.
+  - `data-media-spotlight-embed` wrapper; headline copy under the player;
+    **Open on YouTube** and **AWS case study** CTAs.
+  - **More in this story**: existing horizontal scroll of the two thumbnail
+    cards (YouTube + Webflow hero still) unchanged for parity and tests.
+  - `HorizontalSection` no longer handles `media-spotlight` (avoids duplicate
+    `data-media-spotlight` / `#media-spotlight`).
+
+### Harness
+
+- `scripts/test-homepage-design.mjs`: requires `data-media-spotlight-embed`,
+  `youtube-nocookie.com/embed`, and JSON line
+  `"featuredYoutubeId": "JGSzpsJmfHA"`.
+- `scripts/verify-browser.mjs`: `MISSING_MEDIA_SPOTLIGHT_YOUTUBE_EMBED` if the
+  nocookie iframe inside `[data-media-spotlight-embed]` is absent or wrong.
+
+### Verification
+
+- `pnpm test:homepage-design`, `pnpm typecheck`, `pnpm lint`: passed.
+
+### Route note
+
+- Highlights page remains **`/media`** in the app router (not `/media/highlights`).
+
+## 2026-05-16 - Contact page: social media column
+
+Added a third panel on `/contact` between **Direct email** and **Workshop**: social
+handles linking to Instagram, Facebook, and LinkedIn (`data-contact-socials`,
+`data-contact-social-link`, `data-social-platform`). Main grid is now
+`lg:grid-cols-3`.
+
+Harness: `test-homepage-design.mjs` asserts the hook and three URLs; browser
+`CONTACT` contract expects three social link nodes plus “Message us online.” /
+“Social media” / “Instagram” in body text.
+
+## 2026-05-16 - Achievements timeline video + garage vehicle-fleet assets (Composer session)
+
+End-to-end notes for the work consolidated in the Cursor Composer thread: optional
+MP4 backgrounds on `/achievements`, a small circular reload control when the
+active milestone plays video, reorganised public vehicle imagery into
+`vehicle-fleet/`, milestone-specific videos for SR-7 highlights, and later
+preferring `.jpg` clones where both formats existed.
+
+### Achievements timeline (`/achievements`)
+
+- `lib/cms/static-data.ts`: `Achievement` includes optional `videoMp4` (local path
+  under `public/` or full URL). Timeline rows use `image` as the still / video
+  poster.
+- `components/site/achievements-timeline.tsx`: when `videoMp4` is set, renders
+  `<video>` (muted, loop, `playsInline`) with scroll-driven activation; respects
+  `prefers-reduced-motion` (no autoplay). Circular reload button
+  (`data-achievements-video-reload`, Lucide `RotateCw`) visible only when the
+  active card has video; restarts the active clip.
+- Intro/meta image fallback uses the first achievement’s `image`
+  (`achievements[0]?.image`).
+- **`vehicle-violet.svg`** was removed from the repo; Violet stills use raster
+  assets under **`/vehicle-fleet/`** (see below).
+
+### Videos under `public/placeholders/` (kept there by design)
+
+- **BWSC ’23** (year `2023`): `videoMp4: "/placeholders/bwsc-23-vid.mp4"`,
+  poster `"/vehicle-fleet/vehicle-sunswift-7.jpeg"` (later `.jpeg` only if no
+  matching `.jpg` duplicate exists).
+- **Guinness World Record ’22**: `videoMp4: "/placeholders/sr7-world-record.mp4"`,
+  same SR-7 poster as other SR-7 milestones for that era.
+- **BWSC ’19 (VIolet)** (optional demo): `videoMp4: "/placeholders/timeline-violet-demo.mp4"`
+  with Violet poster — can be swapped to a CDN URL later.
+
+### Garage / vehicles (`/vehicles`)
+
+- **`public/vehicle-fleet/`**: canonical raster fleet photos — `vehicle-i.jpg`,
+  `vehicle-ii.jpg`, `vehicle-iii.jpg`, `vehicle-ivy.jpg`, `vehicle-eve.jpg`,
+  `vehicle-sunswift-7.jpeg`, `vehicle-sunswift-8.jpg`, `vehicle-violet.avif`
+  (Violet stays **AVIF** until a same-name `.jpg` exists).
+- **`public/placeholders/`**: retains **MP4** timeline clips, **non-vehicle**
+  art (`garage.svg`, `lab.svg`, `hero-track.svg`, `team-member.svg`, etc.);
+  obsolete **`vehicle-*.svg`** stubs were deleted after all code paths pointed at
+  `vehicle-fleet`.
+- `lib/cms/static-data.ts` `vehicles[]` and `achievements[]` image fields use
+  **`/vehicle-fleet/...`** for every car still.
+- Also updated for consistency: **`content/about-pages.json`**,
+  `components/site/about-editorial-pages.tsx`,
+  **`components/site/homepage-records.tsx`**,
+  **`components/site/homepage-zoom-reveal.tsx`**
+  (`vehicle-sunswift-8`), and achievements fallback in **`achievements-timeline.tsx`**.
+- **`components/site/vehicles-gallery.tsx`**: garage strip and detail modal use
+  **`next/image` with `quality={100}`** (max encoder setting) and **larger `sizes`**
+  hints than before so responsive **srcset** pulls enough pixels when a strip
+  expands on hover/focus or on high-DPR screens (still optimised by the framework,
+  not `unoptimized`).
+
+### Prefer `.jpg` when duplicate filenames existed
+
+- Code and JSON now use **`/vehicle-fleet/vehicle-ii.jpg`** and
+  **`vehicle-iii.jpg`** instead of the former `.avif` twins; **`vehicle-sunswift-8`**
+  references use **`.jpg`** (not `.png`).
+- **`vehicle-ii.avif`** / **`vehicle-iii.avif`** were removed from `vehicle-fleet/`
+  after the switch.
+
+### Harness / contracts
+
+- **`scripts/test-homepage-design.mjs`**: achievements must expose
+  `data-achievements-video-reload` and `<video>`; static data must include
+  `videoMp4`; Violet path assertions use **`/vehicle-fleet/vehicle-violet.avif`**.
+  (Session also repaired a broken `assert()` around the **team route** /
+  **TransparentNavbar** + **TeamRoster**, and aligned **contact social URL**
+  expectations with **`UNSWSunswift`** / **`unsw-sunswift`** LinkedIn slugs.)
+- **`scripts/verify-browser.mjs`**: achievements contract asserts at least one
+  mounted **`<video>`** under **`[data-achievements-stage]`** (sticky background stack).
+
+### Verification (as run in-session)
+
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed (existing **`homepage-recruitment.tsx`** unused variable
+  warning only).
+- `pnpm build`: passed.
+
+## 2026-05-16 - Our Story (`/our-story`): `public/stories` imagery
+
+Aligned the redesign with Webflow **`/about-us/our-story`** photos under **`public/stories/`**
+(parquet layout per chapter):
+
+- **`story-1` (Sunswift I):** thumbnail **`/stories/sr-i/sr-1-thumbnail.avif`**; five inline blocks use
+  **`sr-i-story-1.jpg` … `sr-i-story-5.jpg`** via **`{ "type": "image", "src": "…" }`** in
+  **`content/about-pages.json`**.
+- **`story-2`:** **`/stories/sr-ii/sr-2-thumbnail.avif`** plus **`srii-story-1` … `srii-story-7`**
+  (including **`srii-story-3.png`**).
+- **`story-3`:** **`/stories/sr-iii/sr-3-thumbnail.avif`** plus **`sr-3-story-1.jpg` … `sr-3-story-4.jpg`**.
+- **`story-4` (IVy):** **`/stories/sr-ivy/ivy-thumbnail.avif`** plus **`ivy-story-1.jpg` … `ivy-story-7.jpg`**.
+
+Implementation notes:
+
+- **`StoryBlock`** type includes optional **`src`** on **`image`** blocks; **`StoryBlockView`** reads **`block.src`**
+  (fallback **`garage.svg`** if absent).
+- **`OurStoryEditorialPage`** **`DarkHero`** background uses **`articles[0]?.image`** (SR‑I thumbnail) instead of a
+  generic garage SVG.
+- **Who We Are → Discover → Our Story** card image in JSON points at **`/stories/sr-i/sr-1-thumbnail.avif`**
+  for visual consistency.
+
+### Follow-up: no caption bar on Our Story photos
+
+- **`PlaceholderImage`** gained **`showCaption`** (default **`true`** for Who We Are gallery / discover cards).
+- On **`/our-story`**, sticky-column thumbnails and all inline chapter photos use **`showCaption={false}`** so the
+  mono footer label bar (“Story photograph” / article title) no longer overlays those images.
+
+### Verification
+
+- `pnpm test:homepage-design`, `pnpm typecheck`: passed after JSON + component updates.
+
+## 2026-05-16 - Vehicle Overview Carousel, Tag Removal, Page Titles
+
+- Added Webflow-inspired overview copy to all existing vehicle records except
+  SR-8, which remains future-facing placeholder content for now.
+- Reworked the vehicle detail view so achievements and overview sit in a
+  hover/focus-gated wheel carousel, while technical specifications now render
+  as the bottom detail section.
+- Increased vehicle quick-summary contrast by using white text with a subtle
+  shadow over the image surfaces.
+- Removed legacy Webflow-style tag/chip surfaces from recruitment pages,
+  homepage recruitment stream cards, generic content pages, and vehicle
+  related-post chips.
+- Added App Router metadata titles so browser tabs now use route-specific
+  labels such as `About Us | Sunswift Racing`, `Vehicles | Sunswift Racing`,
+  and stream-specific recruitment role titles.
+- Updated static and browser verification contracts for the vehicle carousel,
+  tag removal, media/vehicle horizontal-scroll allowlists, and page titles.
+
+Verification:
+
+- Baseline `./init.sh`: passed before implementation with LocalStack
+  DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design
+  contract.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- `pnpm verify:browser`: passed against the running dev server, including the
+  new `VEHICLES_OK:8`, route title checks, recruitment tag-removal checks,
+  media/contact/recruitment/partners route checks, and screenshots.
+- Final `./init.sh`: blocked at Docker daemon health check with
+  `Docker daemon is not reachable. Start Docker, then rerun ./init.sh.`
+
+Known limits:
+
+- The working tree already contains unrelated and overlapping user changes, so
+  this session was not committed to avoid bundling unrelated edits.
+
+## 2026-05-16 - Vehicle Carousel Click Amendment
+
+- Amended the vehicle detail carousel so achievements/overview switching uses
+  explicit click controls instead of the previous hover/focus + wheel gesture.
+- Removed the wheel handler, hover-gated carousel state, and `Hover + scroll`
+  instruction from `components/site/vehicles-gallery.tsx`.
+- Updated static and browser verification contracts to assert click controls
+  (`data-vehicle-carousel-trigger`) and the absence of the old wheel gesture.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- `pnpm verify:browser`: passed against the running dev server, including
+  `VEHICLES_OK:8` with the click-based overview transition.
+- `./init.sh`: intentionally skipped because Docker/LocalStack is stopped for
+  RAM constraints in this session.
+
+## 2026-05-16 - Mobile Timeline + Homepage SR8 Handoff
+
+- Added a mobile-specific achievements timeline layout that swaps the desktop
+  horizontal scroll stage for stacked vertical milestone cards below `md`.
+- Updated the achievements scroll logic to use the mobile card nearest the
+  viewport focus point as the active milestone while preserving the desktop
+  horizontal timeline behaviour.
+- Reverted the media and contact page polish changes from this session at user
+  request; those pages keep their prior layout/functionality.
+- Changed the homepage hero from the old SVG placeholder to the SR-8 image at
+  `/vehicle-fleet/vehicle-sunswift-8.jpg`.
+- Updated the `What is Sunswift Racing?` homepage section to share the same
+  SR-8 image and light `#f6f5f1` canvas as the scroll reveal, preparing the
+  page for a future scroll-synced vehicle render/WebP sequence.
+- Updated static and browser verification contracts for the mobile timeline and
+  SR-8 homepage image handoff, while removing the reverted media/contact polish
+  assertions.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- `pnpm verify:browser`: passed against the running dev server, including
+  homepage desktop/mobile, `ACHIEVEMENTS_MOBILE_OK`, media/contact route checks,
+  vehicles, recruitment, and partners.
+- `git diff --check`: passed.
+- `./init.sh`: intentionally skipped because Docker/LocalStack is stopped for
+  RAM constraints in this frontend-only session.
+
+## 2026-05-16 - CMS Admin + Lambda Backend Foundation
+
+- Implemented the CMS admin foundation from `CMS.md` around team members,
+  recruitment roles, partners, and tracked media assets.
+- Added extended CMS types for team hierarchy/department metadata,
+  recruitment role active/import fields, partners, and media assets.
+- Added a server-only CMS API facade:
+  - uses `CMS_API_URL` when configured
+  - falls back to LocalStack/DynamoDB/S3 helpers locally
+  - keeps public pages on static fallbacks if CMS reads fail
+- Updated admin actions so draft saves, publishes, uploads, CSV imports, and
+  heavy-media registration go through the facade instead of direct UI writes.
+- Added `/admin/partners` and `/admin/assets`, plus partner/asset nav entries.
+- Updated public `/team`, `/partners`, homepage recruitment, and available-role
+  pages to read published records through the CMS facade.
+- Added CSV import helpers for Webflow team/recruitment/partner exports and
+  `sr-headshots` output while excluding private roster fields.
+- Added `content/cms-assets.json` and a public asset helper for the heavy local
+  assets:
+  - `/placeholders/sr7-world-record.mp4`
+  - `/placeholders/bwsc-23-vid.mp4`
+  - `/vehicle-fleet/vehicle-ivy.jpg`
+- Updated AWS CDK with `WebsiteV3CMSApi`, IAM-authenticated API Gateway
+  methods, `CmsAdminHandler`, `CmsAssetHandler`, private CMS staging bucket,
+  public assets bucket, CloudFront delivery, and a Next runtime invoke policy.
+- Expanded LocalStack services and bootstrap to include IAM/API/Lambda/logs,
+  the public assets bucket, partner seed records, and media asset records.
+- Updated `AGENTS.md`, `CMS.md`, static verification, and browser verification
+  for the new admin/CMS surface.
+
+Verification:
+
+- Baseline `./init.sh`: passed before implementation.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- `npm run build` in `aws`: passed.
+- `npm test -- --runInBand` in `aws`: passed.
+- Final `./init.sh`: passed with expanded LocalStack services, both S3
+  buckets, AWS build/test, frontend typecheck/lint, and homepage design
+  contract.
+- `pnpm verify:browser`: passed against the running dev server, including
+  public routes and the unauthenticated `/admin` → `/admin/login` check.
+- `git diff --check`: passed.
+
+Known limits:
+
+- The Lambda handler files are foundation handlers for CRUD/publish/presign
+  shape. Full production image normalization and direct browser presigned
+  upload flow still needs provider-level deployment validation.
+- Not committed because the working tree already contains unrelated and
+  overlapping changes.
+
+## 2026-05-16 - CMS Admin Developer Login + Regression Docs
+
+- Added a non-production Auth.js credentials provider for the local developer
+  test account `developer@sunswift.unsw.edu.au`.
+- Kept Google OAuth on `/admin/login`; the developer login is shown only when
+  `NODE_ENV !== "production"` and `ENABLE_DEV_ADMIN_LOGIN !== "false"`.
+- Added `signInAsDeveloper` as a guarded server action and a stable
+  `data-dev-admin-login` hook for browser verification.
+- Added `pnpm verify:cms-admin`, implemented in
+  `sunswift-website-v3/scripts/verify-cms-admin.mjs`, to test:
+  - unauthenticated `/admin` redirect/login
+  - developer sign-in
+  - admin dashboard CMS counts/navigation
+  - team draft edit persistence through LocalStack
+  - partners admin surface
+  - assets admin heavy-media records
+- Expanded LocalStack seeds so CMS-backed public regressions work with local
+  data instead of falling through to static fallbacks:
+  - added the published/draft `Partnerships Associate` business role
+  - seeded the full 35-partner public/draft partner list
+- Added `sunswift-website-v3/CMS_ADMIN_SETUP.md` with local LocalStack setup,
+  developer login usage, regression commands, AWS/CDK checks, production env
+  vars, IAM expectations, and admin usage notes.
+- Updated static harness assertions so the dev login and CMS admin regression
+  script remain wired into the project.
+
+Verification:
+
+- `./init.sh`: passed after LocalStack seed expansion.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- `VERIFY_URL=http://localhost:3100 pnpm verify:cms-admin`: passed with
+  developer sign-in, dashboard checks, a persisted team draft edit, partners
+  admin, and assets admin.
+- `VERIFY_URL=http://localhost:3100 pnpm verify:browser`: passed after seed
+  alignment, including recruitment streams, partners grid, and admin login.
+- `npm run build` in `aws`: passed.
+- `npm test -- --runInBand` in `aws`: passed.
+- `git diff --check`: passed.
+
+Known limits:
+
+- The developer login is intended for local regression only; production should
+  set `ENABLE_DEV_ADMIN_LOGIN=false` and use Google OAuth.
+- Do not run `pnpm verify:cms-admin` and `pnpm verify:browser` in parallel
+  because `agent-browser` shares browser session state.
+- Not committed because the working tree already contains unrelated and
+  overlapping changes.
+
+## 2026-05-16 - CMS Admin End-User LocalStack Test
+
+- Started LocalStack through `./init.sh` and ran the app against
+  `AWS_ENDPOINT_URL=http://localhost:4566` on `http://localhost:3100`.
+- Logged into `/admin/login` with the non-production developer account
+  `developer@sunswift.unsw.edu.au`.
+- Exercised the admin UI with browser automation:
+  - imported a 10-member team CSV through `/admin/team`
+  - edited `End User Test Captain` to role `Published CMS Team Captain`
+  - published the 10 imported team records
+  - imported `End User Design Lead` through `/admin/recruitment`
+  - edited and published design, engineering, and business role descriptions
+- During the first publish attempt, discovered a DynamoDB write bug:
+  published records kept the draft `type` key because stored item metadata was
+  spread after the generated published key.
+- Fixed the CMS DynamoDB put helpers so `id`, `type`, and `status` are applied
+  after the record spread in:
+  - `putTeamMember`
+  - `putRecruitmentRole`
+  - `putPartner`
+  - `putMediaAsset`
+- Added a static harness assertion to prevent regressions in the write order.
+
+End-user verification:
+
+- LocalStack DynamoDB query confirmed published team records including
+  `member#end-user-test-captain#published`.
+- LocalStack DynamoDB query confirmed published role records including:
+  - `role#end-user-design-lead#published`
+  - `role#vehicle-dynamics-engineer#published`
+  - `role#partnerships-associate#published`
+- Browser check on `/team`: passed with
+  `PUBLIC_TEAM_REFLECTS_ADMIN:11:11`, including `End User Test Captain` and
+  `Published CMS Team Captain`.
+- Browser check on `/recruitment/available-roles`: passed with the new design
+  role count visible.
+- Browser checks on design, engineering, and business role stream pages passed
+  with the edited published descriptions visible.
+
+Verification:
+
+- `./init.sh`: passed before the end-user test and after the publish fix.
+- `pnpm build`: passed.
+- `VERIFY_URL=http://localhost:3100 pnpm verify:cms-admin`: passed.
+- `git diff --check`: passed.
+
+Known limits:
+
+- The test data lives only in LocalStack and is reset by `./init.sh`.
+- Not committed because the working tree already contains unrelated and
+  overlapping changes.

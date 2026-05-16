@@ -46,3 +46,7 @@ export function getCmsTableName() {
 export function getCmsAssetsBucket() {
   return process.env.CMS_ASSETS_BUCKET ?? "website-v3-cms-assets"
 }
+
+export function getCmsPublicAssetsBucket() {
+  return process.env.CMS_PUBLIC_ASSETS_BUCKET ?? "website-v3-public-assets"
+}

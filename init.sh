@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILE="$ROOT_DIR/docker-compose.localstack.yml"
 TABLE_NAME="${CMS_TABLE_NAME:-WebsiteV3CMS}"
 ASSETS_BUCKET="${CMS_ASSETS_BUCKET:-website-v3-cms-assets}"
+PUBLIC_ASSETS_BUCKET="${CMS_PUBLIC_ASSETS_BUCKET:-website-v3-public-assets}"
 
 echo "[init] Checking Docker"
 docker --version >/dev/null
@@ -42,6 +43,9 @@ docker compose -f "$COMPOSE_FILE" exec -T localstack awslocal dynamodb describe-
 
 echo "[init] Verifying S3 bucket $ASSETS_BUCKET"
 docker compose -f "$COMPOSE_FILE" exec -T localstack awslocal s3api head-bucket --bucket "$ASSETS_BUCKET" >/dev/null
+
+echo "[init] Verifying public S3 bucket $PUBLIC_ASSETS_BUCKET"
+docker compose -f "$COMPOSE_FILE" exec -T localstack awslocal s3api head-bucket --bucket "$PUBLIC_ASSETS_BUCKET" >/dev/null
 
 echo "[init] Verifying AWS CDK project"
 (

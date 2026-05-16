@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, ExternalLink } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 
 import { PageFrame, PageIntro, SectionLabel } from "@/components/site/site-shell"
 import { getLeadParagraph, getPublicPage, type PublicPageKey } from "@/lib/content"
@@ -61,7 +61,6 @@ export function PublicContentPage({
           ))}
         </div>
       </section>
-      <SourceNote pageKey={pageKey} />
     </PageFrame>
   )
 }
@@ -87,19 +86,6 @@ export function CtaBand() {
         </Link>
       </div>
     </section>
-  )
-}
-
-export function SourceNote({ pageKey }: { pageKey: PublicPageKey }) {
-  const page = getPublicPage(pageKey)
-
-  return (
-    <div className="mx-auto max-w-[92rem] px-4 pb-20 sm:px-6">
-      <div className="flex flex-wrap items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.22em] text-black/45">
-        <ExternalLink className="size-3.5" />
-        Temporary copy imported from {page.sourceUrl}
-      </div>
-    </div>
   )
 }
 

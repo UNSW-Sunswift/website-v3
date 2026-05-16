@@ -1,5 +1,9 @@
 import { PublicContentPage } from "@/components/site/content-sections"
 
+export const metadata = {
+  title: "What We Do",
+}
+
 export default function WhatWeDoPage() {
   return (
     <PublicContentPage

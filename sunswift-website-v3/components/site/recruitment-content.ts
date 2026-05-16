@@ -8,7 +8,6 @@ export type RecruitmentStream = {
   label: string
   summary: string
   webflowNote: string
-  families: string[]
   teams: string[]
 }
 
@@ -23,14 +22,6 @@ export const recruitmentStreams: RecruitmentStream[] = [
       "Shape how Sunswift is seen, heard and remembered through visual design, storytelling, media strategy and content production.",
     webflowNote:
       "Media students craft Sunswift's public presence across social channels, promotional content, photography and video.",
-    families: [
-      "Design",
-      "Media",
-      "Content",
-      "Photography",
-      "Videography",
-      "Copywriting",
-    ],
     teams: ["design", "media"],
   },
   {
@@ -43,13 +34,6 @@ export const recruitmentStreams: RecruitmentStream[] = [
       "Design, build, test and integrate the systems that make a solar electric race car efficient, reliable and safe.",
     webflowNote:
       "Engineering roles span the vehicle's electrical, mechanical, energy, software and alternative energy systems.",
-    families: [
-      "Software Engineering",
-      "Electrical Engineering",
-      "Mechanical Engineering",
-      "Renewables",
-      "Chemical Engineering",
-    ],
     teams: [
       "engineering",
       "software engineering",
@@ -69,14 +53,6 @@ export const recruitmentStreams: RecruitmentStream[] = [
       "Run the project around the car: finance, marketing, operations, partnerships, logistics, people and delivery.",
     webflowNote:
       "Business students manage project planning, partnerships, HR, logistics, finance, marketing and operations.",
-    families: [
-      "Finance",
-      "Marketing",
-      "Operations",
-      "Partnerships",
-      "Logistics",
-      "Strategy",
-    ],
     teams: [
       "business",
       "finance",
@@ -94,6 +70,10 @@ export function rolesForRecruitmentStream(
   stream: RecruitmentStream
 ) {
   return roles.filter((role) => {
+    if (role.active === false) {
+      return false
+    }
+
     const team = role.team.toLowerCase()
     return stream.teams.some((streamTeam) => team.includes(streamTeam))
   })

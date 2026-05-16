@@ -24,7 +24,7 @@ export function TransparentNavbar() {
       <div className="mx-auto flex h-16 max-w-[92rem] items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
-          className="block transition-opacity duration-300 hover:opacity-80"
+          className="group block"
           aria-label="Sunswift Racing home"
         >
           <SunswiftBrandLogo priority className="w-32 sm:w-40" />

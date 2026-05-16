@@ -8,7 +8,7 @@ import { TransparentNavbar } from "@/components/site/transparent-navbar"
 type StoryBlock =
   | { type: "heading"; level: string; text: string }
   | { type: "paragraph"; level?: string; text: string }
-  | { type: "image" }
+  | { type: "image"; src?: string }
 
 type StoryArticle = {
   id: string
@@ -25,14 +25,17 @@ const ourStory = aboutPages.pages.ourStory
 
 function PlaceholderImage({
   src,
-  label,
+  label = "",
   className = "",
   priority = false,
+  showCaption = true,
 }: {
   src: string
-  label: string
+  label?: string
   className?: string
   priority?: boolean
+  /** When false, hides the footer caption bar (Who We Are gallery retains captions). */
+  showCaption?: boolean
 }) {
   return (
     <div className={`relative overflow-hidden bg-white/[0.035] ${className}`}>
@@ -45,12 +48,14 @@ function PlaceholderImage({
         className="object-cover opacity-80 [filter:grayscale(0.22)_brightness(0.82)]"
       />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.46)_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between border-t border-white/15 bg-black/35 px-4 py-3 backdrop-blur-md">
-        <span className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-white/62">
-          {label}
-        </span>
-        <span className="size-1.5 rounded-full bg-accent-yellow" aria-hidden="true" />
-      </div>
+      {showCaption ? (
+        <div className="absolute inset-x-0 bottom-0 flex items-center justify-between border-t border-white/15 bg-black/35 px-4 py-3 backdrop-blur-md">
+          <span className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-white/62">
+            {label}
+          </span>
+          <span className="size-1.5 rounded-full bg-accent-yellow" aria-hidden="true" />
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -103,7 +108,7 @@ export function WhoWeAreEditorialPage() {
         eyebrow="About Us"
         title={whoWeAre.title}
         body={whoWeAre.overview}
-        image="/placeholders/vehicle-sunswift-7.svg"
+        image="/vehicle-fleet/vehicle-sunswift-7.jpeg"
       />
 
       <section className="border-y border-white/10 bg-black text-white">
@@ -183,19 +188,16 @@ export function WhoWeAreEditorialPage() {
   )
 }
 
-function StoryBlockView({ block, index }: { block: StoryBlock; index: number }) {
+function StoryBlockView({ block }: { block: StoryBlock }) {
   if (block.type === "image") {
+    const src =
+      typeof block.src === "string" && block.src.length > 0
+        ? block.src
+        : "/placeholders/garage.svg"
     return (
       <PlaceholderImage
-        src={[
-          "/placeholders/garage.svg",
-          "/placeholders/vehicle-i.svg",
-          "/placeholders/vehicle-ii.svg",
-          "/placeholders/vehicle-iii.svg",
-          "/placeholders/vehicle-ivy.svg",
-          "/placeholders/lab.svg",
-        ][index % 6]}
-        label="Story image placeholder"
+        src={src}
+        showCaption={false}
         className="my-10 aspect-[16/9]"
       />
     )
@@ -244,14 +246,14 @@ function StoryArticleView({ article, index }: { article: StoryArticle; index: nu
         </div>
         <PlaceholderImage
           src={article.image}
-          label={article.title}
+          showCaption={false}
           className="mt-8 aspect-[4/3]"
         />
       </aside>
 
       <div className="mt-12 lg:mt-0">
         {article.blocks.map((block, blockIndex) => (
-          <StoryBlockView key={`${article.id}-${blockIndex}`} block={block} index={blockIndex} />
+          <StoryBlockView key={`${article.id}-${blockIndex}`} block={block} />
         ))}
       </div>
     </article>
@@ -267,7 +269,7 @@ export function OurStoryEditorialPage() {
         eyebrow="About Us"
         title={ourStory.title}
         body={articles[0]?.summary ?? "The Sunswift story, from first build to future-facing solar racing."}
-        image="/placeholders/garage.svg"
+        image={articles[0]?.image ?? "/placeholders/garage.svg"}
       />
 
       <section className="sticky top-0 z-30 border-y border-white/10 bg-black/70 px-5 py-3 backdrop-blur-2xl sm:px-8 lg:px-14">

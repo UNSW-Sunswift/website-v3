@@ -2,13 +2,17 @@ import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { AdminShell } from "@/components/site/admin-shell"
-import { publishTeamMember, saveTeamMemberDraft } from "@/app/admin/actions"
-import { assetUrl, getTeamMembers } from "@/lib/cms/dynamodb"
+import { importTeamDrafts, publishTeamMember, saveTeamMemberDraft } from "@/app/admin/actions"
+import { listCmsRecords } from "@/lib/cms/api"
+import { assetUrl } from "@/lib/cms/dynamodb"
 
 export const dynamic = "force-dynamic"
+export const metadata = {
+  title: "Admin Team",
+}
 
 export default async function AdminTeamPage() {
-  const members = await getTeamMembers("draft")
+  const members = await listCmsRecords("team", "draft")
 
   return (
     <AdminShell>
@@ -21,6 +25,27 @@ export default async function AdminTeamPage() {
             to the public collection.
           </p>
         </div>
+
+        <form
+          action={importTeamDrafts}
+          className="mt-8 rounded-lg border border-border bg-card p-5"
+          data-admin-team-import
+        >
+          <h2 className="text-xl font-medium">Import team CSV</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Accepts the old Webflow team roster CSV or the sr-headshots output CSV. Private roster
+            fields such as zID and UNSW email are ignored.
+          </p>
+          <input
+            name="csv"
+            type="file"
+            accept=".csv,text/csv"
+            className="mt-4 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          />
+          <Button type="submit" className="mt-4">
+            Import drafts
+          </Button>
+        </form>
 
         <div className="mt-8 grid gap-6">
           {members.map((member) => (
@@ -36,7 +61,11 @@ export default async function AdminTeamPage() {
                 </Button>
               </form>
             </div>
-            <form action={saveTeamMemberDraft} className="grid gap-4 sm:grid-cols-2">
+            <form
+              action={saveTeamMemberDraft}
+              className="grid gap-4 sm:grid-cols-2"
+              data-admin-team-editor
+            >
               <input type="hidden" name="existingImageKey" value={member.imageKey ?? ""} />
               <label className="grid gap-2 text-sm">
                 Name
@@ -55,6 +84,39 @@ export default async function AdminTeamPage() {
                 <input
                   name="discipline"
                   defaultValue={member.discipline}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-2 text-sm">
+                Department
+                <input
+                  name="department"
+                  defaultValue={member.department ?? ""}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-2 text-sm">
+                Hierarchy level
+                <input
+                  name="hierarchyLevel"
+                  defaultValue={member.hierarchyLevel ?? ""}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-2 text-sm">
+                Additional roles
+                <input
+                  name="additionalRoles"
+                  defaultValue={member.additionalRoles ?? ""}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-2 text-sm">
+                Sort order
+                <input
+                  name="sortOrder"
+                  type="number"
+                  defaultValue={member.sortOrder ?? 0}
                   className="rounded-md border border-input bg-background px-3 py-2"
                 />
               </label>

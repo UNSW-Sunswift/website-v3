@@ -4,7 +4,9 @@ import Image from "next/image"
 import { ChevronDown } from "lucide-react"
 import { useMemo, useState } from "react"
 
-type TeamMember = {
+import type { TeamMember as CmsTeamMember } from "@/lib/cms/types"
+
+type RosterMember = {
   name: string
   role: string
   department: string
@@ -15,7 +17,7 @@ type TeamMember = {
 
 const placeholderImage = "/placeholders/team-member.svg"
 
-const placeholderMembers: TeamMember[] = [
+const placeholderMembers: RosterMember[] = [
   {
     name: "Alex Rivera",
     role: "Team Principal",
@@ -114,26 +116,48 @@ const placeholderMembers: TeamMember[] = [
   },
 ]
 
-const departments = [
-  "All departments",
-  ...Array.from(
-    new Set(placeholderMembers.map((member) => member.department))
-  ).sort((a, b) => a.localeCompare(b)),
-]
+function toRosterMember(member: CmsTeamMember): RosterMember {
+  return {
+    name: member.name,
+    role: member.role,
+    department: member.department || member.discipline || "Team",
+    discipline: member.discipline,
+    hierarchy: member.hierarchyLevel || "Team",
+    imageSrc: member.publishedAssetKey || member.imageKey || placeholderImage,
+  }
+}
 
-export function TeamRoster() {
+export function TeamRoster({
+  members = placeholderMembers,
+}: {
+  members?: CmsTeamMember[] | RosterMember[]
+}) {
+  const sourceMembers = members.length >= 10 ? members : placeholderMembers
+  const rosterMembers = useMemo(
+    () => sourceMembers.map((member) => ("imageSrc" in member ? member : toRosterMember(member))),
+    [sourceMembers]
+  )
+  const departments = useMemo(
+    () => [
+      "All departments",
+      ...Array.from(new Set(rosterMembers.map((member) => member.department))).sort((a, b) =>
+        a.localeCompare(b)
+      ),
+    ],
+    [rosterMembers]
+  )
   const [selectedDepartment, setSelectedDepartment] =
     useState("All departments")
 
   const filteredMembers = useMemo(() => {
     if (selectedDepartment === "All departments") {
-      return placeholderMembers
+      return rosterMembers
     }
 
-    return placeholderMembers.filter(
+    return rosterMembers.filter(
       (member) => member.department === selectedDepartment
     )
-  }, [selectedDepartment])
+  }, [rosterMembers, selectedDepartment])
 
   return (
     <main
@@ -154,8 +178,8 @@ export function TeamRoster() {
           <div className="max-w-md lg:justify-self-end">
             <p className="text-lg leading-7 text-white/70">
               A student-led racing team spanning engineering, business, media
-              and operations. These placeholder profiles model the CMS-driven
-              roster that will replace them later.
+              and operations. Profiles are sourced from the CMS replacement
+              database with static fallbacks for local development.
             </p>
             <div className="mt-8 grid grid-cols-2 border-y border-white/15 py-5">
               <div>
@@ -163,7 +187,7 @@ export function TeamRoster() {
                   data-team-count
                   className="text-3xl font-light tracking-normal text-white"
                 >
-                  {placeholderMembers.length}
+                  {rosterMembers.length}
                 </p>
                 <p className="mt-1 font-mono text-[0.66rem] tracking-[0.22em] text-white/42 uppercase">
                   Profiles

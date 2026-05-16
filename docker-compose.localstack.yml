@@ -13,10 +13,11 @@ services:
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: ap-southeast-2
       CMS_ASSETS_BUCKET: website-v3-cms-assets
+      CMS_PUBLIC_ASSETS_BUCKET: website-v3-public-assets
       CMS_TABLE_NAME: WebsiteV3CMS
       DEBUG: "0"
       PERSISTENCE: "1"
-      SERVICES: dynamodb,s3
+      SERVICES: dynamodb,s3,lambda,apigateway,iam,logs
     volumes:
       - localstack-data:/var/lib/localstack
 

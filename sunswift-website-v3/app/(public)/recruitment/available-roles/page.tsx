@@ -7,12 +7,15 @@ import {
   rolesForRecruitmentStream,
 } from "@/components/site/recruitment-content"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
-import { getRecruitmentRoles } from "@/lib/cms/dynamodb"
+import { listCmsRecords } from "@/lib/cms/api"
 
 export const dynamic = "force-dynamic"
+export const metadata = {
+  title: "Available Roles",
+}
 
 export default async function AvailableRolesPage() {
-  const roles = await getRecruitmentRoles("published")
+  const roles = await listCmsRecords("roles", "published")
 
   return (
     <main data-available-roles-page className="bg-[#0a0c0e] text-white">
@@ -27,8 +30,8 @@ export default async function AvailableRolesPage() {
               </h1>
               <p className="max-w-xl text-base leading-7 text-white/58 sm:text-lg">
                 Choose the stream you want to scan. Each section now has its own
-                page so experienced applicants can jump straight to the role
-                family they care about.
+                page so experienced applicants can jump straight to the stream
+                they care about.
               </p>
             </div>
           </div>
@@ -63,19 +66,6 @@ export default async function AvailableRolesPage() {
                   </span>
 
                   <span>
-                    <span
-                      className="flex flex-wrap gap-2"
-                      data-available-role-families={stream.name}
-                    >
-                      {stream.families.map((family) => (
-                        <span
-                          key={family}
-                          className="border border-white/12 px-3 py-2 font-mono text-[0.6rem] tracking-[0.2em] text-white/48 uppercase"
-                        >
-                          {family}
-                        </span>
-                      ))}
-                    </span>
                     <span className="mt-8 flex items-center justify-between border-t border-white/10 pt-5 font-mono text-[0.62rem] tracking-[0.22em] text-white/48 uppercase transition-colors duration-300 group-hover:text-accent-yellow">
                       {streamRoles.length} current{" "}
                       {streamRoles.length === 1 ? "role" : "roles"}

@@ -5,6 +5,7 @@ const achievementsUrl = new URL("/achievements", baseUrl).toString()
 const whoWeAreUrl = new URL("/who-we-are", baseUrl).toString()
 const ourStoryUrl = new URL("/our-story", baseUrl).toString()
 const teamUrl = new URL("/team", baseUrl).toString()
+const vehiclesUrl = new URL("/vehicles", baseUrl).toString()
 const mediaUrl = new URL("/media", baseUrl).toString()
 const contactUrl = new URL("/contact", baseUrl).toString()
 const recruitmentUrl = new URL("/recruitment", baseUrl).toString()
@@ -25,6 +26,7 @@ const businessRolesUrl = new URL(
   baseUrl
 ).toString()
 const partnersUrl = new URL("/partners", baseUrl).toString()
+const adminUrl = new URL("/admin", baseUrl).toString()
 
 const homepageContract = `(() => new Promise((resolve, reject) => {
   const main = document.querySelector("main[data-homepage]");
@@ -113,7 +115,7 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
     return;
   }
   const recruitmentText = recruitment.textContent || "";
-  for (const phrase of ["Embrace Tomorrow", "Design", "Engineering", "Business", "Software Engineering", "Finance", "Marketing", "Join the team"]) {
+  for (const phrase of ["Embrace Tomorrow", "Design", "Engineering", "Business", "Design Roles", "Engineering Roles", "Business Roles", "Join the team"]) {
     if (!recruitmentText.includes(phrase)) {
       reject(new Error("MISSING_RECRUITMENT_COPY:" + phrase));
       return;
@@ -127,6 +129,10 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
   const roleCards = recruitment.querySelectorAll("[data-homepage-recruitment-role]");
   if (roleCards.length < 3) {
     reject(new Error("MISSING_RECRUITMENT_ROLE_CARDS:" + roleCards.length));
+    return;
+  }
+  if (recruitment.querySelector("[data-recruitment-families], [data-available-role-families]")) {
+    reject(new Error("HOMEPAGE_RECRUITMENT_TAGS_STILL_VISIBLE"));
     return;
   }
   if (recruitment.getAttribute("data-recruitment-source") !== "cms") {
@@ -182,6 +188,8 @@ const pageIsHealthy = `(() => {
         element.matches(".homepage-hero-image, .homepage-zoom-render, .homepage-zoom-sweep") ||
         element.closest(".homepage-zoom-render, [data-achievements-timeline]") ||
         element.closest("[aria-label='Our Story sections']") ||
+        element.closest("[data-vehicles-gallery]") ||
+        element.closest("[data-media-highlight-row]") ||
         element.closest("[data-partners-marquee]") ||
         (element.closest("[data-homepage-recruitment]") && style.position === "absolute") ||
         (element.closest("[data-achievements-page]") && style.position === "absolute");
@@ -479,6 +487,12 @@ const achievementsContract = `(() => new Promise((resolve, reject) => {
     return;
   }
 
+  const stagedVideos = stage.querySelectorAll(":scope > div:first-child video");
+  if (stagedVideos.length < 1) {
+    reject(new Error("MISSING_ACHIEVEMENT_VIDEO_MOUNT"));
+    return;
+  }
+
   const introRect = introSection.getBoundingClientRect();
   const scrollRect = scrollSection.getBoundingClientRect();
   if (scrollRect.top <= introRect.top + window.innerHeight * 0.7) {
@@ -492,6 +506,50 @@ const achievementsContract = `(() => new Promise((resolve, reject) => {
       reject(new Error("MISSING_ACHIEVEMENT_COPY:" + phrase));
       return;
     }
+  }
+
+  if (window.innerWidth < 768) {
+    const mobileTimeline = document.querySelector("[data-achievements-mobile-timeline]");
+    const mobileCards = Array.from(document.querySelectorAll("[data-mobile-achievement-card]"));
+
+    if (!mobileTimeline || mobileCards.length < 18) {
+      reject(new Error("MISSING_ACHIEVEMENTS_MOBILE_TIMELINE:" + mobileCards.length));
+      return;
+    }
+
+    if (getComputedStyle(stage).display !== "none") {
+      reject(new Error("ACHIEVEMENTS_DESKTOP_RAIL_VISIBLE_ON_MOBILE"));
+      return;
+    }
+
+    if (scrollSection.getAttribute("style")?.includes("height")) {
+      reject(new Error("ACHIEVEMENTS_MOBILE_HAS_DESKTOP_SCROLL_HEIGHT"));
+      return;
+    }
+
+    const beforeYear = page.getAttribute("data-active-year");
+    const targetCard = mobileCards[Math.min(5, mobileCards.length - 1)];
+    targetCard.scrollIntoView({ block: "center" });
+
+    setTimeout(() => {
+      const afterYear = page.getAttribute("data-active-year");
+      const rect = targetCard.getBoundingClientRect();
+
+      window.scrollTo(0, 0);
+
+      if (!beforeYear || !afterYear || beforeYear === afterYear) {
+        reject(new Error(\`ACHIEVEMENTS_MOBILE_SCROLL_STATIC:\${beforeYear}->\${afterYear}\`));
+        return;
+      }
+
+      if (rect.left < -1 || rect.right > window.innerWidth + 1) {
+        reject(new Error(\`ACHIEVEMENTS_MOBILE_CARD_OVERFLOW:\${Math.round(rect.left)}:\${Math.round(rect.right)}\`));
+        return;
+      }
+
+      resolve(\`ACHIEVEMENTS_MOBILE_OK:\${beforeYear}->\${afterYear}\`);
+    }, 350);
+    return;
   }
 
   const beforeYear = page.getAttribute("data-active-year");
@@ -654,14 +712,9 @@ const recruitmentHubContract = `(() => {
     "Design",
     "Engineering",
     "Business",
-    "Software Engineering",
-    "Electrical Engineering",
-    "Mechanical Engineering",
-    "Renewables",
-    "Chemical Engineering",
-    "Finance",
-    "Marketing",
-    "Operations"
+    "Design Roles",
+    "Engineering Roles",
+    "Business Roles"
   ]) {
     if (!text.includes(phrase)) {
       throw new Error("MISSING_RECRUITMENT_HUB_COPY:" + phrase);
@@ -696,8 +749,8 @@ const recruitmentHubContract = `(() => {
     throw new Error("RECRUITMENT_HUB_HAS_INLINE_ROLE_CARDS:" + inlineRoleCards.length);
   }
 
-  if (!document.querySelector("[data-recruitment-families='Design']") || !document.querySelector("[data-recruitment-families='Engineering']") || !document.querySelector("[data-recruitment-families='Business']")) {
-    throw new Error("MISSING_RECRUITMENT_FAMILY_GROUPS");
+  if (document.querySelector("[data-recruitment-families], [data-available-role-families]")) {
+    throw new Error("RECRUITMENT_TAGS_STILL_VISIBLE");
   }
 
   return "RECRUITMENT_HUB_OK:" + streams.length;
@@ -717,14 +770,9 @@ const availableRolesContract = `(() => {
     "Design",
     "Engineering",
     "Business",
-    "Software Engineering",
-    "Electrical Engineering",
-    "Mechanical Engineering",
-    "Renewables",
-    "Chemical Engineering",
-    "Finance",
-    "Marketing",
-    "Operations"
+    "Design Roles",
+    "Engineering Roles",
+    "Business Roles"
   ]) {
     if (!text.includes(phrase)) {
       throw new Error("MISSING_AVAILABLE_ROLES_COPY:" + phrase);
@@ -745,6 +793,10 @@ const availableRolesContract = `(() => {
     throw new Error("AVAILABLE_ROLES_INDEX_HAS_INLINE_CARDS");
   }
 
+  if (document.querySelector("[data-available-role-families], [data-recruitment-families]")) {
+    throw new Error("AVAILABLE_ROLES_TAGS_STILL_VISIBLE");
+  }
+
   return "AVAILABLE_ROLES_OK:" + streams.length;
 })()`
 
@@ -759,9 +811,9 @@ const roleStreamContract = `(() => {
 
   const stream = page.getAttribute("data-role-stream-page");
   const expectedByStream = {
-    design: ["Design Roles.", "Design", "Media"],
-    engineering: ["Engineering Roles.", "Software Engineering", "Electrical Engineering", "Mechanical Engineering"],
-    business: ["Business Roles.", "Finance", "Marketing", "Operations"]
+    design: ["Design Roles.", "Shape how Sunswift is seen"],
+    engineering: ["Engineering Roles.", "Design, build, test"],
+    business: ["Business Roles.", "Run the project around the car"]
   };
 
   for (const phrase of expectedByStream[stream] ?? []) {
@@ -778,8 +830,80 @@ const roleStreamContract = `(() => {
     throw new Error("MISSING_ROLE_STREAM_CARDS:" + stream + ":" + cards.length);
   }
 
+  if (document.querySelector("[data-available-role-families], [data-recruitment-families]")) {
+    throw new Error("ROLE_STREAM_TAGS_STILL_VISIBLE:" + stream);
+  }
+
   return "ROLE_STREAM_OK:" + stream + ":" + cards.length;
 })()`
+
+const vehiclesContract = `(() => new Promise((resolve, reject) => {
+  const page = document.querySelector("[data-vehicles-page]");
+  const gallery = document.querySelector("[data-vehicles-gallery]");
+  const cards = document.querySelectorAll("[data-vehicle-card]");
+  const text = document.body.textContent || "";
+
+  if (document.title !== "Vehicles | Sunswift Racing") {
+    reject(new Error("BAD_VEHICLES_TITLE:" + document.title));
+    return;
+  }
+
+  if (!page || !gallery || cards.length < 8) {
+    reject(new Error("MISSING_VEHICLES_GALLERY:" + cards.length));
+    return;
+  }
+
+  const summary = document.querySelector("[data-vehicle-slug='sunswift-7'] span.text-white");
+  if (!summary) {
+    reject(new Error("VEHICLE_SUMMARY_NOT_HIGH_CONTRAST"));
+    return;
+  }
+
+  const sr7 = document.querySelector("[data-vehicle-slug='sunswift-7']");
+  if (!sr7) {
+    reject(new Error("MISSING_SR7_CARD"));
+    return;
+  }
+  sr7.click();
+
+  setTimeout(() => {
+    const detail = document.querySelector("[data-vehicle-detail][data-vehicle-slug='sunswift-7']");
+    const carousel = detail?.querySelector("[data-vehicle-carousel]");
+    const overview = detail?.querySelector("[data-vehicle-carousel-panel='overview']");
+    const overviewTrigger = detail?.querySelector("[data-vehicle-carousel-trigger='overview']");
+    const specs = detail?.querySelector("[data-vehicle-specs]");
+
+    if (!detail || !carousel || !overview || !overviewTrigger || !specs) {
+      reject(new Error("MISSING_VEHICLE_DETAIL_CONTRACT"));
+      return;
+    }
+
+    if (carousel.compareDocumentPosition(specs) !== Node.DOCUMENT_POSITION_FOLLOWING) {
+      reject(new Error("VEHICLE_SPECS_NOT_BELOW_CAROUSEL"));
+      return;
+    }
+
+    if (!text.includes("SR-7") || text.includes("Related")) {
+      reject(new Error("VEHICLES_COPY_OR_TAGS_INVALID"));
+      return;
+    }
+
+    if (carousel.getAttribute("data-vehicle-carousel-mode") !== "achievements") {
+      reject(new Error("VEHICLE_CAROUSEL_BAD_INITIAL_MODE"));
+      return;
+    }
+
+    overviewTrigger.click();
+
+    setTimeout(() => {
+      if (carousel.getAttribute("data-vehicle-carousel-mode") !== "overview") {
+        reject(new Error("VEHICLE_CAROUSEL_DID_NOT_SWITCH_ON_CLICK"));
+        return;
+      }
+      resolve("VEHICLES_OK:" + cards.length);
+    }, 650);
+  }, 720);
+}))()`
 
 const partnersContract = `(() => {
   const page = document.querySelector("[data-partners-page]");
@@ -911,10 +1035,18 @@ const mediaHighlightsContract = `(() => {
   const journey = document.querySelector("[data-media-journey]");
   const partnerships = document.querySelectorAll("[data-media-partnership]");
   const teamHighlights = document.querySelectorAll("[data-media-team-highlight]");
-  const videoCards = document.querySelectorAll("[data-media-video-card]");
+  const partnerVideos = document.querySelectorAll("[data-media-partner-video]");
+  const juicer = document.querySelector("[data-juicer-sidebar]");
+  const scrollRows = document.querySelectorAll("[data-media-highlight-row]");
+  const cards = document.querySelectorAll("[data-media-highlight-card]");
+  const spotlightEmbed = document.querySelector("[data-media-spotlight-embed] iframe");
 
-  if (!page || !spotlight || !journey) {
+  if (!page || !spotlight || !journey || !juicer) {
     throw new Error("MISSING_MEDIA_HIGHLIGHTS_PAGE");
+  }
+
+  if (!spotlightEmbed || !(spotlightEmbed.getAttribute("src") || "").includes("youtube-nocookie.com/embed")) {
+    throw new Error("MISSING_MEDIA_SPOTLIGHT_YOUTUBE_EMBED");
   }
 
   const text = document.body.textContent || "";
@@ -946,11 +1078,24 @@ const mediaHighlightsContract = `(() => {
     throw new Error("MISSING_MEDIA_TEAM_HIGHLIGHTS:" + teamHighlights.length);
   }
 
-  if (videoCards.length !== 2) {
-    throw new Error("MISSING_MEDIA_VIDEO_CARDS:" + videoCards.length);
+  if (partnerVideos.length !== 2) {
+    throw new Error("MISSING_MEDIA_PARTNER_VIDEOS:" + partnerVideos.length);
   }
 
-  return "MEDIA_HIGHLIGHTS_OK:" + partnerships.length + ":" + teamHighlights.length;
+  if (scrollRows.length < 6) {
+    throw new Error("MISSING_MEDIA_SCROLL_ROWS:" + scrollRows.length);
+  }
+
+  if (cards.length < 18) {
+    throw new Error("MISSING_MEDIA_HIGHLIGHT_LINK_CARDS:" + cards.length);
+  }
+
+  const iframe = juicer.querySelector('iframe[src*="juicer.io"]');
+  if (!iframe) {
+    throw new Error("MISSING_JUICER_IFRAME");
+  }
+
+  return "MEDIA_HIGHLIGHTS_OK:" + partnerships.length + ":" + teamHighlights.length + ":" + scrollRows.length;
 })()`
 
 const contactContract = `(() => {
@@ -971,6 +1116,9 @@ const contactContract = `(() => {
     "Contact us.",
     "Email Richard Hopkins",
     "richard.hopkins1@unsw.edu.au",
+    "Message us online.",
+    "Social media",
+    "Instagram",
     "Room G14, Blockhouse (G6), University Mall, UNSW, Kensington NSW 2052"
   ]) {
     if (!text.includes(phrase)) {
@@ -978,11 +1126,33 @@ const contactContract = `(() => {
     }
   }
 
+  const socialLinks = document.querySelectorAll("[data-contact-social-link]");
+  if (socialLinks.length !== 3) {
+    throw new Error("MISSING_CONTACT_SOCIAL_LINKS:" + socialLinks.length);
+  }
+
   if (document.querySelector("form,input,textarea")) {
     throw new Error("CONTACT_FORM_PRESENT");
   }
 
   return "CONTACT_OK";
+})()`
+
+const adminLoginContract = `(() => {
+  const text = document.body.textContent || "";
+  const url = window.location.pathname;
+
+  if (!url.includes("/admin/login")) {
+    throw new Error("ADMIN_DID_NOT_REDIRECT_TO_LOGIN:" + url);
+  }
+
+  for (const phrase of ["Sunswift CMS", "Admin login", "Continue with Google"]) {
+    if (!text.includes(phrase)) {
+      throw new Error("MISSING_ADMIN_LOGIN_COPY:" + phrase);
+    }
+  }
+
+  return "ADMIN_LOGIN_OK";
 })()`
 
 const commands = [
@@ -1037,6 +1207,13 @@ const commands = [
   ["eval", pageIsHealthy],
   ["eval", siteFooterContract],
   ["eval", teamContract],
+  ["screenshot", "--annotate"],
+  ["snapshot", "-i"],
+  ["open", vehiclesUrl],
+  ["wait", "--load", "networkidle"],
+  ["eval", pageIsHealthy],
+  ["eval", siteFooterContract],
+  ["eval", vehiclesContract],
   ["screenshot", "--annotate"],
   ["snapshot", "-i"],
   ["open", mediaUrl],
@@ -1094,6 +1271,12 @@ const commands = [
   ["eval", pageIsHealthy],
   ["eval", siteFooterContract],
   ["eval", partnersContract],
+  ["screenshot", "--annotate"],
+  ["snapshot", "-i"],
+  ["open", adminUrl],
+  ["wait", "--load", "networkidle"],
+  ["eval", pageIsHealthy],
+  ["eval", adminLoginContract],
   ["screenshot", "--annotate"],
   ["snapshot", "-i"],
 ]

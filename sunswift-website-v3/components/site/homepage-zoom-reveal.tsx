@@ -100,7 +100,7 @@ export function HomepageZoomReveal() {
           className="homepage-zoom-render absolute inset-0"
         >
           <Image
-            src="/placeholders/vehicle-sunswift-8.svg"
+            src="/vehicle-fleet/vehicle-sunswift-8.jpg"
             alt=""
             fill
             priority={false}

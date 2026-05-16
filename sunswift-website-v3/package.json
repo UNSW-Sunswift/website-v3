@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "test:homepage-design": "node scripts/test-homepage-design.mjs",
     "import:webflow": "node scripts/import-webflow-content.mjs",
-    "verify:browser": "node scripts/verify-browser.mjs"
+    "verify:browser": "node scripts/verify-browser.mjs",
+    "verify:cms-admin": "node scripts/verify-cms-admin.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1046.0",

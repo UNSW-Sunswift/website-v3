@@ -11,6 +11,13 @@ type Props = {
 
 const CLICK_TRANSITION_MS = 520
 
+/** Strip + detail hero images: max encoder quality and generous `sizes` for hover expansion + DPR. */
+const GARAGE_IMAGE_QUALITY = 100
+const GALLERY_CARD_IMAGE_SIZES =
+  "(min-width: 1536px) 65vw, (min-width: 1024px) 70vw, (min-width: 640px) 90vw, 100vw"
+const DETAIL_HERO_IMAGE_SIZES =
+  "(min-width: 1536px) 1200px, (min-width: 1024px) 85vw, 100vw"
+
 export function VehiclesGallery({ vehicles }: Props) {
   const [hovered, setHovered] = useState<string | null>(null)
   const [clicking, setClicking] = useState<string | null>(null)
@@ -104,7 +111,8 @@ export function VehiclesGallery({ vehicles }: Props) {
                   alt=""
                   fill
                   priority={index < 3}
-                  sizes="(min-width: 1024px) 18vw, 60vw"
+                  quality={GARAGE_IMAGE_QUALITY}
+                  sizes={GALLERY_CARD_IMAGE_SIZES}
                   className={[
                     "object-cover transition-[transform,opacity,filter] duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]",
                     isClicking
@@ -152,7 +160,7 @@ export function VehiclesGallery({ vehicles }: Props) {
                   </span>
                   <span
                     className={[
-                      "block max-w-[28ch] text-xs font-extralight leading-5 text-white/70 transition-[opacity,transform,max-height] duration-500 sm:text-sm sm:leading-6",
+                      "block max-w-[28ch] text-xs font-extralight leading-5 text-white [text-shadow:0_1px_14px_rgba(0,0,0,0.82)] transition-[opacity,transform,max-height] duration-500 sm:text-sm sm:leading-6",
                       isHovered
                         ? "max-h-24 translate-y-0 opacity-100"
                         : "pointer-events-none max-h-0 translate-y-1 overflow-hidden opacity-0",
@@ -218,6 +226,11 @@ export function VehiclesGallery({ vehicles }: Props) {
 }
 
 function VehicleDetail({ vehicle, onClose }: { vehicle: Vehicle; onClose: () => void }) {
+  const [activePanel, setActivePanel] = useState<"achievements" | "overview">(
+    "achievements"
+  )
+  const hasOverview = Boolean(vehicle.overview?.trim())
+
   return (
     <section
       data-vehicle-detail
@@ -248,7 +261,7 @@ function VehicleDetail({ vehicle, onClose }: { vehicle: Vehicle; onClose: () => 
           <h2 className="text-5xl font-light leading-[0.98] tracking-tight text-white sm:text-7xl lg:text-[6.5rem]">
             {vehicle.name}
           </h2>
-          <p className="mt-6 max-w-md text-base leading-7 text-white/70 sm:text-lg">
+          <p className="mt-6 max-w-md text-base leading-7 text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] sm:text-lg">
             {vehicle.summary}
           </p>
 
@@ -258,7 +271,8 @@ function VehicleDetail({ vehicle, onClose }: { vehicle: Vehicle; onClose: () => 
               alt={`${vehicle.name} render`}
               fill
               priority
-              sizes="(min-width: 1024px) 48vw, 100vw"
+              quality={GARAGE_IMAGE_QUALITY}
+              sizes={DETAIL_HERO_IMAGE_SIZES}
               className="object-cover"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(10,12,14,0.6)_100%)]" />
@@ -269,7 +283,93 @@ function VehicleDetail({ vehicle, onClose }: { vehicle: Vehicle; onClose: () => 
           className="flex flex-col gap-12"
           style={{ animation: "vehicle-fade-up 700ms cubic-bezier(0.22,0.61,0.36,1) 220ms both" }}
         >
-          <div>
+          <div
+            data-vehicle-carousel
+            data-vehicle-carousel-mode={activePanel}
+            className="relative min-h-[25rem] overflow-hidden rounded-xl border border-white/10 bg-white/[0.035] transition-colors duration-300"
+            aria-label={
+              hasOverview
+                ? `${vehicle.name} achievements and overview. Click to switch panels.`
+                : `${vehicle.name} achievements.`
+            }
+          >
+            <div className="flex flex-col gap-4 border-b border-white/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="font-mono text-[0.65rem] uppercase tracking-[0.28em] text-white/40">
+                {activePanel === "achievements" ? "Achievements" : "Overview"}
+              </p>
+              {hasOverview ? (
+                <div
+                  data-vehicle-carousel-controls
+                  className="inline-flex w-fit overflow-hidden rounded-full border border-white/12 bg-black/20 p-1"
+                >
+                  {(["achievements", "overview"] as const).map((panel) => (
+                    <button
+                      key={panel}
+                      type="button"
+                      data-vehicle-carousel-trigger={panel}
+                      data-active={activePanel === panel ? "true" : "false"}
+                      onClick={() => setActivePanel(panel)}
+                      className={[
+                        "rounded-full px-3 py-1.5 font-mono text-[0.58rem] uppercase tracking-[0.2em] transition-colors duration-300",
+                        activePanel === panel
+                          ? "bg-accent-yellow text-black"
+                          : "text-white/46 hover:text-white",
+                      ].join(" ")}
+                    >
+                      {panel}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+
+            <div className="relative min-h-[20rem]">
+              <div
+                data-vehicle-carousel-panel="achievements"
+                aria-hidden={activePanel !== "achievements"}
+                className={[
+                  "absolute inset-0 px-5 py-6 transition-[opacity,transform,filter] duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                  activePanel === "achievements"
+                    ? "translate-y-0 opacity-100 [filter:blur(0)]"
+                    : "-translate-y-5 opacity-0 [filter:blur(8px)]",
+                ].join(" ")}
+              >
+                <ul className="space-y-4">
+                  {vehicle.achievements.map((achievement) => (
+                    <li
+                      key={achievement}
+                      className="flex gap-4 border-t border-white/10 pt-4 text-sm leading-6 text-white/75 first:border-t-0 first:pt-0 sm:text-base sm:leading-7"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-accent-yellow"
+                      />
+                      {achievement}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {hasOverview ? (
+                <div
+                  data-vehicle-carousel-panel="overview"
+                  aria-hidden={activePanel !== "overview"}
+                  className={[
+                    "absolute inset-0 px-5 py-6 transition-[opacity,transform,filter] duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                    activePanel === "overview"
+                      ? "translate-y-0 opacity-100 [filter:blur(0)]"
+                      : "translate-y-5 opacity-0 [filter:blur(8px)]",
+                  ].join(" ")}
+                >
+                  <p className="max-w-2xl text-sm leading-7 text-white/72 sm:text-base sm:leading-8">
+                    {vehicle.overview}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <div data-vehicle-specs>
             <p className="font-mono text-[0.65rem] uppercase tracking-[0.28em] text-white/40">
               Technical Specifications
             </p>
@@ -286,41 +386,6 @@ function VehicleDetail({ vehicle, onClose }: { vehicle: Vehicle; onClose: () => 
               ))}
             </dl>
           </div>
-
-          <div>
-            <p className="font-mono text-[0.65rem] uppercase tracking-[0.28em] text-white/40">
-              Achievements
-            </p>
-            <ul className="mt-6 space-y-4">
-              {vehicle.achievements.map((achievement) => (
-                <li
-                  key={achievement}
-                  className="flex gap-4 border-t border-white/10 pt-4 text-sm leading-6 text-white/75 sm:text-base sm:leading-7"
-                >
-                  <span aria-hidden="true" className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-accent-yellow" />
-                  {achievement}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {vehicle.relatedPosts.length > 0 ? (
-            <div>
-              <p className="font-mono text-[0.65rem] uppercase tracking-[0.28em] text-white/40">
-                Related
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {vehicle.relatedPosts.map((post) => (
-                  <span
-                    key={post}
-                    className="rounded-full border border-white/15 px-3 py-1.5 text-xs uppercase tracking-[0.16em] text-white/65"
-                  >
-                    {post}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ) : null}
         </div>
       </div>
     </section>

@@ -11,12 +11,15 @@ export function SunswiftBrandLogo({
 }) {
   return (
     <Image
-      src="/brand/sunswift-racing-wordmark.svg"
+      src="/brand/sunswift-logo.png"
       alt="Sunswift Racing"
-      width={1200}
-      height={310}
+      width={960}
+      height={250}
       priority={priority}
-      className={cn("h-auto w-36 object-contain", className)}
+      className={cn(
+        "h-auto w-36 object-contain transition-[filter,opacity] duration-300 group-hover:brightness-[0.55] group-hover:opacity-90",
+        className,
+      )}
       sizes="10rem"
     />
   )

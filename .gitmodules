@@ -1,0 +1,3 @@
+[submodule "sr-headshots"]
+	path = sr-headshots
+	url = git@github.com:genryjiang/sr-headshots.git

@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/button"
 import { AdminShell } from "@/components/site/admin-shell"
-import { publishRecruitmentRole, saveRecruitmentRoleDraft } from "@/app/admin/actions"
-import { getRecruitmentRoles } from "@/lib/cms/dynamodb"
+import {
+  importRecruitmentDrafts,
+  publishRecruitmentRole,
+  saveRecruitmentRoleDraft,
+} from "@/app/admin/actions"
+import { listCmsRecords } from "@/lib/cms/api"
 
 export const dynamic = "force-dynamic"
+export const metadata = {
+  title: "Admin Recruitment",
+}
 
 export default async function AdminRecruitmentPage() {
-  const roles = await getRecruitmentRoles("draft")
+  const roles = await listCmsRecords("roles", "draft")
 
   return (
     <AdminShell>
@@ -18,6 +25,27 @@ export default async function AdminRecruitmentPage() {
             Edit draft role descriptions and publish them to the recruitment page.
           </p>
         </div>
+
+        <form
+          action={importRecruitmentDrafts}
+          className="mt-8 rounded-lg border border-border bg-card p-5"
+          data-admin-recruitment-import
+        >
+          <h2 className="text-xl font-medium">Import recruitment CSV</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Imports Webflow recruitment role exports into draft records. Publishing remains
+            explicit per role.
+          </p>
+          <input
+            name="csv"
+            type="file"
+            accept=".csv,text/csv"
+            className="mt-4 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          />
+          <Button type="submit" className="mt-4">
+            Import drafts
+          </Button>
+        </form>
 
         <div className="mt-8 grid gap-6">
           {roles.map((role) => (
@@ -47,11 +75,58 @@ export default async function AdminRecruitmentPage() {
                 Team
                 <input name="team" defaultValue={role.team} className="rounded-md border border-input bg-background px-3 py-2" />
               </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input name="active" type="checkbox" defaultChecked={role.active ?? true} />
+                Active role
+              </label>
+              <label className="grid gap-2 text-sm">
+                Sort order
+                <input
+                  name="sortOrder"
+                  type="number"
+                  defaultValue={role.sortOrder ?? 0}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-2 text-sm">
+                Discipline
+                <input
+                  name="discipline"
+                  defaultValue={role.discipline ?? ""}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-2 text-sm">
+                School
+                <input
+                  name="school"
+                  defaultValue={role.school ?? ""}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
               <label className="grid gap-2 text-sm sm:col-span-2">
                 Description
                 <textarea
                   name="description"
                   defaultValue={role.description}
+                  rows={4}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-2 text-sm sm:col-span-2">
+                Responsibilities HTML
+                <textarea
+                  name="responsibilitiesHtml"
+                  defaultValue={role.responsibilitiesHtml ?? ""}
+                  rows={4}
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-2 text-sm sm:col-span-2">
+                Requirements HTML
+                <textarea
+                  name="requirementsHtml"
+                  defaultValue={role.requirementsHtml ?? ""}
                   rows={4}
                   className="rounded-md border border-input bg-background px-3 py-2"
                 />

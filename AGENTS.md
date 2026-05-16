@@ -43,15 +43,20 @@ for the webapp.
   LocalStack on `http://localhost:4566`.
 - `localstack/init/ready.d/10-create-cms-table.sh` creates the
   `WebsiteV3CMS` table with `id` as the partition key and `type` as the sort
-  key, creates the local CMS assets S3 bucket, then seeds page, team member,
-  recruitment role, and media asset records.
+  key, creates the local CMS staging and public-assets S3 buckets, then seeds
+  page, team member, recruitment role, partner, and media asset records.
 - Run `./init.sh` before feature work. It starts LocalStack, waits for the
   DynamoDB table and S3 bucket, then runs the AWS CDK build/test checks and frontend
   typecheck/lint checks.
 - Local app code should use `AWS_ENDPOINT_URL=http://localhost:4566`,
   `AWS_REGION=ap-southeast-2`, `CMS_TABLE_NAME=WebsiteV3CMS`,
-  `CMS_ASSETS_BUCKET=website-v3-cms-assets`, and dummy local AWS credentials
-  when talking to LocalStack.
+  `CMS_ASSETS_BUCKET=website-v3-cms-assets`,
+  `CMS_PUBLIC_ASSETS_BUCKET=website-v3-public-assets`, and dummy local AWS
+  credentials when talking to LocalStack. Public heavy-media delivery can be
+  pointed at `CMS_PUBLIC_ASSET_BASE_URL` / `NEXT_PUBLIC_CMS_PUBLIC_ASSET_BASE_URL`.
+- Local admin regression can use the non-production developer account
+  `developer@sunswift.unsw.edu.au` from `/admin/login`. Disable it with
+  `ENABLE_DEV_ADMIN_LOGIN=false` when testing OAuth-only behavior.
 
 ## Webflow Placeholder Copy
 
@@ -71,6 +76,9 @@ for the webapp.
 - Homepage visual changes must keep `pnpm test:homepage-design` and
   `pnpm verify:browser` passing; the homepage contract is slogan plus image
   only, with no public shadcn controls or shared site chrome.
+- Hidden admin/CMS changes must keep `pnpm verify:cms-admin` passing against
+  the configured `VERIFY_URL`. Do not run it in parallel with
+  `pnpm verify:browser` because `agent-browser` shares one browser session.
 - If the `agent-browser` CLI is unavailable, record that limitation in
   `claude-progress.md` and run HTTP smoke checks for the affected routes.
 

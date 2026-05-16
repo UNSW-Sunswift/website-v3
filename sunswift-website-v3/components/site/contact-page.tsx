@@ -1,9 +1,30 @@
 import Link from "next/link"
-import { ArrowRight, Mail, MapPin } from "lucide-react"
+import { ArrowRight, Mail, MapPin, Share2 } from "lucide-react"
 
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
 
 const contactEmail = "richard.hopkins1@unsw.edu.au"
+
+const socialLinks = [
+  {
+    label: "Instagram",
+    handle: "@sunswiftracing",
+    href: "https://www.instagram.com/sunswiftracing/",
+    platform: "instagram",
+  },
+  {
+    label: "Facebook",
+    handle: "Sunswift Racing",
+    href: "https://www.facebook.com/UNSWSunswift/",
+    platform: "facebook",
+  },
+  {
+    label: "LinkedIn",
+    handle: "Sunswift Racing",
+    href: "https://www.linkedin.com/company/unsw-sunswift/",
+    platform: "linkedin",
+  },
+] as const
 
 export function ContactPageContent() {
   return (
@@ -21,7 +42,7 @@ export function ContactPageContent() {
               <p className="font-mono text-[0.68rem] tracking-[0.28em] text-accent-yellow uppercase">
                 Contact
               </p>
-              <h1 className="mt-5 max-w-5xl text-[clamp(4.2rem,11vw,11rem)] leading-[0.86] font-thin tracking-normal text-white">
+              <h1 className="mt-5 max-w-5xl text-[clamp(4.6rem,11vw,11rem)] leading-[0.86] font-thin tracking-normal text-white">
                 Contact us.
               </h1>
             </div>
@@ -45,7 +66,7 @@ export function ContactPageContent() {
       </div>
 
       <section className="border-y border-white/10 bg-white/[0.035] text-white">
-        <div className="mx-auto grid max-w-[92rem] gap-px bg-white/10 px-4 py-px sm:px-6 lg:grid-cols-2">
+        <div className="mx-auto grid max-w-[92rem] gap-px bg-white/10 px-4 py-px sm:px-6 lg:grid-cols-3">
           <article className="bg-[#0f1113] p-6 sm:p-8">
             <Mail className="size-5 text-accent-yellow" />
             <p className="mt-12 font-mono text-[0.62rem] tracking-[0.24em] text-white/38 uppercase">
@@ -60,6 +81,43 @@ export function ContactPageContent() {
             >
               {contactEmail}
             </a>
+          </article>
+          <article
+            data-contact-socials
+            className="bg-[#0f1113] p-6 sm:p-8"
+          >
+            <Share2 className="size-5 text-accent-yellow" />
+            <p className="mt-12 font-mono text-[0.62rem] tracking-[0.24em] text-white/38 uppercase">
+              Social media
+            </p>
+            <h2 className="mt-3 text-3xl leading-tight font-light text-white sm:text-4xl">
+              Message us online.
+            </h2>
+            <p className="mt-8 max-w-md text-lg leading-8 text-white/62">
+              For quick questions and community updates, reach out on Instagram,
+              Facebook, or LinkedIn!
+            </p>
+            <ul className="mt-8 flex flex-col gap-3">
+              {socialLinks.map((item) => (
+                <li key={item.platform}>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-contact-social-link
+                    data-social-platform={item.platform}
+                    className="group flex flex-col rounded-sm border border-white/12 bg-black/25 px-4 py-3.5 transition-[background-color,border-color] duration-300 hover:border-accent-yellow/45 hover:bg-white/[0.06]"
+                  >
+                    <span className="text-base font-medium text-white transition-colors duration-300 group-hover:text-accent-yellow">
+                      {item.label}
+                    </span>
+                    <span className="mt-0.5 font-mono text-[0.62rem] tracking-[0.2em] text-white/45 uppercase">
+                      {item.handle}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </article>
           <article className="bg-[#0f1113] p-6 sm:p-8">
             <MapPin className="size-5 text-accent-yellow" />

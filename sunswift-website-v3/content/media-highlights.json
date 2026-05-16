@@ -1,0 +1,164 @@
+{
+  "sourceUrl": "https://sunswift.webflow.io/media/highlights",
+  "juicerFeedIframeSrc": "https://www.juicer.io/api/feeds/unsw-sunswift/iframe",
+  "sections": [
+    {
+      "id": "media-spotlight",
+      "heading": "Media Spotlight",
+      "featuredYoutubeId": "JGSzpsJmfHA",
+      "items": [
+        {
+          "title": "Amazon Web Services & Sunswift Racing: Solar powered journey across the Australian Outback",
+          "href": "https://www.youtube.com/watch?v=JGSzpsJmfHA",
+          "imageSrc": "https://i.ytimg.com/vi/JGSzpsJmfHA/hqdefault.jpg",
+          "imageAlt": "AWS x Sunswift Racing — video thumbnail"
+        },
+        {
+          "title": "AWS case study: UNSW Sunswift Racing",
+          "href": "https://aws.amazon.com/blogs/publicsector/build-world-record-solar-electric-race-car-aws/",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b55936df62525bb0665/687257fec59498b19f65a1b7_2021-12-13-Sunswift-test-drive-0031(1)-p-800.avif",
+          "imageAlt": "Sunswift test drive — Webflow hero image"
+        }
+      ]
+    },
+    {
+      "id": "sunswift-7-journey",
+      "heading": "Sunswift 7's Journey to a World Record",
+      "items": [
+        {
+          "title": "Part 1: New Beginnings",
+          "href": "https://www.youtube.com/watch?v=JECFYBT-1YM",
+          "imageSrc": "https://i.ytimg.com/vi/JECFYBT-1YM/hqdefault.jpg",
+          "imageAlt": "Part 1: New Beginnings"
+        },
+        {
+          "title": "Part 2: Silver Linings",
+          "href": "https://www.youtube.com/watch?v=n2o_3CWMHxQ",
+          "imageSrc": "https://i.ytimg.com/vi/n2o_3CWMHxQ/hqdefault.jpg",
+          "imageAlt": "Part 2: Silver Linings"
+        },
+        {
+          "title": "Part 3: Test. Break. Fix. Repeat.",
+          "href": "https://www.youtube.com/watch?v=JxWClOEOtcA",
+          "imageSrc": "https://i.ytimg.com/vi/JxWClOEOtcA/hqdefault.jpg",
+          "imageAlt": "Part 3: Test. Break. Fix. Repeat."
+        },
+        {
+          "title": "Part 4: World Record Attempt",
+          "href": "https://www.youtube.com/watch?v=jm1Efr8vlk4",
+          "imageSrc": "https://i.ytimg.com/vi/jm1Efr8vlk4/hqdefault.jpg",
+          "imageAlt": "Part 4: World Record Attempt"
+        }
+      ]
+    },
+    {
+      "id": "partnership-spotlights",
+      "heading": "Partnership Spotlights",
+      "items": [
+        {
+          "title": "Auto-UX Partners with UNSW Sunswift Racing",
+          "href": "https://www.auto-ux.io/resources/auto-ux-partners-with-unsw-sunswift-racing/",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b0fdc21c9ad83a339287_Sunswift-7-Uluru.jpeg.avif",
+          "imageAlt": "Auto-UX partnership"
+        },
+        {
+          "title": "Driving Greater Energy Efficiency with UNSW's Sunswift Racing and Altium",
+          "href": "https://www.altium.com/company/customer-success/driving-greater-energy-efficiency-unsws-sunswift-racing-and-altium",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b363b8ae5b9602c208c0_Sunswift%203b_0.avif",
+          "imageAlt": "Sunswift and Altium"
+        },
+        {
+          "title": "Optiver partners with UNSW Sunswift Racing to drive innovation for a better future",
+          "href": "https://optiver.com/working-at-optiver/career-hub/optiver-partners-with-unsw-sunswift-racing-to-drive-innovation-for-a-better-future/",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b2ccefdad53f02f5d701_Optiver_UNSW_Sunswift_partnership-2048x1120.avif",
+          "imageAlt": "Optiver UNSW Sunswift partnership"
+        },
+        {
+          "title": "Optus takes to the track with Sunswift Racing",
+          "href": "https://www.optus.com.au/about/media-centre",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6833ceef8ae6ec31a57ee405_300852010_1280324449375814_8592597212424346453_n.avif",
+          "imageAlt": "Optus and Sunswift Racing"
+        },
+        {
+          "title": "Sunswift 7 & MI: Helping the drive towards a sustainable future",
+          "href": "https://www.master-instruments.com.au/news-article/292/sunswift-7-mi.html",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b2879f49c85d8a12e27d_Capture.avif",
+          "imageAlt": "Master Instruments and Sunswift"
+        },
+        {
+          "title": "UNSW students build a world record-holding solar electric race car with AWS",
+          "href": "https://aws.amazon.com/solutions/case-studies/unsw-sunswift-racing-case-study/",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b2185e3c7f4e8e792b68_sunswift-7-racing-932x466-1.avif",
+          "imageAlt": "Sunswift 7 with AWS"
+        }
+      ]
+    },
+    {
+      "id": "team-highlights",
+      "heading": "Team Highlights",
+      "items": [
+        {
+          "title": "EV record breakers! Sunswift 7 goes 1000km on a single charge in world's best time",
+          "href": "https://www.unsw.edu.au/newsroom/news/2022/10/ev-record-breakers-sunswift-7-goes-1000km-on-a-single-charge-in-worlds-best-time",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b414680027319b21190c_2023-03-Image61c.cropimg.width%3D700.crop%3Dlandscape.avif",
+          "imageAlt": "EV record breakers",
+          "subtitle": "Video description"
+        },
+        {
+          "title": "International pros contested this solar car race. Sydney students beat them all",
+          "href": "https://www.smh.com.au/national/nsw/international-pros-contested-this-solar-car-race-sydney-students-beat-them-all-20231025-p5eezc.html",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b43cb536c1900f0fb308_211b29100b2c78d49bded01d84a6ab7046c08132.avif",
+          "imageAlt": "SMH solar car race coverage",
+          "subtitle": "Video description"
+        },
+        {
+          "title": "Sunswift 7: Driving technology forward",
+          "href": "https://news.unsw.edu.au/en/sunswift-7--driving-technology-forward",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b3a4bec1c0fd9509f7f1_Sunswift%207%20speeds%20by%20with%20drivers%20wearing%20helmets(1).avif",
+          "imageAlt": "Sunswift 7 driving technology forward",
+          "subtitle": "Video description"
+        }
+      ]
+    },
+    {
+      "id": "partner-spotlights",
+      "heading": "Partner Spotlights",
+      "items": [
+        {
+          "title": "Sunswift at AWS Summit 2024",
+          "href": "https://www.youtube.com/watch?v=olPt1wkW1fI&t=1503s",
+          "imageSrc": "https://i.ytimg.com/vi/olPt1wkW1fI/hqdefault.jpg",
+          "imageAlt": "Sunswift at AWS Summit 2024",
+          "subtitle": "Video description"
+        },
+        {
+          "title": "Sunswift & Optus Remote Driving Initiative",
+          "href": "https://www.youtube.com/watch?v=CCOArTsmJOY",
+          "imageSrc": "https://i.ytimg.com/vi/CCOArTsmJOY/hqdefault.jpg",
+          "imageAlt": "Optus remote driving Sunswift 7",
+          "subtitle": "Video description"
+        }
+      ]
+    },
+    {
+      "id": "team-highlights-external",
+      "heading": "Team Highlights",
+      "items": [
+        {
+          "title": "Sunswift 7: Driving technology forward",
+          "href": "https://www.unsw.edu.au/newsroom/news/2022/10/ev-record-breakers-sunswift-7-goes-1000km-on-a-single-charge-in-worlds-best-time",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b414680027319b21190c_2023-03-Image61c.cropimg.width%3D700.crop%3Dlandscape.avif",
+          "imageAlt": "UNSW newsroom — Guinness record attempt",
+          "subtitle": "UNSW's latest high-performance solar powered car, designed and built by students, is now on track for an incredible Guinness World Record attempt."
+        },
+        {
+          "title": "Sunswift 7: Driving technology forward",
+          "href": "https://news.unsw.edu.au/en/sunswift-7--driving-technology-forward",
+          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b3a4bec1c0fd9509f7f1_Sunswift%207%20speeds%20by%20with%20drivers%20wearing%20helmets(1).avif",
+          "imageAlt": "Sunswift 7 — technology forward",
+          "subtitle": "UNSW's latest high-performance solar powered car, designed and built by students, is now on track for an incredible Guinness World Record attempt."
+        }
+      ]
+    }
+  ]
+}

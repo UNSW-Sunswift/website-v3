@@ -1,0 +1,107 @@
+import Image from "next/image"
+
+import { Button } from "@/components/ui/button"
+import { AdminShell } from "@/components/site/admin-shell"
+import { importPartnerDrafts, publishPartner, savePartnerDraft } from "@/app/admin/actions"
+import { listCmsRecords } from "@/lib/cms/api"
+import { assetUrl } from "@/lib/cms/dynamodb"
+
+export const dynamic = "force-dynamic"
+export const metadata = {
+  title: "Admin Partners",
+}
+
+export default async function AdminPartnersPage() {
+  const partners = await listCmsRecords("partners", "draft")
+
+  return (
+    <AdminShell>
+      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <div className="border-b border-border pb-8">
+          <p className="font-mono text-xs uppercase tracking-[0.22em] text-primary">Partners CMS</p>
+          <h1 className="mt-3 text-4xl font-medium">Partners</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+            Import Webflow partner exports, stage logo uploads, edit websites and publish the
+            partner grid.
+          </p>
+        </div>
+
+        <form
+          action={importPartnerDrafts}
+          className="mt-8 rounded-lg border border-border bg-card p-5"
+          data-admin-partners-import
+        >
+          <h2 className="text-xl font-medium">Import partners CSV</h2>
+          <input
+            name="csv"
+            type="file"
+            accept=".csv,text/csv"
+            className="mt-4 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          />
+          <Button type="submit" className="mt-4">
+            Import drafts
+          </Button>
+        </form>
+
+        <div className="mt-8 grid gap-6">
+          {partners.map((partner) => (
+            <article
+              key={partner.slug}
+              className="grid gap-6 rounded-lg border border-border bg-card p-5 lg:grid-cols-[180px_1fr]"
+            >
+              <div>
+                <div className="relative aspect-square overflow-hidden rounded-md bg-muted">
+                  {partner.logoKey ? (
+                    <Image src={assetUrl(partner.logoKey)} alt="" fill className="object-contain p-6" sizes="180px" />
+                  ) : (
+                    <div className="grid h-full place-items-center font-mono text-3xl text-muted-foreground">
+                      {partner.name.slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <form action={publishPartner} className="mt-4">
+                  <input type="hidden" name="slug" value={partner.slug} />
+                  <Button type="submit" variant="outline" className="w-full">
+                    Publish
+                  </Button>
+                </form>
+              </div>
+              <form action={savePartnerDraft} className="grid gap-4 sm:grid-cols-2">
+                <input type="hidden" name="existingLogoKey" value={partner.logoKey ?? ""} />
+                <label className="grid gap-2 text-sm">
+                  Name
+                  <input name="name" defaultValue={partner.name} className="rounded-md border border-input bg-background px-3 py-2" />
+                </label>
+                <label className="grid gap-2 text-sm">
+                  Slug
+                  <input name="slug" defaultValue={partner.slug} className="rounded-md border border-input bg-background px-3 py-2" />
+                </label>
+                <label className="grid gap-2 text-sm sm:col-span-2">
+                  Website
+                  <input name="website" defaultValue={partner.website} className="rounded-md border border-input bg-background px-3 py-2" />
+                </label>
+                <label className="grid gap-2 text-sm">
+                  Sort order
+                  <input
+                    name="sortOrder"
+                    type="number"
+                    defaultValue={partner.sortOrder ?? 0}
+                    className="rounded-md border border-input bg-background px-3 py-2"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm">
+                  Staged logo
+                  <input name="logo" type="file" accept="image/*" className="rounded-md border border-input bg-background px-3 py-2" />
+                </label>
+                <div className="sm:col-span-2">
+                  <Button type="submit">Save draft</Button>
+                </div>
+              </form>
+            </article>
+          ))}
+        </div>
+      </section>
+    </AdminShell>
+  )
+}
+

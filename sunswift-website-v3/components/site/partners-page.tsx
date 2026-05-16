@@ -2,56 +2,10 @@ import Link from "next/link"
 import { ArrowRight, ArrowUpRight } from "lucide-react"
 
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
+import type { Partner } from "@/lib/cms/types"
 
 const partnerIntro =
   "Building world-class cars takes more than just engineering - it takes a community. From partners and sponsors to long-time friends of the team, Sunswift is powered by collaboration, mentorship, and shared ambition."
-
-const partners = [
-  { name: "3M", href: "https://www.3m.com.au" },
-  { name: "Altium", href: "https://www.altium.com/" },
-  { name: "Ampcontrol", href: "https://ampcontrolgroup.com/" },
-  { name: "Audi", href: "https://www.audi.com.au/en/" },
-  { name: "Australian Made", href: "https://australianmade.com.au/" },
-  { name: "Auto-UX", href: "https://www.auto-ux.io/" },
-  { name: "AWS", href: "https://aws.amazon.com/" },
-  { name: "BAC Systems", href: "https://www.bacsystems.com.au/" },
-  { name: "Bilstein", href: "https://bilstein.com/en/" },
-  { name: "Bridgestone", href: "https://www.bridgestone.com/" },
-  { name: "Calm Aluminium", href: "http://www.calm-aluminium.com.au/" },
-  { name: "Competition Friction", href: "#" },
-  { name: "CUPRA", href: "https://www.cupraofficial.com.au/" },
-  { name: "D2N", href: "https://d2n.com.au/" },
-  { name: "Dassault Systemes", href: "https://www.3ds.com/" },
-  { name: "EPLAN", href: "https://www.eplan-software.com/" },
-  { name: "Ericsson", href: "https://www.ericsson.com/en" },
-  { name: "Espresso Displays", href: "https://au.espres.so/" },
-  { name: "Finsbury Green", href: "https://finsbury.com.au/" },
-  { name: "Jaycar", href: "https://www.jaycar.com.au/" },
-  { name: "LEAP Australia", href: "https://www.leapaust.com.au/" },
-  {
-    name: "Master Instruments",
-    href: "https://www.master-instruments.com.au/",
-  },
-  { name: "McConaghy", href: "http://www.mcconaghyboats.com/" },
-  { name: "Optus", href: "https://www.optus.com.au/" },
-  { name: "P-ONE Technology", href: "https://www.p-onetechnology.com/" },
-  { name: "Scott Bader", href: "https://www.scottbader.com/" },
-  { name: "Siltrax", href: "https://www.siltrax.net/" },
-  {
-    name: "Sorensen Engineering",
-    href: "https://www.sorensenengineering.com.au/",
-  },
-  { name: "SunDrive", href: "https://www.sundrivesolar.com/" },
-  { name: "SXSW Sydney", href: "https://www.sxswsydney.com/" },
-  {
-    name: "Sydney Motorsport Park",
-    href: "https://www.sydneymotorsportpark.com.au/",
-  },
-  { name: "Total Tools", href: "https://www.totaltools.com.au/" },
-  { name: "TRaCE", href: "https://trace.org.au/" },
-  { name: "UNSW", href: "https://www.unsw.edu.au/" },
-  { name: "WrapStyle Sydney", href: "https://wrapstylesydney.com.au/" },
-]
 
 function initials(name: string) {
   return name
@@ -63,7 +17,7 @@ function initials(name: string) {
     .toUpperCase()
 }
 
-export function PartnersPageContent() {
+export function PartnersPageContent({ partners }: { partners: Partner[] }) {
   const marqueePartners = [...partners, ...partners]
 
   return (
@@ -157,7 +111,7 @@ export function PartnersPageContent() {
             data-partners-grid
           >
             {partners.map((partner, index) => {
-              const external = partner.href !== "#"
+              const external = partner.website !== "#"
               const content = (
                 <>
                   <span className="grid size-20 place-items-center border border-white/12 bg-white/[0.035] text-3xl font-light tracking-normal text-accent-yellow transition-colors duration-300 group-hover:border-accent-yellow/35 group-hover:bg-accent-yellow/10 sm:size-24 sm:text-4xl">
@@ -176,7 +130,7 @@ export function PartnersPageContent() {
               return external ? (
                 <a
                   key={partner.name}
-                  href={partner.href}
+                  href={partner.website}
                   target="_blank"
                   rel="noreferrer"
                   data-partner-card

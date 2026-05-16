@@ -27,5 +27,55 @@ test('CMS infrastructure is created', () => {
     ])
   });
 
-  template.resourceCountIs('AWS::S3::Bucket', 1);
+  template.resourceCountIs('AWS::S3::Bucket', 2);
+
+  template.resourceCountIs('AWS::Lambda::Function', 2);
+
+  template.hasResourceProperties('AWS::Lambda::Function', {
+    Handler: 'cms-admin-handler.handler',
+    Runtime: 'nodejs20.x',
+    Environment: {
+      Variables: Match.objectLike({
+        CMS_TABLE_NAME: Match.anyValue(),
+        CMS_ASSETS_BUCKET: Match.anyValue(),
+        CMS_PUBLIC_ASSETS_BUCKET: Match.anyValue()
+      })
+    }
+  });
+
+  template.hasResourceProperties('AWS::Lambda::Function', {
+    Handler: 'cms-asset-handler.handler',
+    Runtime: 'nodejs20.x',
+    Environment: {
+      Variables: Match.objectLike({
+        CMS_ASSETS_BUCKET: Match.anyValue(),
+        CMS_PUBLIC_ASSETS_BUCKET: Match.anyValue()
+      })
+    }
+  });
+
+  template.hasResourceProperties('AWS::ApiGateway::RestApi', {
+    Name: 'WebsiteV3CMSApi'
+  });
+
+  template.hasResourceProperties('AWS::ApiGateway::Method', {
+    AuthorizationType: 'AWS_IAM'
+  });
+
+  template.hasResourceProperties('AWS::CloudFront::Distribution', {
+    DistributionConfig: Match.objectLike({
+      Enabled: true
+    })
+  });
+
+  template.hasResourceProperties('AWS::IAM::ManagedPolicy', {
+    PolicyDocument: Match.objectLike({
+      Statement: Match.arrayWith([
+        Match.objectLike({
+          Action: 'execute-api:Invoke',
+          Effect: 'Allow'
+        })
+      ])
+    })
+  });
 });

@@ -8,6 +8,9 @@ import {
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
 
 export const dynamic = "force-static"
+export const metadata = {
+  title: "Recruitment",
+}
 
 const intakeNotes = [
   "Business and media students support operations, marketing, partnerships, recruitment, events and Sunswift's public presence.",
@@ -125,19 +128,6 @@ export default async function RecruitmentPage() {
                     <p className="mt-5 text-sm leading-6 text-white/44">
                       {stream.webflowNote}
                     </p>
-                    <div
-                      className="mt-8 flex flex-wrap gap-2"
-                      data-recruitment-families={stream.name}
-                    >
-                      {stream.families.map((family) => (
-                        <span
-                          key={family}
-                          className="border border-white/12 px-3 py-2 font-mono text-[0.62rem] tracking-[0.2em] text-white/54 uppercase transition-colors duration-300 group-hover:border-accent-yellow/40 group-hover:text-white"
-                        >
-                          {family}
-                        </span>
-                      ))}
-                    </div>
                   </div>
 
                   <div className="flex items-end justify-start lg:justify-end">

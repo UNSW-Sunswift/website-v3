@@ -1,14 +1,22 @@
 import Link from "next/link"
-import { ArrowRight, ImageIcon, UsersRound } from "lucide-react"
+import { ArrowRight, Handshake, ImageIcon, UsersRound } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { AdminShell } from "@/components/site/admin-shell"
-import { getRecruitmentRoles, getTeamMembers } from "@/lib/cms/dynamodb"
+import { listCmsRecords } from "@/lib/cms/api"
 
 export const dynamic = "force-dynamic"
+export const metadata = {
+  title: "Admin",
+}
 
 export default async function AdminPage() {
-  const [members, roles] = await Promise.all([getTeamMembers("draft"), getRecruitmentRoles("draft")])
+  const [members, roles, partners, assets] = await Promise.all([
+    listCmsRecords("team", "draft"),
+    listCmsRecords("roles", "draft"),
+    listCmsRecords("partners", "draft"),
+    listCmsRecords("assets", "published"),
+  ])
 
   return (
     <AdminShell>
@@ -26,11 +34,12 @@ export default async function AdminPage() {
           </Button>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <div className="mt-8 grid gap-4 md:grid-cols-4">
           {[
             [UsersRound, `${members.length}`, "Draft team members", "/admin/team"],
             [ArrowRight, `${roles.length}`, "Draft recruitment roles", "/admin/recruitment"],
-            [ImageIcon, "S3", "Draft image staging", "/admin/team"],
+            [Handshake, `${partners.length}`, "Draft partners", "/admin/partners"],
+            [ImageIcon, `${assets.length}`, "Published S3 assets", "/admin/assets"],
           ].map(([Icon, value, label, href]) => (
             <Link key={String(label)} href={String(href)} className="rounded-lg border border-border bg-card p-5">
               <Icon className="size-5 text-primary" />

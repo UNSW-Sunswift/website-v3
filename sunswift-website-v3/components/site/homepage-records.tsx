@@ -21,7 +21,7 @@ const records: Record[] = [
     title: "Furthest distance by an EV on a single charge.",
     body: "Sunswift 7 carried four occupants over 1,000 km on a single charge at the Australian Automotive Research Centre, certified by Guinness World Records.",
     year: "2022",
-    image: "/placeholders/vehicle-sunswift-7.svg",
+    image: "/vehicle-fleet/vehicle-sunswift-7.jpeg",
   },
   {
     id: "speed-record",
@@ -30,7 +30,7 @@ const records: Record[] = [
     title: "Fastest solar-powered electric vehicle.",
     body: "Sunswift eVe set the FIA-ratified record for the fastest electric vehicle averaging over 500 km without recharging, an industry first for solar racing.",
     year: "2014",
-    image: "/placeholders/vehicle-eve.svg",
+    image: "/vehicle-fleet/vehicle-eve.jpg",
   },
   {
     id: "world-firsts",
@@ -39,7 +39,7 @@ const records: Record[] = [
     title: "Three decades of solar engineering.",
     body: "Seven generations of student-built solar vehicles since 1996, with the eighth in production - a continuous record of innovation out of UNSW Sydney.",
     year: "1996 - Today",
-    image: "/placeholders/vehicle-violet.svg",
+    image: "/vehicle-fleet/vehicle-violet.avif",
   },
 ]
 

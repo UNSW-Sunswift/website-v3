@@ -16,7 +16,7 @@
           "title": "Our Cars",
           "icon": "directions_car",
           "body": "The development of a car from scratch is only possible through the support of a wide network - including industry partners, sponsors, and long-time friends of the team. Whether it’s through technical expertise, materials, funding, or mentorship, each contribution plays a crucial role. Our vehicles bring together innovations in composite manufacturing, solar array design, and large-scale cloud technologies, all made possible by this collaborative ecosystem.",
-          "image": "/placeholders/vehicle-sunswift-7.svg"
+          "image": "/vehicle-fleet/vehicle-sunswift-7.jpeg"
         },
         {
           "title": "Our Vision",
@@ -27,12 +27,12 @@
       ],
       "gallery": [
         "/placeholders/garage.svg",
-        "/placeholders/vehicle-sunswift-7.svg",
-        "/placeholders/vehicle-violet.svg",
-        "/placeholders/vehicle-eve.svg",
-        "/placeholders/vehicle-ivy.svg",
-        "/placeholders/vehicle-iii.svg",
-        "/placeholders/vehicle-ii.svg"
+        "/vehicle-fleet/vehicle-sunswift-7.jpeg",
+        "/vehicle-fleet/vehicle-violet.avif",
+        "/vehicle-fleet/vehicle-eve.jpg",
+        "/vehicle-fleet/vehicle-ivy.jpg",
+        "/vehicle-fleet/vehicle-iii.jpg",
+        "/vehicle-fleet/vehicle-ii.jpg"
       ],
       "discover": [
         {
@@ -40,14 +40,14 @@
           "body": "From world records to race victories, we’re proud of what we’ve accomplished. See how Sunswift is setting new standards in solar car innovation.",
           "href": "/achievements",
           "cta": "Explore Achievements",
-          "image": "/placeholders/vehicle-sunswift-7.svg"
+          "image": "/vehicle-fleet/vehicle-sunswift-7.jpeg"
         },
         {
           "title": "Our Story",
           "body": "What started as a student project has grown into a global name in solar racing. Learn how Sunswift began - and where we’re headed next.",
           "href": "/our-story",
           "cta": "Read More",
-          "image": "/placeholders/garage.svg"
+          "image": "/stories/sr-i/sr-1-thumbnail.avif"
         }
       ]
     },
@@ -79,7 +79,7 @@
           "summary": "What started as a wild thesis idea at the uni bar launched a legacy of solar racing. Meet Sunswift I - the car that turned a student dream into a national contender.",
           "author": "Tina Wu, Yuseph Ma & Jason Zhao",
           "date": "May 31, 2019",
-          "image": "/placeholders/vehicle-i.svg",
+          "image": "/stories/sr-i/sr-1-thumbnail.avif",
           "blocks": [
             {
               "type": "paragraph",
@@ -92,7 +92,8 @@
               "text": "Like any other fourth-year engineering student faced with the prospect of choosing their thesis topic, Sunswift founder Byron Kennedy decided to go to the uni bar."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-i/sr-i-story-1.jpg"
             },
             {
               "type": "paragraph",
@@ -150,7 +151,8 @@
               "text": "“It wasn’t in too good a condition,” says Byron. “We had to replace all of the chassis - it had cracks and stuff in it by the time we got it. It was a fairly big overhaul.”"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-i/sr-i-story-2.jpg"
             },
             {
               "type": "paragraph",
@@ -183,7 +185,8 @@
               "text": "The World Solar Challenge"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-i/sr-i-story-3.jpg"
             },
             {
               "type": "paragraph",
@@ -211,7 +214,8 @@
               "text": "Byron says that the all-female driver team was chosen specifically to be gender-inclusive, saying that it “brought a nice amount of balance to the team.” The women came from different areas of university, including aerospace engineering, textiles and marketing. Byron says that there was also evidence that females were better at handling the hot track conditions and are generally lighter."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-i/sr-i-story-4.jpg"
             },
             {
               "type": "paragraph",
@@ -234,7 +238,8 @@
               "text": "John Ransom, a team member of Sunswift I, admits that although they were funny at the time, the accidents had been extremely dangerous. “It’s actually frightening what happened. We’re lucky no one got killed, to be honest,” he says."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-i/sr-i-story-5.jpg"
             },
             {
               "type": "paragraph",
@@ -264,10 +269,11 @@
           "summary": "Born from a cancelled race and a bold phone call, Sunswift II became UNSW’s first self-built solar car - chasing records, dominating headlines, and laying the foundation for future innovations.",
           "author": "Tina Wu, Yuseph Ma & Jason Zhao",
           "date": "July 10, 2019",
-          "image": "/placeholders/vehicle-ii.svg",
+          "image": "/stories/sr-ii/sr-2-thumbnail.avif",
           "blocks": [
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ii/srii-story-1.jpg"
             },
             {
               "type": "paragraph",
@@ -295,7 +301,8 @@
               "text": "He then decided to call Hans Tholstrup, the founder of the WSC. “I was crying to him about how it was. I was very angry,” he continues. “I might have said a few things to some people that with a bit of maturity and years behind me I regret.”"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ii/srii-story-2.jpg"
             },
             {
               "type": "paragraph",
@@ -323,7 +330,8 @@
               "text": "However, Sunswift II failed to break the record after they were set back by five days of bad weather, meeting thunder, rain and dust storms. Shane Stone, Sunswift II’s Chief Engineer and Race Strategist, remembers “the great downpour” with amusement."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ii/srii-story-3.png"
             },
             {
               "type": "paragraph",
@@ -371,7 +379,8 @@
               "text": "“We don’t want to just race Aurora’s car, as good as it is,” says John. “We’re here to try and build our own car.\""
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ii/srii-story-4.jpg"
             },
             {
               "type": "paragraph",
@@ -404,7 +413,8 @@
               "text": "The Evolution of Sunswift II"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ii/srii-story-5.jpg"
             },
             {
               "type": "paragraph",
@@ -442,7 +452,8 @@
               "text": "Sunswift 2.3 also competed in the 2000 SunRace. However, the vehicle’s solar array was irreparably damaged after it crashed into a Give Way sign as it swerved to avoid hitting the car that was braking in front of it."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ii/srii-story-6.jpg"
             },
             {
               "type": "paragraph",
@@ -460,7 +471,8 @@
               "text": "The TopCell Project"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ii/srii-story-7.jpg"
             },
             {
               "type": "paragraph",
@@ -505,7 +517,7 @@
           "summary": "Crashing in testing, finishing a race unofficially, then smashing a national record - Sunswift III’s story is one of bold design, resilience, and redemption.",
           "author": "Tina Wu, Yuseph Ma & Jason Zhao",
           "date": "August 31, 2019",
-          "image": "/placeholders/vehicle-iii.svg",
+          "image": "/stories/sr-iii/sr-3-thumbnail.avif",
           "blocks": [
             {
               "type": "paragraph",
@@ -528,7 +540,8 @@
               "text": "The Crash"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-iii/sr-3-story-1.jpg"
             },
             {
               "type": "paragraph",
@@ -581,7 +594,8 @@
               "text": "After the crash, Sunswift missed the scrutineering for the WSC and were unable to compete. The team was desolate."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-iii/sr-3-story-2.jpg"
             },
             {
               "type": "paragraph",
@@ -639,7 +653,8 @@
               "text": "“We had seen from previous challenges that it is not always the fastest solar car that wins. Reliability and team performance were just as important."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-iii/sr-3-story-3.jpg"
             },
             {
               "type": "paragraph",
@@ -707,7 +722,8 @@
               "text": "Mark led the project of rehauling Sunswift 3.1’s suspension system in preparation of the WSC 2007. “What we set out to do was to build a really solid suspension system that wasn’t going to give us any failures and maintain the high level of aerodynamics that [Sunswift 3.1] had.”"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-iii/sr-3-story-4.jpg"
             },
             {
               "type": "paragraph",
@@ -767,7 +783,7 @@
           "summary": "Faced with shutdown, one student rebuilt the team from scratch - leading Sunswift IVy to a Guinness World Record and a race victory that secured the team’s future.",
           "author": "Tina Wu, Yuseph Ma & Jason Zhou",
           "date": "October 3, 2019",
-          "image": "/placeholders/vehicle-ivy.svg",
+          "image": "/stories/sr-ivy/ivy-thumbnail.avif",
           "blocks": [
             {
               "type": "paragraph",
@@ -775,7 +791,8 @@
               "text": "Clara Mazzone was sitting nervously in the Dean of Engineering's office. She was the last remaining Sunswift team member after the 2007 World Solar Challenge (WSC), and by default, Sunswift’s newest Project Manager."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ivy/ivy-story-1.jpg"
             },
             {
               "type": "paragraph",
@@ -838,7 +855,8 @@
               "text": "Step two – develop a solid business plan."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ivy/ivy-story-2.jpg"
             },
             {
               "type": "paragraph",
@@ -876,7 +894,8 @@
               "text": "Step three – build a well-performing car."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ivy/ivy-story-3.jpg"
             },
             {
               "type": "paragraph",
@@ -919,7 +938,8 @@
               "text": "Step four – make safety a priority."
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ivy/ivy-story-4.jpg"
             },
             {
               "type": "paragraph",
@@ -957,7 +977,8 @@
               "text": "The Guinness World Record"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ivy/ivy-story-5.jpg"
             },
             {
               "type": "paragraph",
@@ -1010,7 +1031,8 @@
               "text": "The WSC 2011"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ivy/ivy-story-6.jpg"
             },
             {
               "type": "paragraph",
@@ -1073,7 +1095,8 @@
               "text": "“I think, even more than the [Guiness World Record attempt], this secured the university’s long-term support for the project.”"
             },
             {
-              "type": "image"
+              "type": "image",
+              "src": "/stories/sr-ivy/ivy-story-7.jpg"
             },
             {
               "type": "heading",
