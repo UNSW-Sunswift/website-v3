@@ -1,5 +1,81 @@
 # Claude Progress
 
+## 2026-05-16 - Meet the Team Webflow-aligned layout harness
+
+Implementation (layout only; hero copy unchanged):
+
+- `TeamRoster` stacks four hierarchy bands (`[data-team-section]`: Academic → SLT → ELT → Team) with headings matching the Webflow-style ladder while keeping the dark theme + sticky `[data-team-filter]`.
+- Department filter still applies per-section; empty bands are omitted.
+- Smaller portrait cards / denser grid and increased horizontal padding on the roster block.
+- Page-load entrance for filter + grids: `.team-roster-reveal`, `.team-roster-section-reveal` in `app/globals.css`, skipped when `prefers-reduced-motion: reduce`.
+
+Verification:
+
+- `pnpm typecheck`: passed (`sunswift-website-v3`).
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed (`next build`).
+- `VERIFY_URL=http://127.0.0.1:3011 PATH="$PWD/node_modules/.bin:$PATH" node scripts/verify-browser.mjs` with `pnpm exec next start -p 3011`: passed (includes `TEAM_CONTRACT_OK:2` after filtering to Business on `/team`).
+
+## 2026-05-16 - Admin manual add/delete flows + user guide
+
+Baseline verification:
+
+- `./init.sh`: passed with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Implementation:
+
+- Added manual create forms and delete actions for team members, recruitment roles, and partners in the admin dashboard.
+- Added CMS delete support across the Next.js CMS API facade, local DynamoDB helpers, and the CMS admin lambda.
+- Wrote a new admin user guide covering drafts/publish flows and registered media assets, and linked it from `CMS_ADMIN_SETUP.md`.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `npm run build` in `aws`: passed.
+- `npm test -- --runInBand` in `aws`: passed.
+
+## 2026-05-16 - Admin theme switch placement
+
+Implementation:
+
+- Replaced the admin theme icon button with a labeled switch, placed under the account info and above the navigation list in the sidebar.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+
+## 2026-05-16 - Admin regression + vehicles detail alignment
+
+Implementation:
+
+- Aligned the vehicles detail heading block with the overview panel by padding the name/summary block on large screens.
+- Ran the admin browser regression against the running dev server to confirm the new theme switch placement.
+
+Verification:
+
+- `VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin`: passed.
+
+## 2026-05-16 - Admin dashboard theme toggle and footer removal
+
+Baseline verification:
+
+- `./init.sh`: passed with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Implementation:
+
+- Routed the root layout through a theme boundary so admin pages can use an unfrozen theme provider while public pages stay forced-light.
+- Added an admin theme toggle button in the CMS sidebar with a dedicated localStorage key.
+- Kept the shared SiteFooter in the root layout for the harness, but hid it on `/admin` routes via a client visibility gate.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+
 ## 2026-05-15 - LocalStack DynamoDB CMS Harness
 
 - Startup check found `claude-progress.md` missing, `feature_list.json` empty,
@@ -2100,14 +2176,14 @@ user-supplied raster logo for consistent branding in nav/footer surfaces.
 
 ### Implementation
 
-- Asset: `public/brand/sunswift-logo.png` (user-provided PNG).
+- Asset: `public/brand/sunswift-logo.svg` (user-provided PNG).
 - `components/site/brand-logo.tsx`: `src` points at the PNG; hover uses
   `group-hover:brightness-[0.55]` and slight opacity change on the wrapping
   `Link`’s `group` class.
 
 ### Harness (at time of change)
 
-- Design contract asserted `/brand/sunswift-logo.png`, alt text, and darkening
+- Design contract asserted `/brand/sunswift-logo.svg`, alt text, and darkening
   hover filter.
 
 ### Verification
@@ -2561,3 +2637,37 @@ Known limits:
 - The test data lives only in LocalStack and is reset by `./init.sh`.
 - Not committed because the working tree already contains unrelated and
   overlapping changes.
+
+## 2026-05-16 - Navbar logo sizing, vehicle-detail slogan polish, and harness notes
+
+### Navbar brand lockup
+
+- **`components/site/brand-logo.tsx`:** default width **`w-28`** (was **`w-36`**) and **`sizes="7rem"`** so the
+  updated SVG scales down in chrome.
+- **`components/site/transparent-navbar.tsx`:** **`w-28 sm:w-32`** (was **`w-32 sm:w-40`**).
+- **`components/site/site-shell.tsx`:** **`w-24 sm:w-28`** in header + mobile drawer (was **`w-28 sm:w-32`**).
+
+### Vehicle detail slogan (garage modal)
+
+- **`components/site/vehicles-gallery.tsx`:** removed **`border-l`** and extra **`pl-*`** on the summary (the stroke
+  aligned with the heading box while large display caps sat optically inward, so the bar looked left of **“SR‑7”**).
+- **`vehicle.name`** and **`vehicle.summary`** share a **`flex flex-col gap-2 sm:gap-3`** block with **`lg:pl-5`** so the
+  italic slogan sits **directly under** the title with even vertical rhythm.
+- Summary keeps **`italic`**, **`text-white`**, and **`text-shadow:0_1px_16px`** for **`pnpm test:homepage-design`**
+  legibility assertions; slightly larger **`sm:text-xl`** for scale against the headline.
+
+### Narrow typecheck fixes (adjacent unblock)
+
+- **`app/admin/actions.ts`:** **`String(...)`**-wrap **`department`** / **`hierarchyLevel`** **`FormData`** reads before normalizers.
+- **`components/site/team-roster.tsx`:** **`discipline: member.discipline ?? ""`** in **`toRosterMember`**.
+
+### Artefacts / harness
+
+- **`feature_list.json`:** **`nav-logo-shrink-vehicle-slogan-polish`** (**priority** 56) with **`verification`**
+  evidence from **`pnpm typecheck`**, **`pnpm lint`**, **`pnpm test:homepage-design`**.
+
+Verification (this slice):
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { ImageIcon, LayoutDashboard, LogOut, UserRound, UsersRound, Handshake } from "lucide-react"
 
 import { auth } from "@/auth"
+import { AdminThemeToggle } from "@/components/admin/admin-theme-toggle"
 import { Button } from "@/components/ui/button"
 import { signOutAdmin } from "@/app/admin/actions"
 
@@ -28,7 +29,10 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-primary">Sunswift CMS</p>
           <p className="mt-2 truncate text-sm text-muted-foreground">{session.user.email}</p>
         </div>
-        <nav className="mt-8 grid gap-1">
+        <div className="mt-4 px-2">
+          <AdminThemeToggle />
+        </div>
+        <nav className="mt-6 grid gap-1">
           {adminNav.map((item) => (
             <Button key={item.href} asChild variant="ghost" className="justify-start">
               <Link href={item.href}>

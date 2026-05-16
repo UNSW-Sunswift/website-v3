@@ -2,7 +2,12 @@ import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { AdminShell } from "@/components/site/admin-shell"
-import { importPartnerDrafts, publishPartner, savePartnerDraft } from "@/app/admin/actions"
+import {
+  deletePartner,
+  importPartnerDrafts,
+  publishPartner,
+  savePartnerDraft,
+} from "@/app/admin/actions"
 import { listCmsRecords } from "@/lib/cms/api"
 import { assetUrl } from "@/lib/cms/dynamodb"
 
@@ -43,6 +48,58 @@ export default async function AdminPartnersPage() {
           </Button>
         </form>
 
+        <details className="mt-6 rounded-lg border border-border bg-card p-5" data-admin-partners-create>
+          <summary className="cursor-pointer text-lg font-medium">Add partner</summary>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Create a new partner draft manually. Upload a logo now or later, then publish to push
+            the update live.
+          </p>
+          <form action={savePartnerDraft} className="mt-4 grid gap-4 sm:grid-cols-2">
+            <input type="hidden" name="existingLogoKey" value="" />
+            <label className="grid gap-2 text-sm">
+              Name
+              <input
+                name="name"
+                required
+                placeholder="Partner name"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              Slug
+              <input
+                name="slug"
+                placeholder="Optional override"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm sm:col-span-2">
+              Website
+              <input
+                name="website"
+                placeholder="https://example.com"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              Sort order
+              <input
+                name="sortOrder"
+                type="number"
+                defaultValue={0}
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              Staged logo
+              <input name="logo" type="file" accept="image/*" className="rounded-md border border-input bg-background px-3 py-2" />
+            </label>
+            <div className="sm:col-span-2">
+              <Button type="submit">Save draft</Button>
+            </div>
+          </form>
+        </details>
+
         <div className="mt-8 grid gap-6">
           {partners.map((partner) => (
             <article
@@ -63,6 +120,13 @@ export default async function AdminPartnersPage() {
                   <input type="hidden" name="slug" value={partner.slug} />
                   <Button type="submit" variant="outline" className="w-full">
                     Publish
+                  </Button>
+                </form>
+                <form action={deletePartner} className="mt-2">
+                  <input type="hidden" name="slug" value={partner.slug} />
+                  <input type="hidden" name="deletePublished" value="true" />
+                  <Button type="submit" variant="destructive" className="w-full">
+                    Delete
                   </Button>
                 </form>
               </div>

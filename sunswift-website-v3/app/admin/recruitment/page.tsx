@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { AdminShell } from "@/components/site/admin-shell"
 import {
+  deleteRecruitmentRole,
   importRecruitmentDrafts,
   publishRecruitmentRole,
   saveRecruitmentRoleDraft,
@@ -47,22 +48,124 @@ export default async function AdminRecruitmentPage() {
           </Button>
         </form>
 
+        <details className="mt-6 rounded-lg border border-border bg-card p-5" data-admin-recruitment-create>
+          <summary className="cursor-pointer text-lg font-medium">Add recruitment role</summary>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Create a new draft role manually. Save adds it to staging; publish to push live.
+          </p>
+          <form action={saveRecruitmentRoleDraft} className="mt-4 grid gap-4 sm:grid-cols-2">
+            <label className="grid gap-2 text-sm">
+              Title
+              <input
+                name="title"
+                required
+                placeholder="Solar Systems Engineer"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              Slug
+              <input
+                name="slug"
+                placeholder="Optional override"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm sm:col-span-2">
+              Team
+              <input
+                name="team"
+                placeholder="Engineering"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input name="active" type="checkbox" defaultChecked />
+              Active role
+            </label>
+            <label className="grid gap-2 text-sm">
+              Sort order
+              <input
+                name="sortOrder"
+                type="number"
+                defaultValue={0}
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              Discipline
+              <input
+                name="discipline"
+                placeholder="Engineering"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              School
+              <input
+                name="school"
+                placeholder="Mechanical"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm sm:col-span-2">
+              Description
+              <textarea
+                name="description"
+                rows={4}
+                placeholder="Short role overview shown on the public page."
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm sm:col-span-2">
+              Responsibilities HTML
+              <textarea
+                name="responsibilitiesHtml"
+                rows={4}
+                placeholder="Optional HTML list for responsibilities."
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <label className="grid gap-2 text-sm sm:col-span-2">
+              Requirements HTML
+              <textarea
+                name="requirementsHtml"
+                rows={4}
+                placeholder="Optional HTML list for requirements."
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
+            <div className="sm:col-span-2">
+              <Button type="submit">Save draft</Button>
+            </div>
+          </form>
+        </details>
+
         <div className="mt-8 grid gap-6">
           {roles.map((role) => (
             <article key={role.slug} className="rounded-lg border border-border bg-card p-5">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <div className="font-mono text-xs uppercase tracking-[0.18em] text-primary">{role.team}</div>
-                <h2 className="mt-2 text-2xl font-medium">{role.title}</h2>
+              <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <div className="font-mono text-xs uppercase tracking-[0.18em] text-primary">{role.team}</div>
+                  <h2 className="mt-2 text-2xl font-medium">{role.title}</h2>
+                </div>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <form action={publishRecruitmentRole}>
+                    <input type="hidden" name="slug" value={role.slug} />
+                    <Button type="submit" variant="outline">
+                      Publish
+                    </Button>
+                  </form>
+                  <form action={deleteRecruitmentRole}>
+                    <input type="hidden" name="slug" value={role.slug} />
+                    <input type="hidden" name="deletePublished" value="true" />
+                    <Button type="submit" variant="destructive">
+                      Delete
+                    </Button>
+                  </form>
+                </div>
               </div>
-              <form action={publishRecruitmentRole}>
-                <input type="hidden" name="slug" value={role.slug} />
-                <Button type="submit" variant="outline">
-                  Publish
-                </Button>
-              </form>
-            </div>
-            <form action={saveRecruitmentRoleDraft} className="grid gap-4 sm:grid-cols-2">
+              <form action={saveRecruitmentRoleDraft} className="grid gap-4 sm:grid-cols-2">
               <label className="grid gap-2 text-sm">
                 Title
                 <input name="title" defaultValue={role.title} className="rounded-md border border-input bg-background px-3 py-2" />
@@ -131,10 +234,10 @@ export default async function AdminRecruitmentPage() {
                   className="rounded-md border border-input bg-background px-3 py-2"
                 />
               </label>
-              <div className="sm:col-span-2">
-                <Button type="submit">Save draft</Button>
-              </div>
-            </form>
+                <div className="sm:col-span-2">
+                  <Button type="submit">Save draft</Button>
+                </div>
+              </form>
             </article>
           ))}
         </div>

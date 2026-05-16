@@ -1239,20 +1239,24 @@
           "pnpm build",
           "pnpm verify:browser"
         ],
-        "last_run": "2026-05-15",
+        "last_run": "2026-05-16",
         "evidence": [
           "./init.sh: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
           "pnpm test:homepage-design: passed with front-end-only team route, dropdown filter, placeholder image, and transition assertions",
           "pnpm typecheck: passed",
           "pnpm lint: passed with one existing unrelated homepage-recruitment unused variable warning",
           "pnpm build: passed",
-          "VERIFY_URL=http://localhost:3000 pnpm verify:browser: passed with TEAM_CONTRACT_OK:2 after filtering /team to Business"
+          "VERIFY_URL=http://localhost:3000 pnpm verify:browser: passed with TEAM_CONTRACT_OK:2 after filtering /team to Business",
+          "Meet the Team layout amendment (2026-05-16): stacked Academic/SLT/ELT/Team `[data-team-section]` bands beneath sticky `[data-team-filter]`; departments with zero matches omit a band; denser grids + wider horizontal padding; below-hero staggered fade via `team-roster-reveal` / `team-roster-section-reveal` in globals.css plus prefers-reduced-motion fallbacks",
+          "pnpm test:homepage-design + pnpm typecheck + pnpm build (sunswift-website-v3): passed 2026-05-16 after layout/CSS changes",
+          "VERIFY_URL=http://127.0.0.1:3011 `PATH=$PWD/node_modules/.bin:$PATH node scripts/verify-browser.mjs` against `pnpm exec next start -p 3011`: exited 0 including TEAM_CONTRACT_OK:2 after Business filter"
         ]
       },
       "notes": [
         "/team now uses TransparentNavbar and TeamRoster instead of getTeamMembers/assetUrl.",
         "TeamRoster is a client component with local placeholder data, department filtering, live counts, and team-card-filter-in transitions.",
-        "Placeholder cards use /placeholders/team-member.svg so image paths are easy to replace when CMS records are wired in."
+        "Placeholder cards use /placeholders/team-member.svg so image paths are easy to replace when CMS records are wired in.",
+        "`hierarchyLevel` maps to roster bands: Academic, SLT, ELT plus Officer folded into ELT, everything else Team."
       ]
     },
     {
@@ -1356,7 +1360,7 @@
         ]
       },
       "notes": [
-        "Logo moved to /brand/sunswift-logo.png and SunswiftBrandLogo now darkens to brightness-[0.55] on hover.",
+        "Logo moved to /brand/sunswift-logo.svg and SunswiftBrandLogo now darkens to brightness-[0.55] on hover.",
         "Added SocialsRail (Instagram, YouTube, LinkedIn, Facebook, Twitter) sticky on the left at desktop.",
         "Added LiteYouTube click-to-play embed via youtube-nocookie.com.",
         "MediaHighlightsPage now renders embeds for the AWS spotlight, the four Sunswift 7 journey parts, the three team highlights, and the AWS Summit + Optus partner spotlights, alongside article hyperlinks.",
@@ -1579,6 +1583,109 @@
         "Static harness now asserts the publish-safe DynamoDB write order.",
         "The LocalStack data mutations are test data only; rerunning ./init.sh resets the local CMS harness.",
         "Not committed because the worktree already contains unrelated and overlapping user changes."
+      ]
+    },
+    {
+      "id": "admin-dashboard-theme-toggle-footer",
+      "priority": 53,
+      "title": "Admin dashboard theme toggle and footer removal",
+      "status": "complete",
+      "description": "Hide the shared public footer on /admin routes while adding a light/dark mode toggle for the admin dashboard without changing the public-site theme lock.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed"
+        ]
+      },
+      "notes": [
+        "Root layout now routes public pages through the forced-light ThemeProvider and admin pages through an admin-specific ThemeProvider.",
+        "SiteFooter stays in app/layout.tsx for the harness but is hidden on /admin routes via a client visibility gate.",
+        "Admin sidebar now includes a light/dark theme switch with a dedicated localStorage key, positioned under the account info."
+      ]
+    },
+    {
+      "id": "admin-manual-add-delete-user-guide",
+      "priority": 54,
+      "title": "Admin manual add/delete flows and user guide",
+      "status": "complete",
+      "description": "Add manual create/delete flows for team members, recruitment roles, and partners in the admin dashboard, and document usage for CMS staging including registered media assets.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "npm run build in aws",
+          "npm test -- --runInBand in aws"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "./init.sh: passed before changes",
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed",
+          "npm run build in aws: passed",
+          "npm test -- --runInBand in aws: passed"
+        ]
+      },
+      "notes": [
+        "Admin pages now include manual create forms and delete actions alongside CSV imports.",
+        "Delete removes both draft and published records to prevent stale public entries.",
+        "CMS API and local DynamoDB helpers now support delete endpoints for draft/published records.",
+        "Added CMS_ADMIN_USER_GUIDE.md with step-by-step admin workflows, including registered media assets."
+      ]
+    },
+    {
+      "id": "vehicles-detail-alignment-admin-regression",
+      "priority": 55,
+      "title": "Vehicles detail alignment and admin regression",
+      "status": "complete",
+      "description": "Align the vehicles detail heading with the overview panel and confirm the admin theme switch placement via browser regression.",
+      "verification": {
+        "required": [
+          "VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin: passed"
+        ]
+      },
+      "notes": [
+        "Vehicle detail headings now align with the overview panel by adding large-screen padding to the name/summary block.",
+        "Admin browser regression confirmed the theme switch placement under the account info."
+      ]
+    },
+    {
+      "id": "nav-logo-shrink-vehicle-slogan-polish",
+      "priority": 56,
+      "title": "Navbar logo sizing and vehicle-detail slogan layout polish",
+      "status": "complete",
+      "description": "Reduce transparent navbar and site-shell brand lockup width after the refreshed SVG proportions, refine the vehicle detail slogan so it aligns optically under the display vehicle name without a left-edge vertical rule, and follow up on user screenshot feedback.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed",
+          "`vehicles-gallery.tsx` detail slogan line retains `text-white [text-shadow:0_1px_16px` for the homepage design contrast contract",
+          "Narrow regression fix: `saveTeamMemberDraft` coerces department/hierarchy FormData strings; `toRosterMember` defaults CMS `discipline` to empty string (unblocks workspace typecheck)"
+        ]
+      },
+      "notes": [
+        "`SunswiftBrandLogo` default Tailwind width reduced (w-36 to w-28); `transparent-navbar` uses w-28 sm:w-32; `site-shell` header/footer use w-24 sm:w-28.",
+        "Vehicle detail: removed border-l + asymmetric pl on the slogan; headline and summary share a compact flex column (gap-2 sm:gap-3) under the same lg:pl-5 group so copy tracks the title optically.",
+        "Slogan remains italic with text-white + 16px text-shadow per design harness; slightly larger italic line (sm:text-xl) for balance against the display heading."
       ]
     }
   ]

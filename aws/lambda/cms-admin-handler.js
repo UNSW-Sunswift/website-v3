@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb")
-const { DynamoDBDocumentClient, PutCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb")
+const { DynamoDBDocumentClient, DeleteCommand, PutCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb")
 
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}))
 
@@ -91,6 +91,27 @@ async function publish(collection, slug, updatedBy) {
   return response(200, { item })
 }
 
+async function remove(collection, slug, status) {
+  const config = collectionConfig[collection]
+  if (!config || collection === "assets") {
+    return response(404, { error: "Unknown mutable CMS collection" })
+  }
+
+  if (!status || (status !== "draft" && status !== "published")) {
+    return response(400, { error: "Invalid status" })
+  }
+
+  await dynamo.send(new DeleteCommand({
+    TableName: process.env.CMS_TABLE_NAME,
+    Key: {
+      id: config.id,
+      type: itemType(config.kind, slug, status),
+    },
+  }))
+
+  return response(200, { ok: true })
+}
+
 exports.handler = async (event) => {
   const method = event.httpMethod || event.requestContext?.http?.method || "GET"
   const path = event.path || event.rawPath || ""
@@ -111,6 +132,10 @@ exports.handler = async (event) => {
 
   if (method === "POST" && parts[0] === "cms" && parts[1] === "admin" && parts[4] === "publish") {
     return publish(parts[2], parts[3], body.updatedBy)
+  }
+
+  if (method === "DELETE" && parts[0] === "cms" && parts[1] === "admin" && (parts[4] === "draft" || parts[4] === "published")) {
+    return remove(parts[2], parts[3], parts[4])
   }
 
   return response(404, { error: "Not found" })

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation"
 
 import { auth, signIn, signOut } from "@/auth"
 import {
+  deleteCmsRecord,
   listCmsRecords,
   publishCmsDraft,
   recordMediaAsset,
@@ -12,6 +13,10 @@ import {
   stageCmsUpload,
 } from "@/lib/cms/api"
 import { importPartnersCsv, importRecruitmentCsv, importTeamCsv } from "@/lib/cms/csv"
+import {
+  normalizeTeamDepartment,
+  normalizeTeamHierarchy,
+} from "@/lib/cms/team-options"
 import type { MediaAsset } from "@/lib/cms/types"
 
 function slugify(value: string) {
@@ -51,8 +56,10 @@ export async function signOutAdmin() {
 export async function saveTeamMemberDraft(formData: FormData) {
   const updatedBy = await assertAdmin()
 
-  const name = String(formData.get("name") ?? "")
+  const name = String(formData.get("name") ?? "").trim()
   const slug = slugify(String(formData.get("slug") || name))
+  const department = normalizeTeamDepartment(String(formData.get("department") ?? ""))
+  const hierarchyLevel = normalizeTeamHierarchy(String(formData.get("hierarchyLevel") ?? ""))
   const existingImageKey = String(formData.get("existingImageKey") ?? "")
   const file = formData.get("headshot")
   const imageKey =
@@ -64,12 +71,10 @@ export async function saveTeamMemberDraft(formData: FormData) {
     {
       slug,
       name,
-      role: String(formData.get("role") ?? ""),
-      discipline: String(formData.get("discipline") ?? ""),
-      department: String(formData.get("department") ?? ""),
-      hierarchyLevel: String(formData.get("hierarchyLevel") ?? ""),
-      additionalRoles: String(formData.get("additionalRoles") ?? ""),
-      bio: String(formData.get("bio") ?? ""),
+      role: String(formData.get("role") ?? "").trim(),
+      department,
+      hierarchyLevel,
+      additionalRoles: String(formData.get("additionalRoles") ?? "").trim(),
       imageKey,
       sortOrder: Number(formData.get("sortOrder") ?? 0),
     },
@@ -89,6 +94,36 @@ export async function publishTeamMember(formData: FormData) {
     revalidatePath("/team")
     revalidatePath("/admin/team")
   }
+}
+
+export async function publishAllTeamMembers() {
+  const updatedBy = await assertAdmin()
+  const drafts = await listCmsRecords("team", "draft")
+
+  for (const member of drafts) {
+    if (!member.slug) {
+      continue
+    }
+    await publishCmsDraft("team", member.slug, updatedBy)
+  }
+
+  revalidatePath("/team")
+  revalidatePath("/admin/team")
+}
+
+export async function deleteTeamMember(formData: FormData) {
+  await assertAdmin()
+
+  const slug = String(formData.get("slug") ?? "")
+  const deletePublished = String(formData.get("deletePublished") ?? "true") !== "false"
+
+  await deleteCmsRecord("team", slug, "draft")
+  if (deletePublished) {
+    await deleteCmsRecord("team", slug, "published")
+  }
+
+  revalidatePath("/team")
+  revalidatePath("/admin/team")
 }
 
 export async function saveRecruitmentRoleDraft(formData: FormData) {
@@ -131,6 +166,22 @@ export async function publishRecruitmentRole(formData: FormData) {
   }
 }
 
+export async function deleteRecruitmentRole(formData: FormData) {
+  await assertAdmin()
+
+  const slug = String(formData.get("slug") ?? "")
+  const deletePublished = String(formData.get("deletePublished") ?? "true") !== "false"
+
+  await deleteCmsRecord("roles", slug, "draft")
+  if (deletePublished) {
+    await deleteCmsRecord("roles", slug, "published")
+  }
+
+  revalidatePath("/recruitment")
+  revalidatePath("/recruitment/available-roles")
+  revalidatePath("/admin/recruitment")
+}
+
 export async function savePartnerDraft(formData: FormData) {
   const updatedBy = await assertAdmin()
 
@@ -166,6 +217,21 @@ export async function publishPartner(formData: FormData) {
     revalidatePath("/partners")
     revalidatePath("/admin/partners")
   }
+}
+
+export async function deletePartner(formData: FormData) {
+  await assertAdmin()
+
+  const slug = String(formData.get("slug") ?? "")
+  const deletePublished = String(formData.get("deletePublished") ?? "true") !== "false"
+
+  await deleteCmsRecord("partners", slug, "draft")
+  if (deletePublished) {
+    await deleteCmsRecord("partners", slug, "published")
+  }
+
+  revalidatePath("/partners")
+  revalidatePath("/admin/partners")
 }
 
 export async function importTeamDrafts(formData: FormData) {

@@ -258,12 +258,14 @@ function VehicleDetail({ vehicle, onClose }: { vehicle: Vehicle; onClose: () => 
         <div
           style={{ animation: "vehicle-fade-up 700ms cubic-bezier(0.22,0.61,0.36,1) 120ms both" }}
         >
-          <h2 className="text-5xl font-light leading-[0.98] tracking-tight text-white sm:text-7xl lg:text-[6.5rem]">
-            {vehicle.name}
-          </h2>
-          <p className="mt-6 max-w-md text-base leading-7 text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] sm:text-lg">
-            {vehicle.summary}
-          </p>
+          <div className="flex flex-col gap-2 lg:pl-5 sm:gap-3">
+            <h2 className="text-5xl font-light leading-[0.98] tracking-tight text-white sm:text-7xl lg:text-[6.5rem]">
+              {vehicle.name}
+            </h2>
+            <p className="max-w-xl text-[1.05rem] italic leading-snug tracking-wide text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.72)] sm:text-xl sm:leading-snug">
+              {vehicle.summary}
+            </p>
+          </div>
 
           <div className="relative mt-12 aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10 bg-[#0e1114]">
             <Image

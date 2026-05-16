@@ -121,6 +121,9 @@ The browser must never receive AWS credentials. Admin server actions verify the 
 
 ## Admin Usage
 
+For step-by-step admin workflows (manual adds, deletes, and asset registration), see
+`CMS_ADMIN_USER_GUIDE.md`.
+
 - `/admin/team`: import team CSVs, edit draft members, stage headshots, publish public records.
 - `/admin/recruitment`: import recruitment CSVs, edit role descriptions, set active/inactive state, publish public roles.
 - `/admin/partners`: import partner CSVs, stage logos, edit websites/order, publish public partners.

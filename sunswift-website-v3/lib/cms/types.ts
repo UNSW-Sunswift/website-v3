@@ -2,11 +2,11 @@ export type TeamMember = {
   slug: string
   name: string
   role: string
-  discipline: string
+  discipline?: string
   department?: string
   hierarchyLevel?: string
   additionalRoles?: string
-  bio: string
+  bio?: string
   imageKey?: string
   publishedAssetKey?: string
   sortOrder?: number

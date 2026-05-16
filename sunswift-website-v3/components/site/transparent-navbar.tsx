@@ -27,7 +27,7 @@ export function TransparentNavbar() {
           className="group block"
           aria-label="Sunswift Racing home"
         >
-          <SunswiftBrandLogo priority className="w-32 sm:w-40" />
+          <SunswiftBrandLogo priority className="w-28 sm:w-32" />
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
           <div data-about-dropdown className="group relative">

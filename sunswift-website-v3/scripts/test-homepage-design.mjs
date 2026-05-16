@@ -493,14 +493,14 @@ assert(
   "Public navigation and footer must use the Sunswift brand logo asset instead of plain text wordmarks."
 )
 assert(
-  brandLogo.includes("/brand/sunswift-logo.png") &&
+  brandLogo.includes("/brand/sunswift-logo.svg") &&
     brandLogo.includes('alt="Sunswift Racing"') &&
     /group-hover:brightness-\[0\.[0-7]/.test(brandLogo),
   "BrandLogo component must render the supplied Sunswift Racing PNG logo with accessible alt text and a darkening hover filter."
 )
 assert(
-  existsSync(join(root, "public/brand/sunswift-logo.png")),
-  "public/brand/sunswift-logo.png must exist (supplied logo asset)."
+  existsSync(join(root, "public/brand/sunswift-logo.svg")),
+  "public/brand/sunswift-logo.svg must exist (supplied logo asset)."
 )
 
 assert(

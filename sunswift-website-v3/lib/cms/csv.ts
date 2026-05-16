@@ -1,4 +1,8 @@
 import type { Partner, RecruitmentRole, TeamMember } from "@/lib/cms/types"
+import {
+  normalizeTeamDepartment,
+  normalizeTeamHierarchy,
+} from "@/lib/cms/team-options"
 
 function slugify(value: string) {
   return value
@@ -72,21 +76,20 @@ export function importTeamCsv(text: string): TeamMember[] {
       const fullName = String(record.Name ?? `${firstName} ${lastName}`).trim()
       const name = fullName.replace(/\s+/g, " ")
       const role = String(record["Role Title"] || record["Team Role"] || "").trim()
-      const department = String(record.Department ?? "").trim()
-      const discipline = String(record.Discipline ?? "").trim()
-      const hierarchyLevel = String(record["Hierarchy Level"] ?? "").trim()
+      const department = normalizeTeamDepartment(record.Department as string)
+      const hierarchyLevel = normalizeTeamHierarchy(record["Hierarchy Level"] as string)
       const additionalRoles = String(record["Additional Roles"] ?? "").trim()
       const imageKey = String(record.Headshot ?? "").trim()
+      const fallbackRole =
+        department === "Business" ? "Business Officer" : `${department} Engineer`.trim()
 
       return {
         slug: slugify(String(record.Slug || name)),
         name,
-        role: role || (discipline === "Business" ? "Business Officer" : `${department} Engineer`.trim()),
-        discipline,
+        role: role || fallbackRole,
         department,
         hierarchyLevel,
         additionalRoles,
-        bio: additionalRoles || role || "Imported team member profile.",
         imageKey,
         sortOrder: index + 1,
         status: "draft" as const,

@@ -1,5 +1,5 @@
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3"
-import { QueryCommand, PutCommand } from "@aws-sdk/lib-dynamodb"
+import { DeleteCommand, QueryCommand, PutCommand } from "@aws-sdk/lib-dynamodb"
 
 import { getCmsAssetsBucket, getCmsTableName, getDynamoClient, getS3Client } from "@/lib/aws"
 import {
@@ -23,6 +23,18 @@ function statusSuffix(status: CmsStatus) {
 
 function itemType(kind: CmsKind, slug: string, status: CmsStatus) {
   return `${kind}#${slug}${statusSuffix(status)}`
+}
+
+async function deleteRecord(id: string, kind: CmsKind, slug: string, status: CmsStatus) {
+  await getDynamoClient().send(
+    new DeleteCommand({
+      TableName: getCmsTableName(),
+      Key: {
+        id,
+        type: itemType(kind, slug, status),
+      },
+    })
+  )
 }
 
 async function queryCollection<T>(
@@ -104,6 +116,10 @@ export async function putTeamMember(member: TeamMember, status: CmsStatus) {
   )
 }
 
+export async function deleteTeamMember(slug: string, status: CmsStatus) {
+  await deleteRecord("team-members", "member", slug, status)
+}
+
 export async function putRecruitmentRole(role: RecruitmentRole, status: CmsStatus) {
   await getDynamoClient().send(
     new PutCommand({
@@ -118,6 +134,10 @@ export async function putRecruitmentRole(role: RecruitmentRole, status: CmsStatu
   )
 }
 
+export async function deleteRecruitmentRole(slug: string, status: CmsStatus) {
+  await deleteRecord("recruitment-roles", "role", slug, status)
+}
+
 export async function putPartner(partner: Partner, status: CmsStatus) {
   await getDynamoClient().send(
     new PutCommand({
@@ -130,6 +150,10 @@ export async function putPartner(partner: Partner, status: CmsStatus) {
       },
     })
   )
+}
+
+export async function deletePartner(slug: string, status: CmsStatus) {
+  await deleteRecord("partners", "partner", slug, status)
 }
 
 export async function putMediaAsset(asset: MediaAsset, status: CmsStatus) {

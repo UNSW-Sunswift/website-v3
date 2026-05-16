@@ -1,4 +1,7 @@
 import {
+  deletePartner,
+  deleteRecruitmentRole,
+  deleteTeamMember,
   getMediaAssets,
   getPartners,
   getRecruitmentRoles,
@@ -149,6 +152,33 @@ export async function publishCmsDraft<TCollection extends Exclude<CmsCollection,
   }
 
   return published
+}
+
+export async function deleteCmsRecord<TCollection extends Exclude<CmsCollection, "assets">>(
+  collection: TCollection,
+  slug: string,
+  status: CmsStatus
+) {
+  const apiResponse = await cmsFetch<{ ok: boolean }>(
+    `/cms/admin/${collection}/${slug}/${status}`,
+    {
+      method: "DELETE",
+    }
+  )
+
+  if (apiResponse) {
+    return apiResponse.ok
+  }
+
+  if (collection === "team") {
+    await deleteTeamMember(slug, status)
+  } else if (collection === "roles") {
+    await deleteRecruitmentRole(slug, status)
+  } else {
+    await deletePartner(slug, status)
+  }
+
+  return true
 }
 
 export async function stageCmsUpload(

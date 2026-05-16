@@ -2,7 +2,8 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { SiteFooter } from "@/components/site/site-shell"
-import { ThemeProvider } from "@/components/theme-provider"
+import { FooterVisibility } from "@/components/site/footer-visibility"
+import { ThemeBoundary } from "@/components/theme-boundary"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,10 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider>
+        <ThemeBoundary>
           {children}
-          <SiteFooter />
-        </ThemeProvider>
+          <FooterVisibility>
+            <SiteFooter />
+          </FooterVisibility>
+        </ThemeBoundary>
       </body>
     </html>
   )
