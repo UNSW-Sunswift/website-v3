@@ -60,7 +60,10 @@ const partnersPageContent = readFileSync(
   join(root, "components/site/partners-page.tsx"),
   "utf8"
 )
-const mediaPage = readFileSync(join(root, "app/(public)/media/page.tsx"), "utf8")
+const mediaPage = readFileSync(
+  join(root, "app/(public)/media/page.tsx"),
+  "utf8"
+)
 const mediaHighlightsPage = readFileSync(
   join(root, "components/site/media-highlights-page.tsx"),
   "utf8"
@@ -129,12 +132,30 @@ const cmsAssets = readFileSync(join(root, "content/cms-assets.json"), "utf8")
 const packageJson = readFileSync(join(root, "package.json"), "utf8")
 const authConfig = readFileSync(join(root, "auth.ts"), "utf8")
 const adminActions = readFileSync(join(root, "app/admin/actions.ts"), "utf8")
-const adminLoginPage = readFileSync(join(root, "app/admin/login/page.tsx"), "utf8")
-const adminTeamPage = readFileSync(join(root, "app/admin/team/page.tsx"), "utf8")
-const adminShell = readFileSync(join(root, "components/site/admin-shell.tsx"), "utf8")
-const adminPartnersPage = readFileSync(join(root, "app/admin/partners/page.tsx"), "utf8")
-const adminAssetsPage = readFileSync(join(root, "app/admin/assets/page.tsx"), "utf8")
-const cmsAdminVerifier = readFileSync(join(root, "scripts/verify-cms-admin.mjs"), "utf8")
+const adminLoginPage = readFileSync(
+  join(root, "app/admin/login/page.tsx"),
+  "utf8"
+)
+const adminTeamPage = readFileSync(
+  join(root, "app/admin/team/page.tsx"),
+  "utf8"
+)
+const adminShell = readFileSync(
+  join(root, "components/site/admin-shell.tsx"),
+  "utf8"
+)
+const adminPartnersPage = readFileSync(
+  join(root, "app/admin/partners/page.tsx"),
+  "utf8"
+)
+const adminAssetsPage = readFileSync(
+  join(root, "app/admin/assets/page.tsx"),
+  "utf8"
+)
+const cmsAdminVerifier = readFileSync(
+  join(root, "scripts/verify-cms-admin.mjs"),
+  "utf8"
+)
 
 const failures = []
 
@@ -170,7 +191,9 @@ assert(
   "Homepage hero must use the SR8 vehicle image instead of the old SVG placeholder."
 )
 assert(
-  /title:\s*\{\s*default:\s*"Sunswift Racing"[^]*template:\s*"%s \| Sunswift Racing"/.test(layout),
+  /title:\s*\{\s*default:\s*"Sunswift Racing"[^]*template:\s*"%s \| Sunswift Racing"/.test(
+    layout
+  ),
   "Root layout must use a per-page browser tab title template."
 )
 for (const [source, title] of [
@@ -644,18 +667,14 @@ assert(
   "Recruitment CTA section must include the Embrace Tomorrow headline."
 )
 assert(
-  recruitmentCta.includes("data-homepage-recruitment-gradient") &&
-    recruitmentCta.includes("homepage-recruitment-background-core"),
-  "Recruitment CTA section must keep the animated gradient in the background, not through the headline text."
+  recruitmentCta.includes("data-homepage-recruitment-block") &&
+    recruitmentCta.includes("bg-accent-yellow"),
+  "Recruitment CTA section must use a hard accent block behind the headline."
 )
 assert(
-  globalsCss.includes("@keyframes homepage-recruitment-background"),
-  "globals.css must define the animated Embrace Tomorrow background gradient."
-)
-assert(
-  globalsCss.includes("translate3d(-7%, 3%, 0)") &&
-    globalsCss.includes("translate3d(8%, -5%, 0)"),
-  "Embrace Tomorrow background gradient must drift around, not only blur in place."
+  !recruitmentCta.includes("data-homepage-recruitment-gradient") &&
+    !globalsCss.includes("@keyframes homepage-recruitment-background"),
+  "Recruitment CTA must not keep the old animated gradient treatment."
 )
 
 // Records → recruitment transition timing contract: content + copy + handoff must complete inside
@@ -687,8 +706,10 @@ assert(
   "Records handoff overlay must be tall enough (h-[180svh] with -bottom-[40svh]) to cover the recruitment glow bleeding in from below."
 )
 assert(
-  !recordsTransition.includes("radial-gradient(ellipse_at_50%_78%"),
-  "Records handoff overlay must stay dark-only so it does not create a yellow seam at the recruitment boundary."
+  !/gradient|linear-gradient|radial-gradient|conic-gradient/.test(
+    recordsTransition
+  ),
+  "Landing records section must use hard colour blocks, not gradients."
 )
 const recruitmentTransition = readFileSync(
   join(root, "components/site/homepage-recruitment.tsx"),
@@ -704,14 +725,14 @@ assert(
   "Recruitment background must not anchor yellow radial gradients to the section top edge."
 )
 assert(
-  recruitmentTransition.includes("top-[24svh]") &&
-    recruitmentTransition.includes("h-[min(82vw,46rem)]") &&
-    recruitmentTransition.includes("-inset-[18%]") &&
+  recruitmentTransition.includes("top-[25svh]") &&
+    recruitmentTransition.includes("h-[min(58vw,24rem)]") &&
+    recruitmentTransition.includes("data-homepage-recruitment-block") &&
     recruitmentTransition.includes("h-[42svh]") &&
     recruitmentTransition.includes("-top-[34svh]") &&
     recruitmentTransition.includes("overflow-x-clip") &&
     recruitmentTransition.includes("overflow-y-visible"),
-  "Recruitment glow must sit lower behind the headline with an unclipped soft edge and an upward dark veil to avoid visible seams."
+  "Recruitment block must sit lower behind the headline with hard dark handoff blocks to avoid visible seams."
 )
 assert(
   !recruitmentCta.includes("bg-clip-text") &&
@@ -755,8 +776,15 @@ assert(
   "Recruitment CTA section must animate the dropdown panel blur while scrolling in."
 )
 assert(
-  /--recruitment-glow-scale/.test(recruitmentCta),
-  "Recruitment CTA section must animate the background glow scale while scrolling in."
+  /--recruitment-block-opacity/.test(recruitmentCta),
+  "Recruitment CTA section must animate the background block opacity while scrolling in."
+)
+assert(
+  recruitmentCta.includes("grid-rows-[0fr]") &&
+    recruitmentCta.includes("group-open:grid-rows-[1fr]") &&
+    recruitmentCta.includes("group-open:blur-0") &&
+    recruitmentCta.includes("group-open:translate-y-0"),
+  "Recruitment CTA discipline dropdowns must animate open/closed state."
 )
 assert(
   /<details/.test(recruitmentCta),
@@ -772,7 +800,9 @@ for (const discipline of ["Design", "Engineering", "Business"]) {
     `Recruitment content must include a ${discipline} stream.`
   )
   assert(
-    recruitmentCta.includes(`data-homepage-recruitment-stream-card={stream.name}`),
+    recruitmentCta.includes(
+      `data-homepage-recruitment-stream-card={stream.name}`
+    ),
     "Recruitment CTA must expose one stream card per discipline."
   )
 }
@@ -785,7 +815,9 @@ assert(
   "Recruitment content must not keep Webflow-style family tag lists."
 )
 assert(
-  !/data-[a-z-]*famil/.test(recruitmentCta + recruitmentPage + availableRolesPage + roleStreamPage),
+  !/data-[a-z-]*famil/.test(
+    recruitmentCta + recruitmentPage + availableRolesPage + roleStreamPage
+  ),
   "Recruitment pages must not render legacy family/tag chip groups."
 )
 
@@ -1271,14 +1303,17 @@ for (const slug of [
     slugIdx,
     nextSlugIdx > slugIdx ? nextSlugIdx : staticData.length
   )
-  assert(/overview:\s*/.test(block), `Vehicle ${slug} must include overview copy.`)
+  assert(
+    /overview:\s*/.test(block),
+    `Vehicle ${slug} must include overview copy.`
+  )
 }
 assert(
   vehiclesGallery.includes("data-vehicle-carousel"),
   "Vehicle detail must expose the click-switch achievements/overview carousel."
 )
 assert(
-  vehiclesGallery.includes("data-vehicle-carousel-panel=\"overview\""),
+  vehiclesGallery.includes('data-vehicle-carousel-panel="overview"'),
   "Vehicle detail carousel must include an overview panel."
 )
 assert(
@@ -1286,7 +1321,8 @@ assert(
   "Vehicle detail must mark the technical specification section."
 )
 assert(
-  vehiclesGallery.indexOf("data-vehicle-carousel") < vehiclesGallery.indexOf("data-vehicle-specs"),
+  vehiclesGallery.indexOf("data-vehicle-carousel") <
+    vehiclesGallery.indexOf("data-vehicle-specs"),
   "Vehicle technical specifications must render below the achievements/overview carousel."
 )
 assert(
@@ -1302,8 +1338,8 @@ assert(
   "Vehicle carousel must not keep the old hover-and-scroll gesture."
 )
 assert(
-  vehiclesGallery.includes("text-white [text-shadow:0_1px_14px") &&
-    vehiclesGallery.includes("text-white [text-shadow:0_1px_16px"),
+  vehiclesGallery.includes("[text-shadow:0_1px_14px") &&
+    vehiclesGallery.includes("[text-shadow:0_1px_16px"),
   "Vehicle quick summaries must use high-contrast white text over imagery."
 )
 
@@ -1384,7 +1420,7 @@ assert(
 )
 assert(
   !/border-t border-white\/10 bg-\[#0a0c0e\]/.test(siteShell),
-  "Site footer must not use a hard top border."
+  "Site footer must not use the old hard top border."
 )
 assert(
   siteShell.includes("before:-top-32") &&
@@ -1616,6 +1652,11 @@ assert(
   "Achievements timeline must derive progress from vertical scroll distance."
 )
 assert(
+  /const timelineStart = 0\.1/.test(achievementsTimeline) &&
+    /timelineProgress/.test(achievementsTimeline),
+  "Achievements timeline must hold the first item briefly before horizontal translation starts."
+)
+assert(
   /rail\.scrollWidth - stage\.clientWidth/.test(achievementsTimeline),
   "Achievements timeline must translate across the horizontal rail width."
 )
@@ -1641,17 +1682,17 @@ assert(
 )
 assert(
   achievementsTimeline.includes("data-achievements-video-reload"),
-  "Achievements timeline must expose a circular reload control when milestone video is used.",
+  "Achievements timeline must expose a circular reload control when milestone video is used."
 )
 assert(
   /<video\b/.test(achievementsTimeline),
-  "Achievements timeline must render native <video> for optional MP4 milestones.",
+  "Achievements timeline must render native <video> for optional MP4 milestones."
 )
 assert(
   /activeAchievement\?\.image|achievement\.image|achievement\.videoMp4/.test(
-    achievementsTimeline,
+    achievementsTimeline
   ),
-  "Achievements timeline must render media driven by the active achievement (image and/or optional video).",
+  "Achievements timeline must render media driven by the active achievement (image and/or optional video)."
 )
 
 const introSectionIdx = achievementsTimeline.indexOf(
@@ -1684,16 +1725,18 @@ assert(
   "Achievements intro transition must compute a phaseScatter stage for the headline scatter."
 )
 assert(
-  /phaseWipe/.test(achievementsTimeline),
-  "Achievements intro transition must compute a phaseWipe stage for the accent wipe."
+  /phaseBlockHandoff/.test(achievementsTimeline),
+  "Achievements intro transition must compute a block handoff stage."
 )
 assert(
-  /phaseHandoff/.test(achievementsTimeline),
-  "Achievements intro transition must compute a phaseHandoff stage for the timeline takeover."
+  /data-achievements-block-handoff/.test(achievementsTimeline),
+  "Achievements intro must render a block handoff panel during the transition."
 )
 assert(
-  /data-achievements-wipe/.test(achievementsTimeline),
-  "Achievements intro must render a data-achievements-wipe accent line during the transition."
+  !/data-achievements-wipe|phaseWipe|phaseHandoff|yearStamp/.test(
+    achievementsTimeline
+  ),
+  "Achievements intro must remove the old wipe/year-stamp transition layers."
 )
 assert(
   /headlineWords\.map/.test(achievementsTimeline),
@@ -1706,8 +1749,8 @@ assert(
   "Achievements intro headline words must animate opacity, translate, and blur per word during the scatter."
 )
 assert(
-  /1996[^]*2026/.test(achievementsTimeline),
-  "Achievements intro transition must reveal a 1996 → 2026 year stamp at the wipe point."
+  !/1996[^]*2026/.test(achievementsTimeline),
+  "Achievements intro transition must not reveal the removed 1996 → 2026 stamp."
 )
 assert(
   /achievementsOverview/.test(staticData),
@@ -1732,28 +1775,27 @@ for (const phrase of [
 
 assert(
   !staticData.includes("/placeholders/vehicle-violet.svg"),
-  "Static CMS data must not reference the removed vehicle-violet.svg.",
+  "Static CMS data must not reference the removed vehicle-violet.svg."
 )
 assert(
   staticData.includes("/vehicle-fleet/vehicle-violet.avif"),
-  "Static data must reference vehicle-violet.avif under vehicle-fleet for VIolet imagery.",
+  "Static data must reference vehicle-violet.avif under vehicle-fleet for VIolet imagery."
 )
 assert(
   /\bvideoMp4\s*:/.test(staticData),
-  "Achievements in static-data must support optional timeline videoMp4 fields.",
+  "Achievements in static-data must support optional timeline videoMp4 fields."
 )
 assert(
   !aboutPages.includes("vehicle-violet.svg"),
-  "About pages gallery must not use the removed vehicle-violet.svg asset.",
+  "About pages gallery must not use the removed vehicle-violet.svg asset."
 )
 assert(
   aboutPages.includes("/vehicle-fleet/vehicle-violet.avif"),
-  "About pages gallery must use vehicle-fleet vehicle-violet.avif for Violet imagery.",
+  "About pages gallery must use vehicle-fleet vehicle-violet.avif for Violet imagery."
 )
 assert(
-  teamPage.includes("TransparentNavbar") &&
-    teamPage.includes("TeamRoster"),
-  "Team route must render the transparent navbar and the front-end roster component.",
+  teamPage.includes("TransparentNavbar") && teamPage.includes("TeamRoster"),
+  "Team route must render the transparent navbar and the front-end roster component."
 )
 assert(
   teamPage.includes('listCmsRecords("team", "published")') &&
@@ -1833,15 +1875,21 @@ assert(
   "Admin actions must call the CMS API facade rather than writing DynamoDB records directly."
 )
 assert(
-  /Item:\s*\{\s*\.\.\.member,\s*id:\s*"team-members",\s*type:\s*itemType\("member", member\.slug, status\)/.test(cmsDynamodb) &&
-    /Item:\s*\{\s*\.\.\.role,\s*id:\s*"recruitment-roles",\s*type:\s*itemType\("role", role\.slug, status\)/.test(cmsDynamodb) &&
-    /Item:\s*\{\s*\.\.\.partner,\s*id:\s*"partners",\s*type:\s*itemType\("partner", partner\.slug, status\)/.test(cmsDynamodb),
+  /Item:\s*\{\s*\.\.\.member,\s*id:\s*"team-members",\s*type:\s*itemType\("member", member\.slug, status\)/.test(
+    cmsDynamodb
+  ) &&
+    /Item:\s*\{\s*\.\.\.role,\s*id:\s*"recruitment-roles",\s*type:\s*itemType\("role", role\.slug, status\)/.test(
+      cmsDynamodb
+    ) &&
+    /Item:\s*\{\s*\.\.\.partner,\s*id:\s*"partners",\s*type:\s*itemType\("partner", partner\.slug, status\)/.test(
+      cmsDynamodb
+    ),
   "DynamoDB CMS writes must set id/type/status after spreading records so publish cannot keep draft keys."
 )
 assert(
-  authConfig.includes('Credentials') &&
+  authConfig.includes("Credentials") &&
     authConfig.includes('id: "developer"') &&
-    authConfig.includes('developer@sunswift.unsw.edu.au') &&
+    authConfig.includes("developer@sunswift.unsw.edu.au") &&
     authConfig.includes('process.env.NODE_ENV !== "production"') &&
     authConfig.includes('ENABLE_DEV_ADMIN_LOGIN !== "false"'),
   "Auth must expose a developer admin credentials provider only for non-production local regression testing."
@@ -1854,7 +1902,9 @@ assert(
 )
 assert(
   adminLoginPage.includes("data-dev-admin-login") &&
-    adminLoginPage.includes("Local test account: developer@sunswift.unsw.edu.au") &&
+    adminLoginPage.includes(
+      "Local test account: developer@sunswift.unsw.edu.au"
+    ) &&
     adminLoginPage.includes("Continue with Google"),
   "Admin login must keep Google OAuth while exposing the local developer test account in non-production."
 )
@@ -1863,7 +1913,9 @@ assert(
   "Admin team page must expose a stable editor hook for browser regression testing."
 )
 assert(
-  packageJson.includes('"verify:cms-admin": "node scripts/verify-cms-admin.mjs"') &&
+  packageJson.includes(
+    '"verify:cms-admin": "node scripts/verify-cms-admin.mjs"'
+  ) &&
     cmsAdminVerifier.includes("data-dev-admin-login") &&
     cmsAdminVerifier.includes("TEAM_DRAFT_EDIT_OK") &&
     cmsAdminVerifier.includes("public-media/placeholders/sr7-world-record.mp4"),
@@ -1918,7 +1970,7 @@ assert(
 )
 assert(
   mediaHighlightsJson.includes('"featuredYoutubeId": "JGSzpsJmfHA"'),
-  "Media spotlight JSON must declare the featured AWS YouTube id for the embed.",
+  "Media spotlight JSON must declare the featured AWS YouTube id for the embed."
 )
 assert(
   mediaHighlightsPage.includes("@/content/media-highlights.json"),
@@ -1983,7 +2035,7 @@ for (const href of [
 ]) {
   assert(
     mediaHighlightsJson.includes(href),
-    `Media highlights JSON must link to ${href}`,
+    `Media highlights JSON must link to ${href}`
   )
 }
 
@@ -2021,7 +2073,7 @@ assert(
     contactPageContent.includes("instagram.com/sunswiftracing") &&
     contactPageContent.includes("facebook.com/UNSWSunswift") &&
     contactPageContent.includes("linkedin.com/company/unsw-sunswift"),
-  "Contact page must expose a social media column with Instagram, Facebook, and LinkedIn outbound links.",
+  "Contact page must expose a social media column with Instagram, Facebook, and LinkedIn outbound links."
 )
 
 if (failures.length > 0) {

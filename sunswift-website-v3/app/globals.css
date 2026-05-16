@@ -264,27 +264,8 @@
   will-change: left;
 }
 
-.homepage-recruitment-background-core {
-  animation: homepage-recruitment-background 8s ease-in-out infinite;
-  will-change: transform, filter, border-radius;
-}
-
 .homepage-records-carousel {
   will-change: transform;
-}
-
-@keyframes homepage-recruitment-background {
-  0%,
-  100% {
-    transform: translate3d(-7%, 3%, 0) scale(0.96);
-    filter: blur(64px) saturate(0.9);
-    border-radius: 48% 52% 54% 46%;
-  }
-  50% {
-    transform: translate3d(8%, -5%, 0) scale(1.08);
-    filter: blur(88px) saturate(1.2);
-    border-radius: 56% 44% 46% 54%;
-  }
 }
 
 .partner-marquee {
@@ -314,11 +295,6 @@
   }
   .homepage-zoom-sweep {
     display: none;
-  }
-  .homepage-recruitment-background-core {
-    animation: none;
-    transform: none;
-    filter: blur(72px);
   }
   .partner-marquee {
     animation: none;
@@ -360,8 +336,7 @@
 }
 
 .team-card-filter-in {
-  animation: team-card-filter-in 620ms cubic-bezier(0.22, 0.61, 0.36, 1)
-    both;
+  animation: team-card-filter-in 620ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
   will-change: opacity, transform, filter;
 }
 

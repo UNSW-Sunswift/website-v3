@@ -179,15 +179,18 @@ export function TeamRoster({
 }) {
   const sourceMembers = members.length >= 10 ? members : placeholderMembers
   const rosterMembers = useMemo(
-    () => sourceMembers.map((member) => ("section" in member ? member : toRosterMember(member))),
+    () =>
+      sourceMembers.map((member) =>
+        "section" in member ? member : toRosterMember(member)
+      ),
     [sourceMembers]
   )
   const departments = useMemo(
     () => [
       "All departments",
-      ...Array.from(new Set(rosterMembers.map((member) => member.department))).sort((a, b) =>
-        a.localeCompare(b)
-      ),
+      ...Array.from(
+        new Set(rosterMembers.map((member) => member.department))
+      ).sort((a, b) => a.localeCompare(b)),
     ],
     [rosterMembers]
   )
@@ -198,10 +201,6 @@ export function TeamRoster({
   const [rosterReveal, setRosterReveal] = useState(false)
   useEffect(() => {
     if (typeof window === "undefined") {
-      return
-    }
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setRosterReveal(true)
       return
     }
     const id = window.requestAnimationFrame(() => setRosterReveal(true))
@@ -301,7 +300,7 @@ export function TeamRoster({
                 data-team-filter
                 value={selectedDepartment}
                 onChange={(event) => setSelectedDepartment(event.target.value)}
-                className="h-12 w-full appearance-none border border-white/16 bg-white/[0.055] px-4 pr-11 font-mono text-xs tracking-[0.18em] text-white uppercase outline-none transition-[border-color,background-color] duration-300 hover:border-accent-yellow/70 focus:border-accent-yellow focus:bg-white/[0.08]"
+                className="h-12 w-full appearance-none border border-white/16 bg-white/[0.055] px-4 pr-11 font-mono text-xs tracking-[0.18em] text-white uppercase transition-[border-color,background-color] duration-300 outline-none hover:border-accent-yellow/70 focus:border-accent-yellow focus:bg-white/[0.08]"
               >
                 {departments.map((department) => (
                   <option
@@ -346,7 +345,9 @@ export function TeamRoster({
                   rosterReveal ? "team-roster-section-reveal" : "opacity-0"
                 )}
                 style={{
-                  animationDelay: rosterReveal ? `${140 + sectionIndex * 70}ms` : undefined,
+                  animationDelay: rosterReveal
+                    ? `${140 + sectionIndex * 70}ms`
+                    : undefined,
                 }}
               >
                 <div className="flex flex-col gap-2 border-b border-white/12 pb-4 sm:flex-row sm:items-end sm:justify-between">

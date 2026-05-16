@@ -44,7 +44,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
   const isMobileTimeline = useSyncExternalStore(
     subscribeMobileTimeline,
     getMobileTimelineSnapshot,
-    getServerMobileTimelineSnapshot,
+    getServerMobileTimelineSnapshot
   )
   const [timelineState, setTimelineState] = useState({
     activeIndex: 0,
@@ -68,17 +68,22 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
 
   // Cinematic intro→timeline transition driven by introExit (0 = top, 1 = fully scrolled away).
   // The intro is pinned across a ~2.4×svh scroll range so the choreography is unmistakable.
-  const easeOutCubic = (t: number) => 1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3)
+  const easeOutCubic = (t: number) =>
+    1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3)
   const easeInCubic = (t: number) => Math.pow(Math.max(0, Math.min(1, t)), 3)
 
   const phaseScatter = Math.max(0, Math.min(1, (introExit - 0.18) / 0.42))
-  const phaseWipe = Math.max(0, Math.min(1, (introExit - 0.55) / 0.3))
-  const phaseHandoff = Math.max(0, Math.min(1, (introExit - 0.78) / 0.22))
+  const phaseBlockHandoff = Math.max(0, Math.min(1, (introExit - 0.68) / 0.32))
 
   const bgZoom = 1 + easeOutCubic(introExit) * 0.45
   const bgRotate = introExit * -2.2
-  const bgBrightness = 1 - easeOutCubic(phaseWipe) * 0.85
-  const bgOpacity = Math.max(0, 0.35 + easeOutCubic(phaseScatter) * 0.2 - easeInCubic(phaseHandoff) * 0.55)
+  const bgBrightness = 1 - easeOutCubic(phaseBlockHandoff) * 0.8
+  const bgOpacity = Math.max(
+    0,
+    0.35 +
+      easeOutCubic(phaseScatter) * 0.16 -
+      easeInCubic(phaseBlockHandoff) * 0.51
+  )
 
   const kickerOpacity = Math.max(0, 1 - phaseScatter * 1.6)
   const headlineWordOpacity = (i: number, total: number) => {
@@ -100,14 +105,9 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
   const overviewOpacity = Math.max(0, 1 - phaseScatter * 2.4)
   const overviewY = -easeInCubic(phaseScatter) * 80
 
-  const wipeProgress = easeOutCubic(phaseWipe)
-  const wipeX = (1 - wipeProgress) * 100
-  const wipeOpacity = phaseWipe > 0 && phaseHandoff < 1 ? 1 : 0
-
-  const yearStampOpacity = Math.max(0, Math.min(1, (phaseWipe - 0.15) * 2.5)) * (1 - easeInCubic(phaseHandoff))
-  const yearStampScale = 0.85 + easeOutCubic(Math.max(0, phaseWipe - 0.1)) * 0.25
-
-  const voidOpacity = easeInCubic(phaseHandoff)
+  const blockHandoffProgress = easeOutCubic(phaseBlockHandoff)
+  const blockHandoffY = (1 - blockHandoffProgress) * 100
+  const voidOpacity = easeInCubic(phaseBlockHandoff)
 
   const scrollHintOpacity = Math.max(0, 1 - introExit * 5)
   const scrollHintY = introExit * -18
@@ -138,14 +138,20 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
     // 0 = pinned at top, 1 = fully scrolled away (timeline section about to take over).
     if (intro) {
       const rect = intro.getBoundingClientRect()
-      const scrollableHeight = Math.max(intro.offsetHeight - window.innerHeight, 1)
-      const rawIntroExit = Math.min(1, Math.max(0, -rect.top / scrollableHeight))
+      const scrollableHeight = Math.max(
+        intro.offsetHeight - window.innerHeight,
+        1
+      )
+      const rawIntroExit = Math.min(
+        1,
+        Math.max(0, -rect.top / scrollableHeight)
+      )
       setIntroExit(rawIntroExit)
     }
 
     if (isMobileTimeline) {
       const mobileCards = mobileCardRefs.current.filter(
-        (card): card is HTMLElement => Boolean(card),
+        (card): card is HTMLElement => Boolean(card)
       )
       const targetY = window.innerHeight * 0.38
       let nextIndex = 0
@@ -200,12 +206,20 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
     }
 
     const maxScroll = Math.max(section.offsetHeight - window.innerHeight, 1)
-    const rawProgress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / maxScroll))
+    const rawProgress = Math.min(
+      1,
+      Math.max(0, -section.getBoundingClientRect().top / maxScroll)
+    )
+    const timelineStart = 0.1
+    const timelineProgress = Math.min(
+      1,
+      Math.max(0, (rawProgress - timelineStart) / (1 - timelineStart))
+    )
     const maxTranslate = Math.max(rail.scrollWidth - stage.clientWidth, 0)
-    const nextTranslate = rawProgress * maxTranslate
+    const nextTranslate = timelineProgress * maxTranslate
     const nextIndex = Math.min(
       achievements.length - 1,
-      Math.max(0, Math.round(rawProgress * (achievements.length - 1))),
+      Math.max(0, Math.round(timelineProgress * (achievements.length - 1)))
     )
 
     // Mark timeline as revealed once scrolled into it
@@ -214,16 +228,21 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
     }
 
     setTimelineState((current) => {
-      const translateChanged = Math.abs(current.translateX - nextTranslate) > 0.5
+      const translateChanged =
+        Math.abs(current.translateX - nextTranslate) > 0.5
       const progressChanged = Math.abs(current.progress - rawProgress) > 0.002
 
-      if (!translateChanged && !progressChanged && current.activeIndex === nextIndex) {
+      if (
+        !translateChanged &&
+        !progressChanged &&
+        current.activeIndex === nextIndex
+      ) {
         return current
       }
 
       return {
         activeIndex: nextIndex,
-        progress: rawProgress,
+        progress: timelineProgress,
         translateX: nextTranslate,
       }
     })
@@ -282,9 +301,14 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
     }
 
     const maxScroll = Math.max(section.offsetHeight - window.innerHeight, 1)
-    const targetProgress = achievements.length > 1 ? index / (achievements.length - 1) : 0
+    const targetProgress =
+      achievements.length > 1 ? index / (achievements.length - 1) : 0
+    const targetScrollProgress = 0.1 + targetProgress * 0.9
     window.scrollTo({
-      top: window.scrollY + section.getBoundingClientRect().top + targetProgress * maxScroll,
+      top:
+        window.scrollY +
+        section.getBoundingClientRect().top +
+        targetScrollProgress * maxScroll,
       behavior: "smooth",
     })
   }
@@ -315,7 +339,10 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
             }}
           >
             <Image
-              src={achievements[0]?.image ?? "/vehicle-fleet/vehicle-sunswift-7.jpeg"}
+              src={
+                achievements[0]?.image ??
+                "/vehicle-fleet/vehicle-sunswift-7.jpeg"
+              }
               alt=""
               fill
               priority
@@ -324,7 +351,6 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
             />
           </div>
 
-          {/* Static gradients */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_68%_36%,rgba(255,255,255,0.08)_0%,transparent_58%)]" />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#050607_0%,rgba(5,6,7,0.84)_34%,rgba(5,6,7,0.54)_66%,rgba(5,6,7,0.88)_100%)]" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[24svh] bg-[linear-gradient(180deg,#000_0%,rgba(10,12,14,0.92)_28%,rgba(10,12,14,0)_100%)]" />
@@ -337,63 +363,28 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
             aria-hidden="true"
           />
 
-          {/* Yellow accent wipe: slides across left → right midway through */}
           <div
-            data-achievements-wipe
-            className="pointer-events-none absolute left-0 right-0 top-[44svh] z-[6] h-[2px] origin-left"
+            data-achievements-block-handoff
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[7] h-full bg-[#0a0c0e] will-change-transform"
             style={{
-              transform: `translateX(-${wipeX}%)`,
-              background:
-                "linear-gradient(90deg, transparent 0%, var(--accent-yellow) 14%, var(--accent-yellow) 86%, transparent 100%)",
-              boxShadow: `0 0 ${24 * wipeProgress}px var(--accent-yellow)`,
-              opacity: wipeOpacity * (1 - phaseHandoff),
+              transform: `translate3d(0, ${blockHandoffY}%, 0)`,
+              opacity: blockHandoffProgress,
             }}
             aria-hidden="true"
           />
 
-          {/* Year stamp: emerges centred as the wipe completes */}
-          <div
-            className="pointer-events-none absolute inset-0 z-[7] flex items-center justify-center will-change-[opacity,transform]"
-            style={{
-              opacity: yearStampOpacity,
-              transform: `scale(${yearStampScale})`,
-            }}
-            aria-hidden="true"
-          >
-            <div className="flex items-center gap-[clamp(1rem,3vw,2.5rem)]">
-              <span
-                className="font-mono text-[clamp(2.5rem,12vw,9rem)] font-thin leading-none tracking-[-0.04em] text-white/90"
-                style={{ textShadow: "0 6px 40px rgba(0,0,0,0.65)" }}
-              >
-                1996
-              </span>
-              <span
-                aria-hidden="true"
-                className="flex items-center justify-center text-accent-yellow text-[clamp(1.6rem,4vw,3.4rem)] leading-none tracking-[0]"
-              >
-                →
-              </span>
-              <span
-                className="font-mono text-[clamp(2.5rem,12vw,9rem)] font-thin leading-none tracking-[-0.04em] text-white/90"
-                style={{ textShadow: "0 6px 40px rgba(0,0,0,0.65)" }}
-              >
-                2026
-              </span>
-            </div>
-          </div>
-
           {/* Hero copy: kicker, headline (word-by-word scatter), overview */}
-          <div className="relative z-10 flex h-full items-end px-5 pb-[12svh] pt-28 sm:px-8 lg:px-14">
+          <div className="relative z-10 flex h-full items-end px-5 pt-28 pb-[12svh] sm:px-8 lg:px-14">
             <div data-achievements-intro className="max-w-5xl">
               <p
-                className="font-mono text-[0.62rem] uppercase tracking-[0.34em] text-accent-yellow will-change-[opacity]"
+                className="font-mono text-[0.62rem] tracking-[0.34em] text-accent-yellow uppercase will-change-[opacity]"
                 style={{ opacity: kickerOpacity }}
               >
                 Achievements
               </p>
               <h1
                 aria-label="A timeline of solar racing milestones."
-                className="mt-4 max-w-4xl text-5xl font-thin leading-[0.94] tracking-tight text-white sm:text-7xl lg:text-[6.5rem]"
+                className="mt-4 max-w-4xl text-5xl leading-[0.94] font-thin tracking-tight text-white sm:text-7xl lg:text-[6.5rem]"
               >
                 {headlineWords.map((word, i) => (
                   <span
@@ -431,7 +422,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
             }}
           >
             <span className="flex flex-col items-center gap-2">
-              <span className="font-mono text-[0.52rem] uppercase tracking-[0.32em] text-white/38">
+              <span className="font-mono text-[0.52rem] tracking-[0.32em] text-white/38 uppercase">
                 Scroll to enter the timeline
               </span>
               <svg
@@ -455,17 +446,21 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
         </div>
       </div>
 
-      <div ref={sectionRef} data-achievements-scroll-section style={sectionStyle}>
+      <div
+        ref={sectionRef}
+        data-achievements-scroll-section
+        style={sectionStyle}
+      >
         <div
           data-achievements-mobile-timeline
-          className="relative z-10 px-4 pb-20 pt-6 md:hidden"
+          className="relative z-10 px-4 pt-6 pb-20 md:hidden"
         >
           <div className="mx-auto max-w-xl">
             <div className="mb-8 border-l border-accent-yellow/45 pl-4">
-              <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-accent-yellow">
+              <p className="font-mono text-[0.58rem] tracking-[0.28em] text-accent-yellow uppercase">
                 Timeline
               </p>
-              <h2 className="mt-3 text-3xl font-light leading-tight text-white">
+              <h2 className="mt-3 text-3xl leading-tight font-light text-white">
                 Scroll the milestones.
               </h2>
             </div>
@@ -513,7 +508,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
                         />
                       )}
                       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(5,6,7,0.78)_100%)]" />
-                      <div className="absolute bottom-3 left-3 flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.22em] text-accent-yellow">
+                      <div className="absolute bottom-3 left-3 flex items-center gap-2 font-mono text-[0.58rem] tracking-[0.22em] text-accent-yellow uppercase">
                         <span>{achievement.vehicle}</span>
                         <span className="text-white/35">/</span>
                         <span>{achievement.kind}</span>
@@ -522,7 +517,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
 
                     <div className="p-4">
                       <div className="flex items-start justify-between gap-4">
-                        <span className="font-mono text-4xl font-thin leading-none text-white">
+                        <span className="font-mono text-4xl leading-none font-thin text-white">
                           {achievement.year}
                         </span>
                         <span
@@ -533,7 +528,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
                           ].join(" ")}
                         />
                       </div>
-                      <h3 className="mt-4 text-2xl font-light leading-tight text-white">
+                      <h3 className="mt-4 text-2xl leading-tight font-light text-white">
                         {achievement.title}
                       </h3>
                       <p className="mt-4 text-sm leading-6 text-white/62">
@@ -552,17 +547,19 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
           data-achievements-stage
           className={[
             "sticky top-0 hidden min-h-svh overflow-hidden md:block",
-            timelineRevealed ? "achievements-stage-revealed" : "achievements-stage-entering",
+            timelineRevealed
+              ? "achievements-stage-revealed"
+              : "achievements-stage-entering",
           ].join(" ")}
         >
           <div className="pointer-events-none absolute inset-0">
             {achievements.map((achievement, index) => {
               const isVideo = Boolean(achievement.videoMp4?.trim())
               const mediaClass = [
-                "absolute inset-0 h-full w-full object-cover transition-[opacity,transform,filter] duration-[850ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                "absolute inset-0 h-full w-full object-cover transition-[opacity,filter] duration-[650ms] ease-out",
                 index === activeIndex
-                  ? "scale-[1.04] opacity-70 [filter:grayscale(0.08)_brightness(0.86)]"
-                  : "scale-[1.1] opacity-0 [filter:grayscale(1)_brightness(0.62)]",
+                  ? "opacity-70 [filter:grayscale(0.08)_brightness(0.86)]"
+                  : "opacity-0 [filter:grayscale(1)_brightness(0.62)]",
               ].join(" ")
 
               if (isVideo) {
@@ -623,32 +620,32 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
 
           <div
             data-achievements-minimal-copy
-            className="pointer-events-none absolute left-5 top-[22svh] z-10 max-w-[36rem] transition-[opacity,transform] duration-500 sm:left-8 sm:top-[26svh] lg:left-14"
+            className="pointer-events-none absolute top-[22svh] left-5 z-10 max-w-[36rem] transition-[opacity,transform] duration-500 sm:top-[26svh] sm:left-8 lg:left-14"
             style={{
               opacity: minimalOpacity,
               transform: `translate3d(0, ${(1 - minimalOpacity) * 18}px, 0)`,
             }}
           >
-            <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-accent-yellow">
+            <p className="font-mono text-[0.62rem] tracking-[0.3em] text-accent-yellow uppercase">
               {activeAchievement?.vehicle} / {activeAchievement?.kind}
             </p>
             <div className="mt-3 flex items-end gap-4">
-              <p className="text-7xl font-thin leading-none text-white sm:text-8xl">
+              <p className="text-7xl leading-none font-thin text-white sm:text-8xl">
                 {activeAchievement?.year}
               </p>
-              <h2 className="max-w-[18rem] pb-1 text-xl font-light leading-tight text-white sm:text-3xl">
+              <h2 className="max-w-[18rem] pb-1 text-xl leading-tight font-light text-white sm:text-3xl">
                 {activeAchievement?.title}
               </h2>
             </div>
           </div>
 
-          <div className="relative z-10 flex min-h-svh flex-col justify-end px-5 pb-[clamp(4.25rem,8svh,6.25rem)] pt-28 sm:px-8 lg:px-14">
+          <div className="relative z-10 flex min-h-svh flex-col justify-end px-5 pt-28 pb-[clamp(4.25rem,8svh,6.25rem)] sm:px-8 lg:px-14">
             <div
               data-achievements-current-copy
               className="mb-[clamp(0.75rem,2svh,1.5rem)] max-w-xl transition-opacity duration-300"
               style={{ opacity: detailOpacity }}
             >
-              <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-white/45">
+              <p className="font-mono text-[0.62rem] tracking-[0.3em] text-white/45 uppercase">
                 Now viewing
               </p>
               <p className="mt-3 text-sm leading-6 text-white/62">
@@ -656,7 +653,10 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
               </p>
             </div>
 
-            <div data-achievements-timeline-viewport className="-mx-5 overflow-hidden sm:-mx-8 lg:-mx-14">
+            <div
+              data-achievements-timeline-viewport
+              className="-mx-5 overflow-hidden sm:-mx-8 lg:-mx-14"
+            >
               <div
                 ref={railRef}
                 data-achievements-timeline
@@ -684,20 +684,22 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
                       ].join(" ")}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono text-[0.52rem] uppercase tracking-[0.24em] text-white/42">
+                        <span className="font-mono text-[0.52rem] tracking-[0.24em] text-white/42 uppercase">
                           {achievement.kind}
                         </span>
                         <span
                           className={[
                             "font-mono text-[0.62rem] transition-colors duration-500",
-                            isActive ? "text-accent-yellow" : "text-white/50 group-hover:text-accent-yellow",
+                            isActive
+                              ? "text-accent-yellow"
+                              : "text-white/50 group-hover:text-accent-yellow",
                           ].join(" ")}
                         >
                           {achievement.year}
                         </span>
                       </div>
                       <h3
-                        className="mt-1.5 line-clamp-2 max-w-[18ch] text-[0.95rem] font-thin leading-[1.08] tracking-tight text-white sm:text-base lg:text-[1.05rem]"
+                        className="mt-1.5 line-clamp-2 max-w-[18ch] text-[0.95rem] leading-[1.08] font-thin tracking-tight text-white sm:text-base lg:text-[1.05rem]"
                         title={achievement.title}
                       >
                         {achievement.title}
@@ -705,7 +707,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
                       <p
                         data-achievement-vehicle
                         className={[
-                          "mt-auto pt-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] transition-colors duration-500",
+                          "mt-auto pt-2 font-mono text-[0.62rem] tracking-[0.22em] uppercase transition-colors duration-500",
                           isActive
                             ? "text-accent-yellow"
                             : "text-accent-yellow/65 group-hover:text-accent-yellow",
@@ -719,7 +721,10 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
               </div>
             </div>
 
-            <div data-achievements-year-rail className="mt-[clamp(0.75rem,2svh,1rem)]">
+            <div
+              data-achievements-year-rail
+              className="mt-[clamp(0.75rem,2svh,1rem)]"
+            >
               <div className="relative h-px bg-white/18">
                 <div
                   data-achievements-year-progress
@@ -731,7 +736,10 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
                 {achievements.map((achievement, index) => {
                   const isActive = index === activeIndex
                   const showLabel =
-                    isActive || index === 0 || index === achievements.length - 1 || index % 4 === 0
+                    isActive ||
+                    index === 0 ||
+                    index === achievements.length - 1 ||
+                    index % 4 === 0
 
                   return (
                     <button
@@ -742,7 +750,9 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
                       onClick={() => focusAchievement(index)}
                       className={[
                         "group relative -mt-[1.06rem] flex min-w-1.5 flex-col items-center gap-2 text-center transition-opacity duration-300",
-                        isActive ? "opacity-100" : "opacity-70 hover:opacity-100 focus-visible:opacity-100",
+                        isActive
+                          ? "opacity-100"
+                          : "opacity-70 hover:opacity-100 focus-visible:opacity-100",
                       ].join(" ")}
                       aria-label={`Jump to ${achievement.year}: ${achievement.title}`}
                     >
@@ -757,7 +767,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
                       {/* Inline label always rendered for the indexed positions; transparent placeholder otherwise so layout doesn't shift. */}
                       <span
                         className={[
-                          "hidden font-mono text-[0.55rem] uppercase tracking-[0.18em] transition-colors duration-200 md:block",
+                          "hidden font-mono text-[0.55rem] tracking-[0.18em] uppercase transition-colors duration-200 md:block",
                           showLabel
                             ? isActive
                               ? "text-accent-yellow"
@@ -771,7 +781,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
                       <span
                         aria-hidden="true"
                         className={[
-                          "pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 -translate-y-1 whitespace-nowrap rounded-sm border border-accent-yellow/40 bg-[#0a0c0e]/95 px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-accent-yellow opacity-0 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-sm transition-[opacity,transform] duration-200",
+                          "pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 -translate-y-1 rounded-sm border border-accent-yellow/40 bg-[#0a0c0e]/95 px-2 py-1 font-mono text-[0.6rem] tracking-[0.18em] whitespace-nowrap text-accent-yellow uppercase opacity-0 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-sm transition-[opacity,transform] duration-200",
                           "group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100",
                         ].join(" ")}
                       >

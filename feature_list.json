@@ -1648,9 +1648,7 @@
       "status": "complete",
       "description": "Align the vehicles detail heading with the overview panel and confirm the admin theme switch placement via browser regression.",
       "verification": {
-        "required": [
-          "VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin"
-        ],
+        "required": ["VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin"],
         "last_run": "2026-05-16",
         "evidence": [
           "VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin: passed"
@@ -1686,6 +1684,72 @@
         "`SunswiftBrandLogo` default Tailwind width reduced (w-36 to w-28); `transparent-navbar` uses w-28 sm:w-32; `site-shell` header/footer use w-24 sm:w-28.",
         "Vehicle detail: removed border-l + asymmetric pl on the slogan; headline and summary share a compact flex column (gap-2 sm:gap-3) under the same lg:pl-5 group so copy tracks the title optically.",
         "Slogan remains italic with text-white + 16px text-shadow per design harness; slightly larger italic line (sm:text-xl) for balance against the display heading."
+      ]
+    },
+    {
+      "id": "blockier-footer-achievements-timeline-tightening",
+      "priority": 57,
+      "title": "Blockier footer and achievements timeline tightening",
+      "status": "complete",
+      "description": "Reduce soft gradient-heavy treatment, replace the shared footer with a compact block layout, remove the achievements 1996 -> 2026 transition, and keep the first desktop timeline item from being skipped too quickly.",
+      "verification": {
+        "required": [
+          "node scripts/test-homepage-design.mjs",
+          "./node_modules/.bin/tsc --noEmit",
+          "./node_modules/.bin/eslint --quiet",
+          "./node_modules/.bin/next build",
+          "PATH=\"$PWD/node_modules/.bin:$PATH\" VERIFY_URL=http://127.0.0.1:3012 node scripts/verify-browser.mjs",
+          "agent-browser targeted desktop achievements first-item hold check at 1440x1000"
+        ],
+        "last_run": "2026-05-16",
+        "evidence": [
+          "node scripts/test-homepage-design.mjs: passed with block footer, block handoff, no 1996 -> 2026 stamp, and first-item hold assertions",
+          "./node_modules/.bin/tsc --noEmit: passed",
+          "./node_modules/.bin/eslint --quiet: passed after a narrow team roster reveal-effect lint unblock",
+          "./node_modules/.bin/next build: passed",
+          "VERIFY_URL=http://127.0.0.1:3012 node scripts/verify-browser.mjs: passed against next start",
+          "Targeted desktop achievements check: at 5.5% timeline scroll the first milestone stayed active and rail transform stayed at 0; at 24% scroll the rail moved to -514.733px and active year advanced to 2019; 1996 -> 2026 stamp text was absent"
+        ]
+      },
+      "notes": [
+        "SiteFooter now uses explicit block cells, a solid top edge, and no old soft top shadow.",
+        "Achievements intro keeps the pinned scroll effect but uses data-achievements-block-handoff instead of data-achievements-wipe/yearStamp layers.",
+        "Desktop achievements rail maps raw scroll through timelineStart = 0.1 so horizontal movement waits before leaving the first milestone.",
+        "Timeline background media now fades/filters without scale shifts.",
+        "LocalStack-dependent AWS/CDK verification was skipped per the frontend-only scope."
+      ]
+    },
+    {
+      "id": "landing-hard-transition-dropdown-animation",
+      "priority": 58,
+      "title": "Landing hard transitions and recruitment dropdown animation",
+      "status": "complete",
+      "description": "Roll back the broad no-gradient treatment so gradients remain on non-landing pages and shared dropdowns, while keeping the landing page records/recruitment handoff hard and animating the Embrace Tomorrow discipline dropdowns.",
+      "verification": {
+        "required": [
+          "rg -n \"gradient|linear-gradient|radial-gradient|conic-gradient|bg-gradient\" components/site/homepage-*.tsx app/globals.css",
+          "node scripts/test-homepage-design.mjs",
+          "./node_modules/.bin/tsc --noEmit",
+          "./node_modules/.bin/eslint --quiet",
+          "./node_modules/.bin/next build",
+          "PATH=\"$PWD/node_modules/.bin:$PATH\" VERIFY_URL=http://127.0.0.1:3013 node scripts/verify-browser.mjs"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "rg scan over homepage components and globals: no gradient tokens found",
+          "node scripts/test-homepage-design.mjs: passed with landing-only hard-transition assertions and animated recruitment dropdown checks",
+          "./node_modules/.bin/tsc --noEmit: passed",
+          "./node_modules/.bin/eslint --quiet: passed",
+          "./node_modules/.bin/next build: passed",
+          "VERIFY_URL=http://127.0.0.1:3013 node scripts/verify-browser.mjs: passed against next start"
+        ]
+      },
+      "notes": [
+        "Non-landing gradients were restored for achievements, vehicles, team, shared shell, and navigation dropdown treatments.",
+        "HomepageRecords keeps the hard light-to-black transition and solid dark handoff into Embrace Tomorrow without grey transitional haze.",
+        "HomepageRecruitment keeps a hard yellow accent block instead of the former animated gradient glow and now animates Design, Engineering, and Business dropdown reveal panels.",
+        "AGENTS.md now clarifies that no-gradient rules must be scoped and that purposeful gradients in dropdowns, vignettes, imagery, and feature pages should be preserved unless specifically targeted.",
+        "LocalStack-dependent AWS/CDK verification skipped per frontend-only scope."
       ]
     }
   ]

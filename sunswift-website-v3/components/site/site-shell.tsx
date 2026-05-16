@@ -263,8 +263,9 @@ export function SiteFooter() {
       data-site-footer
       className="relative isolate z-20 bg-[#0a0c0e] text-white shadow-[0_-64px_140px_rgba(0,0,0,0.52)] before:pointer-events-none before:absolute before:inset-x-0 before:-top-32 before:h-32 before:bg-[linear-gradient(180deg,rgba(5,6,7,0)_0%,rgba(10,12,14,0.42)_34%,rgba(10,12,14,0.88)_76%,#0a0c0e_100%)]"
     >
-      <div className="relative z-10 mx-auto grid max-w-[92rem] gap-4 px-4 py-5 sm:px-6 lg:grid-cols-[13rem_1fr_auto] lg:items-center lg:gap-6">
-        <div className="flex items-center">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/22" />
+      <div className="relative z-10 mx-auto grid max-w-[92rem] gap-0 px-4 py-0 sm:px-6 lg:grid-cols-[13rem_1fr_auto] lg:items-stretch">
+        <div className="flex items-center border-x border-white/10 px-4 py-4">
           <Link href="/" aria-label="Sunswift Racing home" className="block">
             <Image
               src={footerUnswLogoSrc}
@@ -278,7 +279,7 @@ export function SiteFooter() {
           </Link>
         </div>
 
-        <div className="min-w-0">
+        <div className="min-w-0 border-r border-white/10 px-4 py-4 lg:px-6">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">
             <h2 className="sr-only shrink-0 text-base leading-none font-light tracking-normal text-white sm:text-lg">
               Sunswift Racing
@@ -304,7 +305,7 @@ export function SiteFooter() {
           href="https://linktr.ee/sunswiftracing"
           target="_blank"
           rel="noreferrer"
-          className="group inline-flex h-10 items-center justify-center gap-3 border border-white/18 bg-white/[0.03] px-4 font-mono text-[0.62rem] tracking-[0.22em] text-white uppercase transition-colors duration-300 hover:border-accent-yellow hover:bg-accent-yellow hover:text-black sm:h-11 sm:px-5"
+          className="group inline-flex min-h-14 items-center justify-center gap-3 border-x border-white/10 bg-white/[0.025] px-5 font-mono text-[0.62rem] tracking-[0.22em] text-white uppercase transition-colors duration-300 hover:bg-accent-yellow hover:text-black lg:min-h-full"
         >
           <Asterisk className="size-3.5 transition-transform duration-500 group-hover:rotate-90" />
           Stay connected

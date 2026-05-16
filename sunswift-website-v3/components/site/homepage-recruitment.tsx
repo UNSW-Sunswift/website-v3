@@ -20,8 +20,7 @@ type RecruitmentStyle = CSSProperties & {
   "--recruitment-panel-y"?: string
   "--recruitment-panel-opacity"?: number
   "--recruitment-panel-blur"?: string
-  "--recruitment-glow-scale"?: number
-  "--recruitment-glow-opacity"?: number
+  "--recruitment-block-opacity"?: number
 }
 
 function clamp(value: number, min = 0, max = 1) {
@@ -69,12 +68,8 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
         `${(1 - eased) * 16}px`
       )
       section.style.setProperty(
-        "--recruitment-glow-scale",
-        String(0.86 + eased * 0.22)
-      )
-      section.style.setProperty(
-        "--recruitment-glow-opacity",
-        String(0.22 + eased * 0.2)
+        "--recruitment-block-opacity",
+        String(0.08 + eased * 0.12)
       )
     }
 
@@ -102,25 +97,21 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
           "--recruitment-panel-y": "46px",
           "--recruitment-panel-opacity": 0,
           "--recruitment-panel-blur": "16px",
-          "--recruitment-glow-scale": 0.86,
-          "--recruitment-glow-opacity": 0.22,
+          "--recruitment-block-opacity": 0.08,
         } as RecruitmentStyle
       }
     >
-      <div className="pointer-events-none absolute inset-x-0 -top-[34svh] h-[64svh] bg-[linear-gradient(180deg,rgba(10,12,14,0)_0%,rgba(10,12,14,0.76)_52%,#0a0c0e_88%,#0a0c0e_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#0a0c0e_0%,#07090b_46%,#050607_100%)]" />
+      <div className="pointer-events-none absolute inset-x-0 -top-[34svh] h-[64svh] bg-[#0a0c0e]" />
+      <div className="pointer-events-none absolute inset-0 bg-[#0a0c0e]" />
       <div
         aria-hidden
-        data-homepage-recruitment-gradient
-        className="pointer-events-none absolute top-[24svh] left-1/2 h-[min(82vw,46rem)] w-[min(82vw,46rem)] -translate-x-1/2"
+        data-homepage-recruitment-block
+        className="pointer-events-none absolute top-[25svh] left-1/2 h-[min(58vw,24rem)] w-[min(82vw,54rem)] -translate-x-1/2 border border-accent-yellow/18 bg-accent-yellow"
         style={{
-          opacity: "var(--recruitment-glow-opacity)",
-          transform: "translateX(-50%) scale(var(--recruitment-glow-scale))",
+          opacity: "var(--recruitment-block-opacity)",
         }}
-      >
-        <div className="homepage-recruitment-background-core absolute -inset-[18%] rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(245,208,0,0.18)_0%,rgba(245,208,0,0.09)_34%,rgba(245,208,0,0.03)_56%,transparent_78%)] blur-3xl" />
-      </div>
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[42svh] bg-[linear-gradient(180deg,#0a0c0e_0%,rgba(10,12,14,0.96)_42%,rgba(10,12,14,0)_100%)]" />
+      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[42svh] bg-[#0a0c0e]" />
 
       <div className="relative mx-auto max-w-[92rem] px-4 pt-[calc(52svh+3rem)] pb-24 sm:px-6 sm:pt-[calc(52svh+4rem)] sm:pb-32 lg:pt-[calc(52svh+6rem)] lg:pb-40">
         <div
@@ -161,7 +152,7 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
               <details
                 key={stream.name}
                 data-homepage-recruitment-discipline={stream.name}
-                className="group border-t border-white/12 py-5 last:border-b"
+                className="group border-t border-white/12 py-5 transition-[border-color] duration-500 last:border-b open:border-accent-yellow/45"
                 open={index === 1}
               >
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-5 [&::-webkit-details-marker]:hidden">
@@ -169,7 +160,7 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
                     <span className="font-mono text-[0.65rem] tracking-[0.28em] text-white/38 uppercase">
                       {stream.label}
                     </span>
-                    <span className="mt-2 block text-3xl leading-none font-light text-white sm:text-5xl">
+                    <span className="mt-2 block text-3xl leading-none font-light text-white transition-[color,transform] duration-500 group-open:translate-x-2 group-open:text-accent-yellow sm:text-5xl">
                       {stream.name}
                     </span>
                   </span>
@@ -178,32 +169,35 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
                   </span>
                 </summary>
 
-                <div className="grid gap-5 pt-8 lg:grid-cols-[0.54fr_1fr]">
-                  <p className="max-w-sm text-sm leading-6 text-white/52">
-                    {stream.summary}
-                  </p>
-                  <Link
-                    href={recruitmentStreamHref(stream)}
-                    data-homepage-recruitment-role
-                    data-homepage-recruitment-stream-card={stream.name}
-                    className="group/card flex min-h-[8.5rem] flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-left transition-colors duration-300 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
-                  >
-                    <span className="font-mono text-[0.6rem] tracking-[0.22em] text-accent-yellow uppercase">
-                      {stream.name}
-                    </span>
-                    <span className="mt-4 text-lg leading-snug font-light text-white">
-                      Explore {stream.roleTitle}
-                    </span>
-                    <span className="mt-5 flex items-center justify-between border-t border-white/10 pt-3 font-mono text-[0.58rem] tracking-[0.22em] text-white/42 uppercase transition-colors duration-300 group-hover/card:text-accent-yellow">
-                      Open roles
-                      <ArrowRight className="size-3.5" />
-                    </span>
-                  </Link>
+                <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-open:grid-rows-[1fr]">
+                  <div className="overflow-hidden">
+                    <div className="group-open:blur-0 grid gap-5 pt-8 opacity-0 blur-sm transition-[opacity,transform,filter] duration-500 ease-out group-open:translate-y-0 group-open:opacity-100 lg:grid-cols-[0.54fr_1fr]">
+                      <p className="max-w-sm translate-y-3 text-sm leading-6 text-white/52 transition-transform duration-500 group-open:translate-y-0">
+                        {stream.summary}
+                      </p>
+                      <Link
+                        href={recruitmentStreamHref(stream)}
+                        data-homepage-recruitment-role
+                        data-homepage-recruitment-stream-card={stream.name}
+                        className="group/card flex min-h-[8.5rem] translate-y-3 flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-left transition-[border-color,background-color,transform] duration-500 group-open:translate-y-0 hover:-translate-y-1 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
+                      >
+                        <span className="font-mono text-[0.6rem] tracking-[0.22em] text-accent-yellow uppercase">
+                          {stream.name}
+                        </span>
+                        <span className="mt-4 text-lg leading-snug font-light text-white">
+                          Explore {stream.roleTitle}
+                        </span>
+                        <span className="mt-5 flex items-center justify-between border-t border-white/10 pt-3 font-mono text-[0.58rem] tracking-[0.22em] text-white/42 uppercase transition-colors duration-300 group-hover/card:text-accent-yellow">
+                          Open roles
+                          <ArrowRight className="size-3.5 transition-transform duration-300 group-hover/card:translate-x-1" />
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </details>
             )
           })}
-  
         </div>
       </div>
     </section>

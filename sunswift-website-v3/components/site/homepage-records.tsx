@@ -199,17 +199,17 @@ export function HomepageRecords() {
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(circle_at_70%_22%,rgba(245,208,0,0.12)_0%,transparent_30%),linear-gradient(180deg,#111417_0%,#07080a_66%,#0a0c0e_100%)]"
+          className="absolute inset-0 bg-[#0a0c0e]"
           style={{ opacity: "var(--records-dark-opacity)" }}
         />
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 top-0 h-[30svh] bg-[linear-gradient(180deg,#f6f5f1_0%,rgba(246,245,241,0.56)_48%,transparent_100%)]"
+          className="absolute inset-x-0 top-0 h-[30svh] bg-[#f6f5f1]"
           style={{ opacity: "var(--records-light-opacity)" }}
         />
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-[24svh] bg-[linear-gradient(0deg,#0a0c0e_0%,rgba(10,12,14,0.48)_50%,transparent_100%)]"
+          className="absolute inset-x-0 bottom-0 h-[24svh] bg-[#0a0c0e]"
           style={{ opacity: "var(--records-dark-opacity)" }}
         />
 
@@ -300,7 +300,7 @@ export function HomepageRecords() {
                       className="object-cover opacity-82 [filter:grayscale(0.42)_contrast(1.05)]"
                       sizes="(min-width: 1024px) 34vw, 100vw"
                     />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,12,14,0)_52%,rgba(10,12,14,0.72)_100%)]" />
+                    <div className="absolute inset-0 bg-[#0a0c0e]/45" />
                   </div>
                 </article>
               ))}
@@ -309,7 +309,7 @@ export function HomepageRecords() {
 
           <div
             data-homepage-records-handoff
-            className="pointer-events-none absolute inset-x-0 -bottom-[40svh] z-30 h-[180svh] bg-[linear-gradient(180deg,rgba(10,12,14,0)_0%,rgba(10,12,14,0.62)_24%,rgba(10,12,14,0.94)_50%,#0a0c0e_68%,#0a0c0e_100%)]"
+            className="pointer-events-none absolute inset-x-0 -bottom-[40svh] z-30 h-[180svh] bg-[#0a0c0e]"
             style={{
               opacity: "var(--records-handoff-opacity)",
             }}

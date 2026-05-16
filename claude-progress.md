@@ -2671,3 +2671,95 @@ Verification (this slice):
 - `pnpm typecheck`: passed.
 - `pnpm lint`: passed.
 - `pnpm test:homepage-design`: passed.
+
+## 2026-05-16 - Blockier footer and achievements timeline tightening
+
+Implementation:
+
+- Reworked the shared `SiteFooter` into a compact blocked layout with explicit
+  cell borders, a solid dark top block, and no soft shadow-heavy footer
+  treatment.
+- Removed the achievements intro's 1996 -> 2026 year-stamp/wipe transition.
+- Kept the pinned scroll intro, but simplified its handoff into a solid block
+  panel so the transition clicks into the timeline without extra decorative
+  layers.
+- Tightened the desktop achievements rail by adding a 10% initial scroll hold
+  before horizontal translation begins, so the first milestone no longer skips
+  immediately.
+- Reduced timeline background motion by removing active/inactive media scale
+  shifts and replacing broad radial overlays with blockier dark panels.
+- Narrow lint unblock: changed the team roster reveal effect so it schedules
+  state through `requestAnimationFrame`, satisfying the React hooks lint rule.
+
+Harness updates:
+
+- `scripts/test-homepage-design.mjs` now rejects the old 1996 -> 2026
+  transition layer and asserts the new block handoff + first-item hold.
+- `scripts/verify-browser.mjs` now validates the footer's blocked edge/fade
+  instead of the previous gradient vignette contract.
+
+Verification:
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3012 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3012.
+- Targeted desktop achievements check at `1440x1000`: at 5.5% timeline scroll
+  the first milestone remained active with rail transform `matrix(..., 0, 0)`;
+  at 24% scroll the rail moved to `-514.733px` and the active year advanced to 2019. The same check confirmed the 1996 -> 2026 stamp text is gone.
+
+Known limits:
+
+- LocalStack-dependent AWS/CDK checks were skipped for this frontend-only pass.
+- The working tree already contained modified placeholder video assets; they
+  were not changed by this pass.
+
+## 2026-05-17 - Landing hard-transition rollback and dropdown motion
+
+Implementation:
+
+- Rolled back the broad sitewide no-gradient sweep. Non-landing feature pages and
+  shared chrome can keep their existing gradient/vignette/dropdown treatments.
+- Kept the landing page hard-transition scope: `HomepageRecords` and
+  `HomepageRecruitment` have no gradient tokens and transition directly through
+  solid colour blocks.
+- Kept the Embrace Tomorrow hard yellow accent block instead of the old animated
+  yellow glow, so the records handoff goes straight to black without grey haze.
+- Added animated open/close treatment to the Design, Engineering, and Business
+  recruitment dropdowns using stable grid-row reveal, opacity, blur, and
+  transform transitions.
+- Restored gradient accents in shared dropdown chrome, achievements overlays,
+  team roster imagery, page background vignette, and footer vignette.
+- Updated `AGENTS.md` interface design rules to clarify that no-gradient rules
+  must be scoped, while purposeful gradients in dropdowns, vignettes, imagery,
+  and feature sections should be preserved unless that component is explicitly
+  targeted.
+
+Harness updates:
+
+- Removed the recursive public app/component no-gradient guard from
+  `scripts/test-homepage-design.mjs`.
+- Kept the landing records hard-block assertion and added an assertion that the
+  recruitment discipline dropdowns animate their reveal state.
+- Restored footer/vehicles vignette assertions to expect gradient treatment.
+- `scripts/verify-browser.mjs` again validates the shared footer vignette while
+  still checking the landing recruitment hard block.
+
+Verification:
+
+- `rg -n "gradient|linear-gradient|radial-gradient|conic-gradient|bg-gradient"
+components/site/homepage-*.tsx app/globals.css`: no matches.
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3013 node
+scripts/verify-browser.mjs`: passed against `next start` on port 3013.
+
+Known limits:
+
+- LocalStack-dependent AWS/CDK checks were skipped for this frontend-only pass.
+- The working tree already contained modified placeholder video assets and a
+  `.DS_Store`; they were not changed by this pass.

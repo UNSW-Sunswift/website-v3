@@ -48,7 +48,10 @@ export function HomepageZoomReveal() {
       root.style.setProperty("--zoom-blur", `${blur.toFixed(4)}px`)
       root.style.setProperty("--zoom-text-y", `${textY.toFixed(4)}vh`)
       root.style.setProperty("--zoom-sweep-x", `${sweepX.toFixed(4)}%`)
-      root.style.setProperty("--zoom-text-color", `rgb(${channel}, ${channel}, ${channel})`)
+      root.style.setProperty(
+        "--zoom-text-color",
+        `rgb(${channel}, ${channel}, ${channel})`
+      )
       root.style.setProperty("--zoom-render-x", `${renderX.toFixed(4)}vw`)
       root.style.setProperty("--zoom-render-y", `${renderY.toFixed(4)}vh`)
       root.style.setProperty("--zoom-render-opacity", renderOpacity.toFixed(4))
@@ -109,17 +112,17 @@ export function HomepageZoomReveal() {
           />
         </div>
 
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(246,245,241,0.35)_0%,rgba(246,245,241,0.92)_70%)]" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[28svh] bg-[linear-gradient(180deg,#f6f5f1_0%,rgba(246,245,241,0.6)_55%,transparent_100%)]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[28svh] bg-[linear-gradient(0deg,#f6f5f1_0%,rgba(246,245,241,0.6)_55%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[#f6f5f1]/82" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[28svh] bg-[#f6f5f1]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[28svh] bg-[#f6f5f1]" />
         <div
           aria-hidden="true"
-          className="homepage-zoom-sweep pointer-events-none absolute inset-y-[18svh] w-[34vw] -translate-x-1/2 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.72)_44%,transparent_100%)] opacity-70 mix-blend-screen blur-2xl"
+          className="homepage-zoom-sweep pointer-events-none absolute inset-y-[18svh] w-[34vw] -translate-x-1/2 bg-white/35 opacity-70 mix-blend-screen blur-2xl"
         />
 
         <h2
           data-homepage-zoom-text
-          className="homepage-zoom-text relative z-10 max-w-[18ch] text-center font-thin leading-[0.95] tracking-tight"
+          className="homepage-zoom-text relative z-10 max-w-[18ch] text-center leading-[0.95] font-thin tracking-tight"
         >
           Built by Students.
           <br />

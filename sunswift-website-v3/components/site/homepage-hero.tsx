@@ -30,8 +30,14 @@ export function HomepageHero() {
 
       root.style.setProperty("--hero-progress", progress.toFixed(4))
       root.style.setProperty("--hero-scale", (1 + progress * 0.075).toFixed(4))
-      root.style.setProperty("--hero-x", `${(15.5 - progress * 2).toFixed(4)}vw`)
-      root.style.setProperty("--hero-title-y", `${(progress * -5.5).toFixed(4)}rem`)
+      root.style.setProperty(
+        "--hero-x",
+        `${(15.5 - progress * 2).toFixed(4)}vw`
+      )
+      root.style.setProperty(
+        "--hero-title-y",
+        `${(progress * -5.5).toFixed(4)}rem`
+      )
       root.style.setProperty("--hero-opacity", (1 - progress * 0.16).toFixed(4))
     }
 
@@ -78,7 +84,8 @@ export function HomepageHero() {
   }, [])
 
   const firstLine = typed.slice(0, LINE_BREAK_INDEX)
-  const secondLine = typed.length > LINE_BREAK_INDEX ? typed.slice(LINE_BREAK_INDEX + 1) : ""
+  const secondLine =
+    typed.length > LINE_BREAK_INDEX ? typed.slice(LINE_BREAK_INDEX + 1) : ""
   const isComplete = typed.length >= SLOGAN.length
 
   return (
@@ -105,12 +112,12 @@ export function HomepageHero() {
           className="homepage-hero-image object-cover object-[52%_50%]"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_54%_42%,transparent_0%,rgba(20,24,27,0.08)_31%,rgba(20,24,27,0.58)_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,24,27,0.58)_0%,rgba(20,24,27,0.16)_42%,rgba(20,24,27,0.34)_100%)]" />
+        <div className="absolute inset-0 bg-[#14181b]/30" />
+        <div className="absolute inset-0 bg-[#14181b]/45" />
         <h1
           data-full-text={SLOGAN}
           data-typing-complete={isComplete ? "true" : "false"}
-          className="homepage-hero-title absolute left-[9vw] top-[41svh] max-w-[12ch] text-[clamp(3.05rem,5.45vw,5.95rem)] font-light leading-[0.98] tracking-normal text-white"
+          className="homepage-hero-title absolute top-[41svh] left-[9vw] max-w-[12ch] text-[clamp(3.05rem,5.45vw,5.95rem)] leading-[0.98] font-light tracking-normal text-white"
         >
           <span className="sr-only">{SLOGAN}</span>
           <span aria-hidden="true">

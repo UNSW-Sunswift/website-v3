@@ -332,7 +332,7 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
 const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
   const transition = document.querySelector("[data-homepage-records-transition]");
   const carousel = document.querySelector("[data-homepage-records-carousel]");
-  const recruitmentGradient = document.querySelector("[data-homepage-recruitment-gradient] .homepage-recruitment-background-core");
+  const recruitmentBlock = document.querySelector("[data-homepage-recruitment-block]");
   const handoff = document.querySelector("[data-homepage-records-handoff]");
 
   if (!transition || !carousel || !handoff) {
@@ -340,14 +340,13 @@ const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
     return;
   }
 
-  if (!recruitmentGradient) {
-    reject(new Error("MISSING_RECRUITMENT_GRADIENT"));
+  if (!recruitmentBlock) {
+    reject(new Error("MISSING_RECRUITMENT_BLOCK"));
     return;
   }
 
-  const gradientAnimation = getComputedStyle(recruitmentGradient).animationName;
-  if (!gradientAnimation || gradientAnimation === "none") {
-    reject(new Error("RECRUITMENT_GRADIENT_NOT_ANIMATED"));
+  if (getComputedStyle(recruitmentBlock).backgroundImage !== "none") {
+    reject(new Error("RECRUITMENT_BLOCK_USES_GRADIENT"));
     return;
   }
 
