@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process"
 const baseUrl = process.env.VERIFY_URL ?? "http://localhost:3000"
 const adminUrl = new URL("/admin", baseUrl).toString()
 const teamUrl = new URL("/admin/team", baseUrl).toString()
+const recruitmentUrl = new URL("/admin/recruitment", baseUrl).toString()
 const partnersUrl = new URL("/admin/partners", baseUrl).toString()
 const assetsUrl = new URL("/admin/assets", baseUrl).toString()
 
@@ -128,10 +129,13 @@ const teamDraftEditContract = `(() => new Promise((resolve, reject) => {
   const roleInput = form?.querySelector('input[name="role"]');
   const departmentSelect = form?.querySelector('select[name="department"]');
   const hierarchySelect = form?.querySelector('select[name="hierarchyLevel"]');
-  const publishAll = Array.from(document.querySelectorAll("button")).find((button) => (button.textContent || "").includes("Publish all team members"));
+  const bulkPublish = document.querySelector("[data-admin-bulk-publish]");
+  const selectAll = bulkPublish?.querySelector("[data-admin-select-all]");
+  const publishSelected = bulkPublish?.querySelector("[data-admin-publish-selected]");
+  const gridButton = bulkPublish?.querySelector('button[aria-label="Grid view"]');
   const visibleText = document.body.textContent || "";
 
-  if (!form || !importForm || !roleInput || !departmentSelect || !hierarchySelect || !publishAll) {
+  if (!form || !importForm || !roleInput || !departmentSelect || !hierarchySelect || !bulkPublish || !selectAll || !publishSelected || !gridButton) {
     reject(new Error("MISSING_TEAM_ADMIN_EDITOR"));
     return;
   }
@@ -177,12 +181,31 @@ function teamDraftSavedContract(marker) {
   })()`
 }
 
+const recruitmentContract = `(() => {
+  const text = document.body.textContent || "";
+  const bulkPublish = document.querySelector("[data-admin-bulk-publish]");
+  if (!document.querySelector("[data-admin-recruitment-import]")) {
+    throw new Error("MISSING_RECRUITMENT_IMPORT");
+  }
+  if (!bulkPublish || !bulkPublish.querySelector("[data-admin-select-all]") || !bulkPublish.querySelector("[data-admin-publish-selected]")) {
+    throw new Error("MISSING_RECRUITMENT_BULK_PUBLISH");
+  }
+  if (!text.includes("Open roles") || !text.includes("Import recruitment CSV") || !text.includes("Publish selected roles")) {
+    throw new Error("MISSING_RECRUITMENT_ADMIN_COPY");
+  }
+  return "RECRUITMENT_ADMIN_OK";
+})()`
+
 const partnersContract = `(() => {
   const text = document.body.textContent || "";
   if (!document.querySelector("[data-admin-partners-import]")) {
     throw new Error("MISSING_PARTNERS_IMPORT");
   }
-  if (!text.includes("Partners") || !text.includes("Import partners CSV") || !text.includes("Publish")) {
+  const bulkPublish = document.querySelector("[data-admin-bulk-publish]");
+  if (!bulkPublish || !bulkPublish.querySelector("[data-admin-select-all]") || !bulkPublish.querySelector("[data-admin-publish-selected]")) {
+    throw new Error("MISSING_PARTNERS_BULK_PUBLISH");
+  }
+  if (!text.includes("Partners") || !text.includes("Import partners CSV") || !text.includes("Publish selected partners")) {
     throw new Error("MISSING_PARTNERS_ADMIN_COPY");
   }
   return "PARTNERS_ADMIN_OK";
@@ -221,6 +244,11 @@ try {
   runAgentBrowser(["open", teamUrl])
   runAgentBrowser(["wait", "--load", "networkidle"])
   console.log(evalInBrowser(teamDraftSavedContract(draftMarker)))
+
+  runAgentBrowser(["open", recruitmentUrl])
+  runAgentBrowser(["wait", "--load", "networkidle"])
+  console.log(evalInBrowser(pageHealthContract("Admin Recruitment | Sunswift Racing")))
+  console.log(evalInBrowser(recruitmentContract))
 
   runAgentBrowser(["open", partnersUrl])
   runAgentBrowser(["wait", "--load", "networkidle"])

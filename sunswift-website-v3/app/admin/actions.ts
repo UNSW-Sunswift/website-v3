@@ -31,6 +31,10 @@ function normalizeNameKey(value: string) {
   return value.trim().replace(/\s+/g, " ").toLowerCase()
 }
 
+function selectedSlugs(formData: FormData) {
+  return Array.from(new Set(formData.getAll("slugs").map((slug) => String(slug).trim()).filter(Boolean)))
+}
+
 async function assertAdmin() {
   const session = await auth()
 
@@ -115,6 +119,20 @@ export async function publishAllTeamMembers() {
   revalidatePath("/admin/team")
 }
 
+export async function publishSelectedTeamMembers(formData: FormData) {
+  const updatedBy = await assertAdmin()
+  const slugs = selectedSlugs(formData)
+
+  for (const slug of slugs) {
+    await publishCmsDraft("team", slug, updatedBy)
+  }
+
+  if (slugs.length > 0) {
+    revalidatePath("/team")
+    revalidatePath("/admin/team")
+  }
+}
+
 export async function deleteTeamMember(formData: FormData) {
   await assertAdmin()
 
@@ -170,6 +188,21 @@ export async function publishRecruitmentRole(formData: FormData) {
   }
 }
 
+export async function publishSelectedRecruitmentRoles(formData: FormData) {
+  const updatedBy = await assertAdmin()
+  const slugs = selectedSlugs(formData)
+
+  for (const slug of slugs) {
+    await publishCmsDraft("roles", slug, updatedBy)
+  }
+
+  if (slugs.length > 0) {
+    revalidatePath("/recruitment")
+    revalidatePath("/recruitment/available-roles")
+    revalidatePath("/admin/recruitment")
+  }
+}
+
 export async function deleteRecruitmentRole(formData: FormData) {
   await assertAdmin()
 
@@ -218,6 +251,20 @@ export async function publishPartner(formData: FormData) {
   const published = await publishCmsDraft("partners", slug, updatedBy)
 
   if (published) {
+    revalidatePath("/partners")
+    revalidatePath("/admin/partners")
+  }
+}
+
+export async function publishSelectedPartners(formData: FormData) {
+  const updatedBy = await assertAdmin()
+  const slugs = selectedSlugs(formData)
+
+  for (const slug of slugs) {
+    await publishCmsDraft("partners", slug, updatedBy)
+  }
+
+  if (slugs.length > 0) {
     revalidatePath("/partners")
     revalidatePath("/admin/partners")
   }

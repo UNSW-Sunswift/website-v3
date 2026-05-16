@@ -1,11 +1,12 @@
 import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
+import { AdminBulkPublishPanel } from "@/components/site/admin-bulk-publish-panel"
 import { AdminShell } from "@/components/site/admin-shell"
 import {
   deleteTeamMember,
   importTeamDrafts,
-  publishAllTeamMembers,
+  publishSelectedTeamMembers,
   publishTeamMember,
   saveTeamMemberDraft,
 } from "@/app/admin/actions"
@@ -36,10 +37,21 @@ export default async function AdminTeamPage() {
             Update names, roles, departments and staged headshots. Publish copies the draft record
             to the public collection.
           </p>
-          <form action={publishAllTeamMembers} className="mt-5">
-            <Button type="submit">Publish all team members</Button>
-          </form>
         </div>
+
+        <AdminBulkPublishPanel
+          title="Publish team drafts"
+          description="Select the team members that are ready to go live. Grid view is useful for quickly scanning and choosing many draft records at once."
+          items={members.map((member) => ({
+            slug: member.slug,
+            title: member.name,
+            eyebrow: member.department ?? member.hierarchyLevel,
+            description: member.role,
+          }))}
+          action={publishSelectedTeamMembers}
+          submitLabel="Publish selected team members"
+          emptyLabel="No draft team members are available to publish."
+        />
 
         <form
           action={importTeamDrafts}

@@ -1823,6 +1823,45 @@
         "Partners page keeps the hero/contact summary and removes the marquee, grid, View grid CTA, and powered-by header.",
         "Homepage image sequence prep expects frame_000.webp through frame_080.webp under /homepage-sequences/hero, /homepage-sequences/zoom-reveal, and /homepage-sequences/about, with poster fallback."
       ]
+    },
+    {
+      "id": "selective-batch-publish-admin-and-landing-repair",
+      "priority": 61,
+      "title": "Selective batch publishing, compact footer, and landing repair",
+      "status": "complete",
+      "description": "Replace all-or-nothing team publishing with selected batch publishing, add the same selected publishing workflow to recruitment roles and partners, add grid/zoom selection controls, and repair the homepage/footer regressions from image-sequence prep.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:browser",
+          "pnpm verify:cms-admin",
+          "./init.sh"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "./init.sh: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.",
+          "pnpm typecheck: passed.",
+          "pnpm lint: passed.",
+          "pnpm test:homepage-design: passed.",
+          "pnpm build: passed.",
+          "Manual agent-browser open/wait/screenshot --annotate/snapshot -i ran against http://127.0.0.1:3000 for the homepage and admin team page.",
+          "Admin manual browser check confirmed grid view, Zoom out, Select all -> Clear all, and Publish selected team members (11).",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser: passed.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin: passed.",
+          "./init.sh: passed after artifact updates with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "AdminBulkPublishPanel is shared by team, recruitment roles, and partners and submits only selected slugs.",
+        "Team, roles, and partners still keep individual Publish buttons for one-off publishes.",
+        "HomepageImageSequence now defaults to poster-only until a sequence is explicitly enabled, preventing absent frame folders from creating black/fallback frames.",
+        "Zoom reveal and about poster treatments were tightened so the vehicle surfaces remain visible and the two-line slogan stays stable.",
+        "HomepageRecords keeps carousel content visible during the black wipe and only clears near the final handoff.",
+        "SiteFooter keeps the dark editorial style but uses smaller type and less vertical weight."
+      ]
     }
   ]
 }

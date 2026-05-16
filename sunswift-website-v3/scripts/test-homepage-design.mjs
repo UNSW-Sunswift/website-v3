@@ -144,6 +144,14 @@ const adminTeamPage = readFileSync(
   join(root, "app/admin/team/page.tsx"),
   "utf8"
 )
+const adminRecruitmentPage = readFileSync(
+  join(root, "app/admin/recruitment/page.tsx"),
+  "utf8"
+)
+const adminBulkPublishPanel = readFileSync(
+  join(root, "components/site/admin-bulk-publish-panel.tsx"),
+  "utf8"
+)
 const adminShell = readFileSync(
   join(root, "components/site/admin-shell.tsx"),
   "utf8"
@@ -297,8 +305,10 @@ assert(
     homepageImageSequence.includes("frame_") &&
     homepageImageSequence.includes("padStart(3") &&
     homepageImageSequence.includes("frameCount = 81") &&
+    homepageImageSequence.includes("enabled = false") &&
+    homepageImageSequence.includes('data-sequence-enabled={enabled ? "true" : "false"}') &&
     homepageImageSequence.includes("sequenceUnavailable"),
-  "Homepage image sequence prep must support frame_000.webp through frame_080.webp with a poster fallback."
+  "Homepage image sequence prep must support frame_000.webp through frame_080.webp while staying poster-only until sequences are explicitly enabled."
 )
 assert(
   zoomReveal.includes("Built by Students."),
@@ -354,12 +364,12 @@ assert(
   "Zoom-reveal section must render the moving light sweep overlay."
 )
 assert(
-  /font-thin/.test(zoomReveal),
-  "Zoom-reveal headline must use font-thin (Inter 100)."
+  /font-light/.test(zoomReveal),
+  "Zoom-reveal headline must use a readable light weight while keeping the two fixed lines stable."
 )
 assert(
-  /h-\[180svh\]/.test(zoomReveal),
-  "Zoom-reveal section must reserve tall scroll distance (~180svh) to drive the animation."
+  /h-\[145svh\]/.test(zoomReveal),
+  "Zoom-reveal section must reserve enough scroll distance without leaving a large blank band."
 )
 assert(
   /sticky\s+top-0/.test(zoomReveal),
@@ -728,10 +738,10 @@ assert(
   "Records handoff must start at progress 0.58 so the dark veil is fully covering the recruitment glow by the end of the section."
 )
 assert(
-  /contentClear\s*=\s*clamp\(\(progress - 0\.66\) \/ 0\.12\)/.test(
+  /contentClear\s*=\s*clamp\(\(progress - 0\.76\) \/ 0\.12\)/.test(
     recordsTransition
   ),
-  "Records content must fully fade between progress 0.66 and 0.78, before the section releases."
+  "Records content must remain readable through the wipe and fade only near the final handoff."
 )
 assert(
   /copyClear\s*=\s*clamp\(\(progress - 0\.03\) \/ 0\.07\)/.test(
@@ -743,10 +753,11 @@ assert(
   /blackCover\s*=\s*clamp\(\(progress - 0\.12\) \/ 0\.13\)/.test(
     recordsTransition
   ) &&
-    /contentReveal\s*=\s*clamp\(\(progress - 0\.26\) \/ 0\.08\)/.test(
+    /"--records-content-opacity",\s*String\(1 - contentClear\)/.test(
       recordsTransition
-    ),
-  "Records carousel content must wait until after the hard black wipe completes."
+    ) &&
+    !/contentReveal\s*=/.test(recordsTransition),
+  "Records carousel content must stay visible during the hard black wipe instead of creating an empty black frame."
 )
 assert(
   /-bottom-\[40svh\][^"]*h-\[180svh\]/.test(recordsTransition),
@@ -1445,20 +1456,21 @@ assert(
   "Site footer must not use the old hard top border."
 )
 assert(
-  siteShell.includes("before:-top-32") &&
+  siteShell.includes("before:-top-24") &&
     siteShell.includes("linear-gradient(180deg") &&
-    siteShell.includes("shadow-[0_-64px_140px_rgba(0,0,0,0.52)]"),
+    siteShell.includes("shadow-[0_-32px_80px_rgba(0,0,0,0.34)]"),
   "Site footer must use a dark vignette transition instead of a hard line."
 )
 assert(
-  /text-\[clamp\(4\.5rem,13vw,13rem\)\]/.test(siteShell) &&
+  /sm:text-5xl/.test(siteShell) &&
+    /lg:text-6xl/.test(siteShell) &&
     siteShell.includes("Tomorrow, Today."),
-  "Site footer must use a dark large-type editorial headline."
+  "Site footer must use a restrained dark editorial headline."
 )
 assert(
-  siteShell.includes("sm:grid-cols-[1fr_auto]") &&
+  siteShell.includes("lg:grid-cols-[1fr_auto]") &&
     siteShell.includes("navItems.map"),
-  "Site footer must keep brand/legal/actions organized below the large headline."
+  "Site footer must keep brand/legal/actions organized in the compact dark layout."
 )
 assert(
   /Room G14,\s*Blockhouse \(G6\),\s*University Mall,\s*UNSW,\s*Kensington NSW\s*2052/.test(
@@ -1950,11 +1962,33 @@ assert(
     adminTeamPage.includes("TEAM_HIERARCHIES") &&
     adminTeamPage.includes('name="department"') &&
     adminTeamPage.includes('name="hierarchyLevel"') &&
-    adminTeamPage.includes("publishAllTeamMembers") &&
+    adminTeamPage.includes("AdminBulkPublishPanel") &&
+    adminTeamPage.includes("publishSelectedTeamMembers") &&
     !adminTeamPage.includes('name="discipline"') &&
     !adminTeamPage.includes('name="bio"') &&
     !adminTeamPage.includes("Optional override"),
-  "Admin team page must gate department/hierarchy with dropdowns, expose publish-all, and hide slug/discipline/bio manual fields."
+  "Admin team page must gate department/hierarchy with dropdowns, expose selected batch publishing, and hide slug/discipline/bio manual fields."
+)
+assert(
+  adminBulkPublishPanel.includes("data-admin-bulk-publish") &&
+    adminBulkPublishPanel.includes("data-admin-bulk-grid") &&
+    adminBulkPublishPanel.includes("data-admin-select-all") &&
+    adminBulkPublishPanel.includes("data-admin-publish-selected") &&
+    adminBulkPublishPanel.includes('"grid"') &&
+    adminBulkPublishPanel.includes("Zoom out") &&
+    adminBulkPublishPanel.includes("Select all") &&
+    adminBulkPublishPanel.includes('name="slugs"'),
+  "Admin bulk publish panel must support selectable records, select all, grid view, zoom-out density, and selected-only form submission."
+)
+assert(
+  adminActions.includes("publishSelectedTeamMembers") &&
+    adminActions.includes("publishSelectedRecruitmentRoles") &&
+    adminActions.includes("publishSelectedPartners") &&
+    adminRecruitmentPage.includes("AdminBulkPublishPanel") &&
+    adminRecruitmentPage.includes("publishSelectedRecruitmentRoles") &&
+    adminPartnersPage.includes("AdminBulkPublishPanel") &&
+    adminPartnersPage.includes("publishSelectedPartners"),
+  "Team, recruitment, and partners admin pages must all expose selected batch publishing actions."
 )
 assert(
   packageJson.includes(

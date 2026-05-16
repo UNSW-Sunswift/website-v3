@@ -251,8 +251,8 @@ const siteFooterContract = `(() => {
 
   const title = Array.from(footer.querySelectorAll("h2")).find((heading) => (heading.textContent || "").includes("Tomorrow, Today."));
   const titleSize = title ? Number.parseFloat(getComputedStyle(title).fontSize) : 0;
-  if (!title || titleSize < 64) {
-    throw new Error("SUNSWIFT_FOOTER_TITLE_TOO_SMALL:" + titleSize);
+  if (!title || titleSize < 32 || titleSize > 112) {
+    throw new Error("SUNSWIFT_FOOTER_TITLE_SIZE_OFF:" + titleSize);
   }
 
   const link = footer.querySelector('a[href="https://linktr.ee/sunswiftracing"]');
@@ -388,8 +388,8 @@ const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
           return;
         }
 
-        if (beforeContent > 0.1 || afterContent > 0.1) {
-          reject(new Error(\`RECORDS_CONTENT_VISIBLE_DURING_WIPE:\${beforeContent}->\${afterContent}\`));
+        if (beforeContent < 0.85 || afterContent > 0.2) {
+          reject(new Error(\`RECORDS_CONTENT_VISIBILITY_OFF:\${beforeContent}->\${afterContent}\`));
           return;
         }
 

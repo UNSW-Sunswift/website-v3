@@ -1,11 +1,13 @@
 import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
+import { AdminBulkPublishPanel } from "@/components/site/admin-bulk-publish-panel"
 import { AdminShell } from "@/components/site/admin-shell"
 import {
   deletePartner,
   importPartnerDrafts,
   publishPartner,
+  publishSelectedPartners,
   savePartnerDraft,
 } from "@/app/admin/actions"
 import { listCmsRecords } from "@/lib/cms/api"
@@ -30,6 +32,20 @@ export default async function AdminPartnersPage() {
             partner grid.
           </p>
         </div>
+
+        <AdminBulkPublishPanel
+          title="Publish partner drafts"
+          description="Select the partners that should be pushed live. Grid view turns each partner into a compact selectable button for faster batch publishing."
+          items={partners.map((partner) => ({
+            slug: partner.slug,
+            title: partner.name,
+            eyebrow: "Partner",
+            description: partner.website,
+          }))}
+          action={publishSelectedPartners}
+          submitLabel="Publish selected partners"
+          emptyLabel="No draft partners are available to publish."
+        />
 
         <form
           action={importPartnerDrafts}
@@ -168,4 +184,3 @@ export default async function AdminPartnersPage() {
     </AdminShell>
   )
 }
-

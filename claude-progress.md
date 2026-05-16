@@ -1,5 +1,35 @@
 # Claude Progress
 
+## 2026-05-17 - Selective batch publishing and landing repair
+
+Baseline:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Implementation:
+
+- Added selected batch publishing server actions for team members, recruitment roles, and partners.
+- Added a shared `AdminBulkPublishPanel` with selectable record buttons, Select all/Clear all, list/grid view toggle, Zoom out/Comfortable density toggle, live selected count, and selected-only form submission.
+- Replaced the team-only `Publish all team members` control with selected publishing; kept existing per-record Publish buttons on team, roles, and partners.
+- Updated the CMS admin browser regression to validate team, recruitment, and partner selected batch publishing controls.
+- Changed `HomepageImageSequence` to default to poster-only until explicitly enabled, preserving the frame-sequence prep while avoiding absent-frame black/fallback states.
+- Tightened the zoom reveal and about image overlays so the vehicle poster surfaces remain visible and the two-line slogan stays stable.
+- Repaired `HomepageRecords` so carousel content stays visible through the black wipe and clears only near the final handoff, avoiding the empty black frame shown in the screenshot.
+- Reduced the shared footer from oversized large type to a more compact dark editorial footer.
+- Updated `CMS_ADMIN_USER_GUIDE.md`, `feature_list.json`, `scripts/test-homepage-design.mjs`, `scripts/verify-browser.mjs`, and `scripts/verify-cms-admin.mjs`.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- Manual `agent-browser open`, `wait --load networkidle`, `screenshot --annotate`, and `snapshot -i`: passed against `http://127.0.0.1:3000` for the homepage and admin team page.
+- Admin manual browser check confirmed grid view, Zoom out, Select all -> Clear all, and `Publish selected team members (11)`.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser`: passed.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin`: passed.
+- Final `./init.sh`: passed after artifact updates with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
 ## 2026-05-17 - Team CMS gating, partners simplification, footer redesign, and landing animation prep
 
 Baseline:

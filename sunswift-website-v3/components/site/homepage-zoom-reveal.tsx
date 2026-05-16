@@ -28,9 +28,9 @@ export function HomepageZoomReveal() {
 
       // Headline resolves into focus without changing size.
       const revealRamp = Math.min(progress / 0.62, 1)
-      const opacity = lerp(0.22, 1, Math.min(progress / 0.32, 1))
-      const blur = lerp(18, 0, revealRamp)
-      const textY = lerp(7.5, -1.5, revealRamp)
+      const opacity = lerp(0.42, 1, Math.min(progress / 0.32, 1))
+      const blur = lerp(10, 0, revealRamp)
+      const textY = lerp(4, -1.5, revealRamp)
       const sweepX = lerp(-42, 142, Math.min(progress / 0.82, 1))
 
       // Tone: starts as a faint light gray and darkens to near-black on scroll.
@@ -39,8 +39,8 @@ export function HomepageZoomReveal() {
 
       // Background vehicle render glides in with a quiet parallax pass.
       const renderX = lerp(3.5, -2.5, Math.min(progress / 0.86, 1))
-      const renderY = lerp(8, -4, Math.min(progress / 0.86, 1))
-      const renderOpacity = lerp(0.18, 0.65, Math.min(progress / 0.8, 1))
+      const renderY = lerp(4, -4, Math.min(progress / 0.86, 1))
+      const renderOpacity = lerp(0.34, 0.68, Math.min(progress / 0.8, 1))
 
       root.style.setProperty("--zoom-progress", progress.toFixed(4))
       root.style.setProperty("--zoom-opacity", opacity.toFixed(4))
@@ -79,18 +79,18 @@ export function HomepageZoomReveal() {
     <section
       ref={rootRef}
       data-homepage-zoom-reveal
-      className="relative h-[180svh] overflow-clip bg-[#f6f5f1] text-black"
+      className="relative h-[145svh] overflow-clip bg-[#f6f5f1] text-black"
       style={
         {
           "--zoom-progress": 0,
-          "--zoom-opacity": 0.22,
-          "--zoom-blur": "18px",
-          "--zoom-text-y": "7.5vh",
+          "--zoom-opacity": 0.42,
+          "--zoom-blur": "10px",
+          "--zoom-text-y": "4vh",
           "--zoom-sweep-x": "-42%",
           "--zoom-text-color": "rgb(186, 186, 186)",
           "--zoom-render-x": "3.5vw",
-          "--zoom-render-y": "8vh",
-          "--zoom-render-opacity": 0.18,
+          "--zoom-render-y": "4vh",
+          "--zoom-render-opacity": 0.34,
         } as CSSProperties
       }
     >
@@ -110,9 +110,9 @@ export function HomepageZoomReveal() {
           />
         </div>
 
-        <div className="absolute inset-0 bg-[#f6f5f1]/82" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[28svh] bg-[#f6f5f1]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[28svh] bg-[#f6f5f1]" />
+        <div className="absolute inset-0 bg-[#f6f5f1]/64" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[14svh] bg-[#f6f5f1]/90" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[14svh] bg-[#f6f5f1]/90" />
         <div
           aria-hidden="true"
           className="homepage-zoom-sweep pointer-events-none absolute inset-y-[18svh] w-[34vw] -translate-x-1/2 bg-white/35 opacity-70 mix-blend-screen blur-2xl"
@@ -120,7 +120,7 @@ export function HomepageZoomReveal() {
 
         <h2
           data-homepage-zoom-text
-          className="homepage-zoom-text relative z-10 flex max-w-[min(94vw,76rem)] flex-col items-center text-center leading-[0.95] font-thin tracking-normal"
+          className="homepage-zoom-text relative z-10 flex max-w-[min(94vw,76rem)] flex-col items-center text-center leading-[0.95] font-light tracking-normal"
         >
           <span className="whitespace-nowrap">Built by Students.</span>
           <span className="whitespace-nowrap">Driving Sustainability.</span>

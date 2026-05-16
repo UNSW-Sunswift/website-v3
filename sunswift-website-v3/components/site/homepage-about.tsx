@@ -37,7 +37,7 @@ export function HomepageAbout() {
             imageClassName="object-cover object-[52%_50%]"
             sizes="(min-width: 1024px) 46vw, 100vw"
           />
-          <div className="pointer-events-none absolute inset-0 bg-[#f6f5f1]/35" />
+          <div className="pointer-events-none absolute inset-0 bg-[#f6f5f1]/18" />
         </div>
       </div>
     </section>

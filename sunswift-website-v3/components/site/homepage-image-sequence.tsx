@@ -15,6 +15,7 @@ type HomepageImageSequenceProps = {
   sizes: string
   priority?: boolean
   frameCount?: number
+  enabled?: boolean
 }
 
 function frameSrc(basePath: string, frame: number) {
@@ -35,12 +36,17 @@ export function HomepageImageSequence({
   sizes,
   priority = false,
   frameCount = 81,
+  enabled = false,
 }: HomepageImageSequenceProps) {
   const [frame, setFrame] = useState(0)
   const [sequenceReady, setSequenceReady] = useState(false)
   const [sequenceUnavailable, setSequenceUnavailable] = useState(false)
 
   useEffect(() => {
+    if (!enabled) {
+      return
+    }
+
     if (sequenceUnavailable) {
       return
     }
@@ -77,12 +83,13 @@ export function HomepageImageSequence({
       window.removeEventListener("scroll", requestUpdate)
       window.removeEventListener("resize", requestUpdate)
     }
-  }, [frameCount, scrollContainerSelector, sequenceUnavailable])
+  }, [enabled, frameCount, scrollContainerSelector, sequenceUnavailable])
 
   return (
     <div
       data-homepage-image-sequence
       data-sequence-base={sequenceBasePath}
+      data-sequence-enabled={enabled ? "true" : "false"}
       className={cn("absolute inset-0", className)}
     >
       <Image
@@ -93,7 +100,7 @@ export function HomepageImageSequence({
         className={imageClassName}
         sizes={sizes}
       />
-      {!sequenceUnavailable ? (
+      {enabled && !sequenceUnavailable ? (
         <Image
           key={frame}
           src={frameSrc(sequenceBasePath, frame)}

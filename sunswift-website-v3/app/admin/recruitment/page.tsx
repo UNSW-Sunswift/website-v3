@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button"
+import { AdminBulkPublishPanel } from "@/components/site/admin-bulk-publish-panel"
 import { AdminShell } from "@/components/site/admin-shell"
 import {
   deleteRecruitmentRole,
   importRecruitmentDrafts,
   publishRecruitmentRole,
+  publishSelectedRecruitmentRoles,
   saveRecruitmentRoleDraft,
 } from "@/app/admin/actions"
 import { listCmsRecords } from "@/lib/cms/api"
@@ -26,6 +28,20 @@ export default async function AdminRecruitmentPage() {
             Edit draft role descriptions and publish them to the recruitment page.
           </p>
         </div>
+
+        <AdminBulkPublishPanel
+          title="Publish role drafts"
+          description="Choose the recruitment roles to publish together. Use grid view and zoom out when there are many roles to scan."
+          items={roles.map((role) => ({
+            slug: role.slug,
+            title: role.title,
+            eyebrow: role.team,
+            description: role.description,
+          }))}
+          action={publishSelectedRecruitmentRoles}
+          submitLabel="Publish selected roles"
+          emptyLabel="No draft recruitment roles are available to publish."
+        />
 
         <form
           action={importRecruitmentDrafts}

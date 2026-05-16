@@ -30,13 +30,14 @@ What you can do:
 - Manually add a team member (details panel at the top).
 - Edit existing drafts (name, role, department, hierarchy, additional roles, sort order, etc.).
 - Stage a headshot image (stored in the CMS assets bucket).
-- Publish one member, or use Publish all team members to copy every draft to the public team page.
+- Publish one member, or select multiple drafts in the batch publishing panel and publish only those records.
 - Delete to remove the draft and published record.
 
 Tips:
 - Team record keys are generated from names and hidden in the admin UI.
 - Department and hierarchy are restricted to the approved dropdown values.
 - CSV imports ignore vestigial Webflow Slug, Discipline, and Bio columns.
+- Use Select all for a full batch, or switch to grid view and Zoom out to scan and select many members as compact buttons.
 - Sort order controls the roster order on the public page.
 - If you delete every team member, the public site will fall back to placeholder data.
 
@@ -49,11 +50,12 @@ What you can do:
 - Manually add a role (details panel at the top).
 - Edit descriptions, discipline, school, and HTML blocks.
 - Set Active to hide or show the role in public listings.
-- Publish to the public recruitment pages.
+- Publish one role, or select multiple drafts in the batch publishing panel and publish only those roles.
 - Delete to remove the draft and published record.
 
 Tips:
 - Responsibilities/Requirements fields accept HTML snippets from Webflow.
+- Use Select all, grid view, and Zoom out for faster review before publishing a larger roles import.
 - Use sort order to control the listing priority inside each stream.
 
 ## Partners
@@ -65,11 +67,12 @@ What you can do:
 - Manually add a partner (details panel at the top).
 - Stage a logo upload or keep the initials placeholder.
 - Edit website links and sort order.
-- Publish to the public partners grid.
+- Publish one partner, or select multiple drafts in the batch publishing panel and publish only those partners.
 - Delete to remove the draft and published record.
 
 Tips:
 - Use full URLs for partner websites (including https://).
+- Use grid view when scanning many partner names before publishing.
 
 ## Assets (registered media)
 
@@ -88,7 +91,7 @@ When to use it:
 ## Publishing checklist
 
 1. Save draft changes.
-2. Click Publish for each record you want live.
+2. Click Publish for an individual record, or select records in the batch publishing panel and click the Publish selected button.
 3. Visit the public page to confirm output:
    - Team: `/team`
    - Recruitment: `/recruitment` and `/recruitment/available-roles`

@@ -261,25 +261,56 @@ export function SiteFooter() {
   return (
     <footer
       data-site-footer
-      className="relative isolate z-20 overflow-hidden bg-[#050607] text-white shadow-[0_-64px_140px_rgba(0,0,0,0.52)] before:pointer-events-none before:absolute before:inset-x-0 before:-top-32 before:h-32 before:bg-[linear-gradient(180deg,rgba(5,6,7,0)_0%,rgba(5,6,7,0.46)_42%,#050607_100%)]"
+      className="relative isolate z-20 overflow-hidden bg-[#050607] text-white shadow-[0_-32px_80px_rgba(0,0,0,0.34)] before:pointer-events-none before:absolute before:inset-x-0 before:-top-24 before:h-24 before:bg-[linear-gradient(180deg,rgba(5,6,7,0)_0%,rgba(5,6,7,0.42)_52%,#050607_100%)]"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_18%,rgba(245,208,0,0.13),transparent_30%)]" />
-      <div className="relative z-10 mx-auto max-w-[92rem] px-4 pt-16 pb-6 sm:px-6 sm:pt-20 lg:pt-24">
-        <div className="grid gap-10 border-y border-white/10 py-8 lg:grid-cols-[1fr_28rem] lg:items-end">
+      <div className="relative z-10 mx-auto max-w-[92rem] px-4 pt-12 pb-6 sm:px-6 sm:pt-14">
+        <div className="grid gap-8 border-y border-white/10 py-8 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <p className="font-mono text-[0.68rem] tracking-[0.28em] text-accent-yellow uppercase">
               Sunswift Racing
             </p>
-            <h2 className="mt-4 max-w-[9ch] text-[clamp(4.5rem,13vw,13rem)] leading-[0.78] font-thin tracking-normal text-white">
+            <h2 className="mt-3 text-4xl leading-[0.95] font-light tracking-normal text-white sm:text-5xl lg:text-6xl">
               Tomorrow, Today.
             </h2>
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-white/56">
+              Student-built solar racing from UNSW Sydney, pushing efficient
+              engineering from campus workshops to world-record roads.
+            </p>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:pb-3">
+          <Link
+            href="https://linktr.ee/sunswiftracing"
+            target="_blank"
+            rel="noreferrer"
+            className="group inline-flex min-h-11 w-fit items-center justify-center gap-3 border border-white/14 bg-white/[0.035] px-5 font-mono text-[0.62rem] tracking-[0.22em] text-white uppercase transition-[background-color,border-color,color] duration-300 hover:border-accent-yellow hover:bg-accent-yellow hover:text-black"
+          >
+            <Asterisk className="size-3.5 transition-transform duration-500 group-hover:rotate-90" />
+            Stay connected
+            <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
+        </div>
+
+        <div className="grid gap-8 py-7 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
+            <Link href="/" aria-label="Sunswift Racing home" className="block bg-white px-2 py-1">
+              <SunswiftBrandLogo className="w-24 sm:w-28" />
+            </Link>
+            <Image
+              src={footerUnswLogoSrc}
+              alt="UNSW Sydney"
+              width={260}
+              height={78}
+              unoptimized
+              className="h-auto w-36 object-contain opacity-80 sm:w-44"
+              sizes="11rem"
+            />
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-[1fr_auto]">
             <div>
               <p className="font-mono text-[0.62rem] tracking-[0.22em] text-white/38 uppercase">
                 Base
               </p>
-              <p className="mt-3 text-sm leading-6 text-white/58">
+              <p className="mt-3 max-w-sm text-sm leading-6 text-white/58">
                 Room G14, Blockhouse (G6), University Mall, UNSW, Kensington NSW
                 2052
               </p>
@@ -297,34 +328,6 @@ export function SiteFooter() {
               ))}
             </nav>
           </div>
-        </div>
-
-        <div className="grid gap-6 py-6 sm:grid-cols-[1fr_auto] sm:items-center">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-            <Link href="/" aria-label="Sunswift Racing home" className="block bg-white px-2 py-1">
-              <SunswiftBrandLogo className="w-24 sm:w-28" />
-            </Link>
-            <Image
-              src={footerUnswLogoSrc}
-              alt="UNSW Sydney"
-              width={260}
-              height={78}
-              unoptimized
-              className="h-auto w-36 object-contain opacity-80 sm:w-44"
-              sizes="11rem"
-            />
-          </div>
-
-          <Link
-            href="https://linktr.ee/sunswiftracing"
-            target="_blank"
-            rel="noreferrer"
-            className="group inline-flex min-h-12 w-fit items-center justify-center gap-3 border border-white/14 bg-white/[0.035] px-5 font-mono text-[0.62rem] tracking-[0.22em] text-white uppercase transition-colors duration-300 hover:border-accent-yellow hover:bg-accent-yellow hover:text-black"
-          >
-            <Asterisk className="size-3.5 transition-transform duration-500 group-hover:rotate-90" />
-            Stay connected
-            <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
         </div>
 
         <div className="flex flex-wrap justify-between gap-3 border-t border-white/10 pt-4 font-mono text-[0.58rem] tracking-[0.2em] text-white/34 uppercase">
