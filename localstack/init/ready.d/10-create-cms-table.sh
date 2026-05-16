@@ -90,8 +90,8 @@ awslocal dynamodb put-item \
     "slug": { "S": "alex-rivera" },
     "name": { "S": "Alex Rivera" },
     "role": { "S": "Mechanical Lead" },
-    "discipline": { "S": "Engineering" },
-    "bio": { "S": "Placeholder team member seeded for local CMS development." },
+    "department": { "S": "Systems Engineering" },
+    "hierarchyLevel": { "S": "SLT" },
     "imageKey": { "S": "" },
     "status": { "S": "published" }
   }' >/dev/null
@@ -104,8 +104,8 @@ awslocal dynamodb put-item \
     "slug": { "S": "alex-rivera" },
     "name": { "S": "Alex Rivera" },
     "role": { "S": "Mechanical Lead" },
-    "discipline": { "S": "Engineering" },
-    "bio": { "S": "Placeholder team member seeded for local CMS development." },
+    "department": { "S": "Systems Engineering" },
+    "hierarchyLevel": { "S": "SLT" },
     "imageKey": { "S": "" },
     "status": { "S": "draft" }
   }' >/dev/null

@@ -126,9 +126,28 @@ const teamDraftEditContract = `(() => new Promise((resolve, reject) => {
   const form = document.querySelector("[data-admin-team-editor]");
   const importForm = document.querySelector("[data-admin-team-import]");
   const roleInput = form?.querySelector('input[name="role"]');
+  const departmentSelect = form?.querySelector('select[name="department"]');
+  const hierarchySelect = form?.querySelector('select[name="hierarchyLevel"]');
+  const publishAll = Array.from(document.querySelectorAll("button")).find((button) => (button.textContent || "").includes("Publish all team members"));
+  const visibleText = document.body.textContent || "";
 
-  if (!form || !importForm || !roleInput) {
+  if (!form || !importForm || !roleInput || !departmentSelect || !hierarchySelect || !publishAll) {
     reject(new Error("MISSING_TEAM_ADMIN_EDITOR"));
+    return;
+  }
+
+  if (form.querySelector('input[name="discipline"], textarea[name="bio"]') || visibleText.includes("Optional override")) {
+    reject(new Error("REMOVED_TEAM_FIELDS_VISIBLE"));
+    return;
+  }
+
+  if (!Array.from(departmentSelect.options).some((option) => option.value === "Vehicle Dynamics")) {
+    reject(new Error("MISSING_TEAM_DEPARTMENT_OPTIONS"));
+    return;
+  }
+
+  if (!Array.from(hierarchySelect.options).some((option) => option.value === "Officer")) {
+    reject(new Error("MISSING_TEAM_HIERARCHY_OPTIONS"));
     return;
   }
 

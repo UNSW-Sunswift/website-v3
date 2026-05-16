@@ -1,5 +1,37 @@
 # Claude Progress
 
+## 2026-05-17 - Team CMS gating, partners simplification, footer redesign, and landing animation prep
+
+Baseline:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Implementation:
+
+- Team admin now gates manual department and hierarchy inputs through the approved dropdown values, keeps role/name/additional roles free text, hides slug/discipline/bio fields, and exposes a top-level `Publish all team members` action.
+- Team CSV import now ignores vestigial Webflow slug/discipline/bio columns, generates member keys from names, overwrites matching draft records by generated slug or normalized name, and preserves an existing draft headshot unless the import supplies a replacement.
+- Public team roster now shows total present departments instead of an in-view count, uses `member/members` copy, and no longer renders discipline badges.
+- Partners page now keeps the hero, overview copy, partner count summary, and contact CTA while removing the marquee, partner grid, View grid CTA, and powered-by header.
+- Shared footer was redesigned into a dark large-type editorial footer with nav links, brand/legal row, UNSW logo, and Linktree CTA.
+- Homepage records wipe now clears intro/carousel content around the hard black takeover to avoid the split unreadable frame.
+- Homepage recruitment streams are now a state-driven accessible accordion with buttons, `aria-expanded`, regions, stable grid-row reveal, and no blur.
+- `Built by Students. Driving Sustainability.` is locked to two explicit lines with stable letter spacing.
+- Added `HomepageImageSequence` prep for `/homepage-sequences/hero`, `/homepage-sequences/zoom-reveal`, and `/homepage-sequences/about`, expecting `frame_000.webp` through `frame_080.webp` while falling back to the current poster imagery if frames are absent.
+- Updated `CMS_ADMIN_USER_GUIDE.md`, `scripts/test-homepage-design.mjs`, `scripts/verify-browser.mjs`, and `scripts/verify-cms-admin.mjs` for the new contracts.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- `npm run build` in `aws`: passed.
+- `npm test -- --runInBand` in `aws`: passed.
+- Manual `agent-browser open`, `wait --load networkidle`, `screenshot --annotate`, and `snapshot -i`: passed against `http://localhost:3012`.
+- `VERIFY_URL=http://localhost:3012 PATH="$PWD/node_modules/.bin:$PATH" pnpm verify:browser`: passed against `next start`.
+- `VERIFY_URL=http://localhost:3000 PATH="$PWD/node_modules/.bin:$PATH" pnpm verify:cms-admin`: passed against the existing non-production `next dev` server.
+- Final `./init.sh`: passed after artifact updates with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
 ## 2026-05-16 - Meet the Team Webflow-aligned layout harness
 
 Implementation (layout only; hero copy unchanged):

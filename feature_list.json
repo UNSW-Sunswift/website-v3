@@ -1783,6 +1783,46 @@
         "Achievements timeline changes from this turn were explicitly reverted per user direction.",
         "LocalStack-dependent AWS/CDK verification was skipped for this frontend-only pass."
       ]
+    },
+    {
+      "id": "team-cms-roster-partners-footer-animation-prep",
+      "priority": 60,
+      "title": "Team CMS gating, roster cleanup, partners simplification, footer redesign, and landing animation prep",
+      "status": "complete",
+      "description": "Gate manual team department/hierarchy inputs, hide vestigial team fields, support draft-only team import overwrites, simplify partners, redesign the shared footer, stabilize landing motion, and prepare homepage image-sequence slots.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "npm run build in aws",
+          "npm test -- --runInBand in aws",
+          "pnpm verify:browser",
+          "pnpm verify:cms-admin",
+          "./init.sh"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "pnpm typecheck: passed",
+          "pnpm lint: passed",
+          "pnpm test:homepage-design: passed",
+          "pnpm build: passed",
+          "npm run build in aws: passed",
+          "npm test -- --runInBand in aws: passed",
+          "Manual agent-browser open/wait/screenshot/snapshot ran against http://localhost:3012 and showed the state-driven recruitment accordion.",
+          "VERIFY_URL=http://localhost:3012 pnpm verify:browser: passed against next start.",
+          "VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin: passed against the existing non-production next dev server.",
+          "./init.sh: passed after artifact updates with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "Team admin now uses approved department and hierarchy dropdowns; name, role, and additional roles stay free text.",
+        "Slug remains internal, existing edit forms preserve it as a hidden key, and imports generate keys from names while preserving existing draft headshots on overwrite.",
+        "Team roster replaces In view with department count, uses member/members copy, and no longer renders discipline badges.",
+        "Partners page keeps the hero/contact summary and removes the marquee, grid, View grid CTA, and powered-by header.",
+        "Homepage image sequence prep expects frame_000.webp through frame_080.webp under /homepage-sequences/hero, /homepage-sequences/zoom-reveal, and /homepage-sequences/about, with poster fallback."
+      ]
     }
   ]
 }

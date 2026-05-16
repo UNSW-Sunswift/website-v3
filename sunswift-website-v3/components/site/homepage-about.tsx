@@ -1,4 +1,4 @@
-import Image from "next/image"
+import { HomepageImageSequence } from "@/components/site/homepage-image-sequence"
 
 export function HomepageAbout() {
   return (
@@ -29,11 +29,12 @@ export function HomepageAbout() {
           data-homepage-about-shared-vehicle
           className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-black/10 bg-[#f6f5f1]"
         >
-          <Image
-            src="/vehicle-fleet/vehicle-sunswift-8.jpg"
+          <HomepageImageSequence
             alt="Sunswift Racing solar vehicle in the lab"
-            fill
-            className="object-cover object-[52%_50%]"
+            posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"
+            sequenceBasePath="/homepage-sequences/about"
+            scrollContainerSelector="[data-homepage-about]"
+            imageClassName="object-cover object-[52%_50%]"
             sizes="(min-width: 1024px) 46vw, 100vw"
           />
           <div className="pointer-events-none absolute inset-0 bg-[#f6f5f1]/35" />

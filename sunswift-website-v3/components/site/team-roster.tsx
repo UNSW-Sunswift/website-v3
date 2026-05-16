@@ -28,7 +28,6 @@ type RosterMember = {
   name: string
   role: string
   department: string
-  discipline: string
   /** Badge label (CMS hierarchy level: Academic, SLT, ELT, Officer, Team). */
   hierarchy: string
   /** Grouping for stacked sections (four bands on the page). */
@@ -52,7 +51,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Dr. Sam Chen",
     role: "Faculty advisor",
     department: "Systems Engineering",
-    discipline: "Academic",
     hierarchy: "Academic",
     section: "Academic",
     imageSrc: placeholderImage,
@@ -61,7 +59,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Priya Shah",
     role: "Materials liaison",
     department: "Materials Science",
-    discipline: "Science",
     hierarchy: "Academic",
     section: "Academic",
     imageSrc: placeholderImage,
@@ -70,7 +67,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Maya Chen",
     role: "Chief Engineer",
     department: "Systems Engineering",
-    discipline: "Engineering",
     hierarchy: "SLT",
     section: "SLT",
     imageSrc: placeholderImage,
@@ -79,7 +75,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Ethan Brooks",
     role: "Chassis lead",
     department: "Chassis and Bodywork",
-    discipline: "Mechanical",
     hierarchy: "SLT",
     section: "SLT",
     imageSrc: placeholderImage,
@@ -88,7 +83,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Harper Lee",
     role: "Vehicle dynamics lead",
     department: "Vehicle Dynamics",
-    discipline: "Mechanical",
     hierarchy: "ELT",
     section: "ELT",
     imageSrc: placeholderImage,
@@ -97,7 +91,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Noah Patel",
     role: "Embedded lead",
     department: "Embedded Systems",
-    discipline: "Electrical",
     hierarchy: "ELT",
     section: "ELT",
     imageSrc: placeholderImage,
@@ -106,7 +99,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Amelia Ford",
     role: "Partnerships lead",
     department: "Business",
-    discipline: "Operations",
     hierarchy: "ELT",
     section: "ELT",
     imageSrc: placeholderImage,
@@ -115,7 +107,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Sofia Nguyen",
     role: "Energy systems engineer",
     department: "Energy Systems",
-    discipline: "Electrical",
     hierarchy: "Team",
     section: "Team",
     imageSrc: placeholderImage,
@@ -124,7 +115,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Leo Kim",
     role: "Media officer",
     department: "Media",
-    discipline: "Creative",
     hierarchy: "Team",
     section: "Team",
     imageSrc: placeholderImage,
@@ -133,7 +123,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Zara Martins",
     role: "Recruitment coordinator",
     department: "Business",
-    discipline: "People",
     hierarchy: "Team",
     section: "Team",
     imageSrc: placeholderImage,
@@ -142,7 +131,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Marcus Tan",
     role: "Strategy engineer",
     department: "Technical Support Systems",
-    discipline: "Software",
     hierarchy: "Team",
     section: "Team",
     imageSrc: placeholderImage,
@@ -151,7 +139,6 @@ const placeholderMembers: RosterMember[] = [
     name: "Jamie Wilson",
     role: "Powertrain engineer",
     department: "Powertrain",
-    discipline: "Mechanical",
     hierarchy: "Team",
     section: "Team",
     imageSrc: placeholderImage,
@@ -164,8 +151,7 @@ function toRosterMember(member: CmsTeamMember): RosterMember {
     slug: member.slug,
     name: member.name,
     role: member.role,
-    department: member.department || member.discipline || "Systems Engineering",
-    discipline: member.discipline ?? "",
+    department: member.department || "Systems Engineering",
     hierarchy: level,
     section: hierarchyToSection(member.hierarchyLevel),
     imageSrc: member.publishedAssetKey || member.imageKey || placeholderImage,
@@ -194,6 +180,7 @@ export function TeamRoster({
     ],
     [rosterMembers]
   )
+  const departmentCount = departments.length - 1
   const [selectedDepartment, setSelectedDepartment] =
     useState("All departments")
 
@@ -266,13 +253,13 @@ export function TeamRoster({
               </div>
               <div className="border-l border-white/15 pl-5">
                 <p
-                  data-filtered-count
+                  data-team-department-count
                   className="text-3xl font-light tracking-normal text-white"
                 >
-                  {filteredMembers.length}
+                  {departmentCount}
                 </p>
                 <p className="mt-1 font-mono text-[0.66rem] tracking-[0.22em] text-white/42 uppercase">
-                  In view
+                  Departments
                 </p>
               </div>
             </div>
@@ -356,7 +343,7 @@ export function TeamRoster({
                   </h2>
                   <p className="font-mono text-[0.62rem] tracking-[0.22em] text-white/38 uppercase">
                     {sectionMembers.length}{" "}
-                    {sectionMembers.length === 1 ? "profile" : "profiles"}
+                    {sectionMembers.length === 1 ? "member" : "members"}
                   </p>
                 </div>
 
@@ -395,11 +382,6 @@ export function TeamRoster({
                               {member.name}
                             </h3>
                           </div>
-                          {member.discipline ? (
-                            <p className="line-clamp-2 max-w-[5.5rem] text-right font-mono text-[0.54rem] leading-snug tracking-[0.16em] text-white/38 uppercase sm:max-w-[6.5rem] sm:text-[0.58rem] sm:tracking-[0.18em]">
-                              {member.discipline}
-                            </p>
-                          ) : null}
                         </div>
                         <p className="mt-2 line-clamp-3 text-xs leading-snug text-white/55 sm:text-[0.82rem] sm:leading-5">
                           {member.role}

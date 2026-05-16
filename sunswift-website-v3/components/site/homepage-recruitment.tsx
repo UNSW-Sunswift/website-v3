@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { ArrowRight, ChevronDown } from "lucide-react"
-import { useEffect, useRef, type CSSProperties } from "react"
+import { useEffect, useRef, useState, type CSSProperties } from "react"
 
 import {
   recruitmentStreamHref,
@@ -27,6 +27,7 @@ function clamp(value: number, min = 0, max = 1) {
 
 export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
   const sectionRef = useRef<HTMLElement>(null)
+  const [activeStream, setActiveStream] = useState("Engineering")
 
   useEffect(() => {
     const section = sectionRef.current
@@ -127,39 +128,55 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
             transform: "translate3d(0, var(--recruitment-panel-y), 0)",
           }}
         >
-          {recruitmentStreams.map((stream, index) => {
+          {recruitmentStreams.map((stream) => {
+            const isOpen = activeStream === stream.name
+            const buttonId = `homepage-recruitment-${stream.slug}-button`
+            const panelId = `homepage-recruitment-${stream.slug}-panel`
+
             return (
-              <details
+              <div
                 key={stream.name}
                 data-homepage-recruitment-discipline={stream.name}
-                className="group border-t border-white/12 py-5 transition-[border-color] duration-500 last:border-b open:border-accent-yellow/45"
-                open={index === 1}
+                data-state={isOpen ? "open" : "closed"}
+                className="group border-t border-white/12 py-5 transition-[border-color] duration-500 last:border-b data-[state=open]:border-accent-yellow/45"
               >
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-5 [&::-webkit-details-marker]:hidden">
+                <button
+                  id={buttonId}
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  onClick={() => setActiveStream(stream.name)}
+                  className="flex w-full items-start justify-between gap-5 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-yellow focus-visible:ring-offset-4 focus-visible:ring-offset-[#0a0c0e]"
+                >
                   <span>
                     <span className="font-mono text-[0.65rem] tracking-[0.28em] text-white/38 uppercase">
                       {stream.label}
                     </span>
-                    <span className="mt-2 block text-3xl leading-none font-light text-white transition-[color,transform] duration-500 group-open:translate-x-2 group-open:text-accent-yellow sm:text-5xl">
+                    <span className="mt-2 block text-3xl leading-none font-light text-white transition-[color,transform] duration-500 group-data-[state=open]:translate-x-2 group-data-[state=open]:text-accent-yellow sm:text-5xl">
                       {stream.name}
                     </span>
                   </span>
-                  <span className="mt-2 grid size-10 place-items-center border border-white/15 text-lg font-light text-accent-yellow transition-colors duration-300 group-open:border-accent-yellow group-open:bg-accent-yellow group-open:text-black">
-                    <ChevronDown className="size-4 transition-transform duration-300 group-open:rotate-180" />
+                  <span className="mt-2 grid size-10 place-items-center border border-white/15 text-lg font-light text-accent-yellow transition-colors duration-300 group-data-[state=open]:border-accent-yellow group-data-[state=open]:bg-accent-yellow group-data-[state=open]:text-black">
+                    <ChevronDown className="size-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
                   </span>
-                </summary>
+                </button>
 
-                <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-open:grid-rows-[1fr]">
+                <div
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={buttonId}
+                  className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-data-[state=open]:grid-rows-[1fr]"
+                >
                   <div className="overflow-hidden">
-                    <div className="relative grid gap-5 pt-8 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-open:translate-y-0 group-open:opacity-100 before:absolute before:top-0 before:left-0 before:h-px before:w-0 before:bg-accent-yellow before:transition-[width] before:duration-700 before:ease-[cubic-bezier(0.16,1,0.3,1)] group-open:before:w-full lg:grid-cols-[0.54fr_1fr]">
-                      <p className="max-w-sm translate-y-4 text-sm leading-6 text-white/52 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-open:translate-y-0">
+                    <div className="relative grid translate-y-4 gap-5 pt-8 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] before:absolute before:top-0 before:left-0 before:h-px before:w-0 before:bg-accent-yellow before:transition-[width] before:duration-700 before:ease-[cubic-bezier(0.16,1,0.3,1)] group-data-[state=open]:translate-y-0 group-data-[state=open]:opacity-100 group-data-[state=open]:before:w-full lg:grid-cols-[0.54fr_1fr]">
+                      <p className="max-w-sm text-sm leading-6 text-white/52">
                         {stream.summary}
                       </p>
                       <Link
                         href={recruitmentStreamHref(stream)}
                         data-homepage-recruitment-role
                         data-homepage-recruitment-stream-card={stream.name}
-                        className="group/card flex min-h-[8.5rem] translate-y-5 flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-left transition-[border-color,background-color,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-open:translate-y-0 hover:-translate-y-1 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
+                        className="group/card flex min-h-[8.5rem] flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-left transition-[border-color,background-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
                       >
                         <span className="font-mono text-[0.6rem] tracking-[0.22em] text-accent-yellow uppercase">
                           {stream.name}
@@ -175,7 +192,7 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
                     </div>
                   </div>
                 </div>
-              </details>
+              </div>
             )
           })}
         </div>

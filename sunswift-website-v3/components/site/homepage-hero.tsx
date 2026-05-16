@@ -1,8 +1,9 @@
 "use client"
 
-import Image from "next/image"
 import type { CSSProperties } from "react"
 import { useEffect, useRef, useState } from "react"
+
+import { HomepageImageSequence } from "@/components/site/homepage-image-sequence"
 
 const SLOGAN = "Tomorrow, Today."
 const LINE_BREAK_INDEX = 9
@@ -104,12 +105,13 @@ export function HomepageHero() {
       }
     >
       <div className="sticky top-0 h-svh overflow-hidden">
-        <Image
-          src="/vehicle-fleet/vehicle-sunswift-8.jpg"
+        <HomepageImageSequence
           alt="Sunswift solar race car"
-          fill
+          posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"
+          sequenceBasePath="/homepage-sequences/hero"
+          scrollContainerSelector="[data-homepage-hero]"
           priority
-          className="homepage-hero-image object-cover object-[52%_50%]"
+          imageClassName="homepage-hero-image object-cover object-[52%_50%]"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-[#14181b]/30" />

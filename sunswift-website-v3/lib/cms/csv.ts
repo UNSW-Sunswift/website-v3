@@ -84,7 +84,7 @@ export function importTeamCsv(text: string): TeamMember[] {
         department === "Business" ? "Business Officer" : `${department} Engineer`.trim()
 
       return {
-        slug: slugify(String(record.Slug || name)),
+        slug: slugify(name),
         name,
         role: role || fallbackRole,
         department,
@@ -133,4 +133,3 @@ export function importPartnersCsv(text: string): Partner[] {
     }
   }).filter((partner) => partner.slug && partner.name)
 }
-

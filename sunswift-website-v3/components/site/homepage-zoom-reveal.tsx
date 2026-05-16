@@ -1,8 +1,9 @@
 "use client"
 
-import Image from "next/image"
 import type { CSSProperties } from "react"
 import { useEffect, useRef } from "react"
+
+import { HomepageImageSequence } from "@/components/site/homepage-image-sequence"
 
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t
@@ -27,7 +28,6 @@ export function HomepageZoomReveal() {
 
       // Headline resolves into focus without changing size.
       const revealRamp = Math.min(progress / 0.62, 1)
-      const tracking = lerp(0.08, -0.035, revealRamp)
       const opacity = lerp(0.22, 1, Math.min(progress / 0.32, 1))
       const blur = lerp(18, 0, revealRamp)
       const textY = lerp(7.5, -1.5, revealRamp)
@@ -44,7 +44,6 @@ export function HomepageZoomReveal() {
 
       root.style.setProperty("--zoom-progress", progress.toFixed(4))
       root.style.setProperty("--zoom-opacity", opacity.toFixed(4))
-      root.style.setProperty("--zoom-tracking", `${tracking.toFixed(4)}em`)
       root.style.setProperty("--zoom-blur", `${blur.toFixed(4)}px`)
       root.style.setProperty("--zoom-text-y", `${textY.toFixed(4)}vh`)
       root.style.setProperty("--zoom-sweep-x", `${sweepX.toFixed(4)}%`)
@@ -85,7 +84,6 @@ export function HomepageZoomReveal() {
         {
           "--zoom-progress": 0,
           "--zoom-opacity": 0.22,
-          "--zoom-tracking": "0.08em",
           "--zoom-blur": "18px",
           "--zoom-text-y": "7.5vh",
           "--zoom-sweep-x": "-42%",
@@ -102,13 +100,13 @@ export function HomepageZoomReveal() {
           aria-hidden="true"
           className="homepage-zoom-render absolute inset-0"
         >
-          <Image
-            src="/vehicle-fleet/vehicle-sunswift-8.jpg"
+          <HomepageImageSequence
             alt=""
-            fill
-            priority={false}
+            posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"
+            sequenceBasePath="/homepage-sequences/zoom-reveal"
+            scrollContainerSelector="[data-homepage-zoom-reveal]"
             sizes="100vw"
-            className="object-cover [filter:grayscale(0.85)_brightness(1.1)_contrast(0.95)]"
+            imageClassName="object-cover [filter:grayscale(0.85)_brightness(1.1)_contrast(0.95)]"
           />
         </div>
 
@@ -122,11 +120,10 @@ export function HomepageZoomReveal() {
 
         <h2
           data-homepage-zoom-text
-          className="homepage-zoom-text relative z-10 max-w-[18ch] text-center leading-[0.95] font-thin tracking-tight"
+          className="homepage-zoom-text relative z-10 flex max-w-[min(94vw,76rem)] flex-col items-center text-center leading-[0.95] font-thin tracking-normal"
         >
-          Built by Students.
-          <br />
-          Driving Sustainability.
+          <span className="whitespace-nowrap">Built by Students.</span>
+          <span className="whitespace-nowrap">Driving Sustainability.</span>
         </h2>
       </div>
     </section>

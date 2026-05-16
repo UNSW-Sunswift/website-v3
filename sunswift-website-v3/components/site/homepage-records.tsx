@@ -83,8 +83,9 @@ export function HomepageRecords() {
       const carouselProgress = clamp((progress - 0.08) / 0.5)
       const handoffProgress = clamp((progress - 0.58) / 0.3)
       const contentClear = clamp((progress - 0.66) / 0.12)
-      const copyClear = clamp((progress - 0.6) / 0.12)
-      const blackCover = clamp((progress - 0.035) / 0.12)
+      const copyClear = clamp((progress - 0.03) / 0.07)
+      const blackCover = clamp((progress - 0.12) / 0.13)
+      const contentReveal = clamp((progress - 0.26) / 0.08)
       const easedCarousel = 1 - Math.pow(1 - carouselProgress, 3)
       const easedHandoff = 1 - Math.pow(1 - handoffProgress, 3)
 
@@ -108,7 +109,7 @@ export function HomepageRecords() {
       )
       section.style.setProperty(
         "--records-content-opacity",
-        String(1 - contentClear)
+        String(contentReveal * (1 - contentClear))
       )
       const darkTheme = blackCover > 0.72
       section.style.setProperty(
@@ -158,7 +159,7 @@ export function HomepageRecords() {
           "--records-copy-opacity": 1,
           "--records-image-scale": 1,
           "--records-handoff-opacity": 0,
-          "--records-content-opacity": 1,
+          "--records-content-opacity": 0,
           "--records-text-color": "rgb(12, 12, 12)",
           "--records-muted-color": "rgb(74, 74, 74)",
           "--records-rule-color": "rgba(12, 12, 12, 0.18)",

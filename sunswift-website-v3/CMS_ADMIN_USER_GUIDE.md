@@ -19,7 +19,7 @@ This guide covers the CMS staging dashboard for Sunswift Racing. The admin UI le
 
 - Drafts live only in the admin staging collection.
 - Publish creates or updates the public record used by the website.
-- Delete removes the draft and the published record for the selected slug.
+- Delete removes the draft and the published record for the selected internal record key.
 
 ## Team members
 
@@ -28,13 +28,15 @@ Location: `/admin/team`
 What you can do:
 - Import Webflow or roster CSVs (creates drafts only).
 - Manually add a team member (details panel at the top).
-- Edit existing drafts (name, role, discipline, bio, sort order, etc.).
+- Edit existing drafts (name, role, department, hierarchy, additional roles, sort order, etc.).
 - Stage a headshot image (stored in the CMS assets bucket).
-- Publish to the public team page.
+- Publish one member, or use Publish all team members to copy every draft to the public team page.
 - Delete to remove the draft and published record.
 
 Tips:
-- Leave the Slug field blank to auto-generate it from the name.
+- Team record keys are generated from names and hidden in the admin UI.
+- Department and hierarchy are restricted to the approved dropdown values.
+- CSV imports ignore vestigial Webflow Slug, Discipline, and Bio columns.
 - Sort order controls the roster order on the public page.
 - If you delete every team member, the public site will fall back to placeholder data.
 

@@ -27,6 +27,10 @@ function slugify(value: string) {
     .replace(/(^-|-$)/g, "")
 }
 
+function normalizeNameKey(value: string) {
+  return value.trim().replace(/\s+/g, " ").toLowerCase()
+}
+
 async function assertAdmin() {
   const session = await auth()
 
@@ -239,9 +243,26 @@ export async function importTeamDrafts(formData: FormData) {
   const file = formData.get("csv")
   const text = file instanceof File ? await file.text() : String(formData.get("csvText") ?? "")
   const members = importTeamCsv(text)
+  const existingDrafts = await listCmsRecords("team", "draft")
+  const existingBySlug = new Map(existingDrafts.map((member) => [member.slug, member]))
+  const existingByName = new Map(
+    existingDrafts.map((member) => [normalizeNameKey(member.name), member])
+  )
 
   for (const member of members) {
-    await saveCmsDraft("team", member.slug, member, updatedBy)
+    const existing =
+      existingBySlug.get(member.slug) ?? existingByName.get(normalizeNameKey(member.name))
+    const slug = existing?.slug ?? member.slug
+    await saveCmsDraft(
+      "team",
+      slug,
+      {
+        ...member,
+        slug,
+        imageKey: member.imageKey || existing?.imageKey || "",
+      },
+      updatedBy
+    )
   }
 
   revalidatePath("/admin/team")

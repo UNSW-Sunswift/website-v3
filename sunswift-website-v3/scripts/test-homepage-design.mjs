@@ -36,6 +36,10 @@ const zoomReveal = readFileSync(
   join(root, "components/site/homepage-zoom-reveal.tsx"),
   "utf8"
 )
+const homepageImageSequence = readFileSync(
+  join(root, "components/site/homepage-image-sequence.tsx"),
+  "utf8"
+)
 const vehiclesPage = readFileSync(
   join(root, "app/(public)/vehicles/page.tsx"),
   "utf8"
@@ -178,6 +182,7 @@ const opalReferences = [
   records,
   recruitmentCta,
   zoomReveal,
+  homepageImageSequence,
 ].some((source) => /opal/i.test(source))
 assert(!opalReferences, "Homepage source files must not mention Opal.")
 
@@ -186,7 +191,8 @@ assert(
   "Homepage must render the dedicated homepage hero component."
 )
 assert(
-  hero.includes('src="/vehicle-fleet/vehicle-sunswift-8.jpg"') &&
+  hero.includes('posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"') &&
+    hero.includes('sequenceBasePath="/homepage-sequences/hero"') &&
     !hero.includes('src="/placeholders/hero-track.svg"'),
   "Homepage hero must use the SR8 vehicle image instead of the old SVG placeholder."
 )
@@ -287,6 +293,14 @@ assert(
   "Zoom-reveal section must expose data-homepage-vehicle-render as the live-render placeholder slot."
 )
 assert(
+  zoomReveal.includes('sequenceBasePath="/homepage-sequences/zoom-reveal"') &&
+    homepageImageSequence.includes("frame_") &&
+    homepageImageSequence.includes("padStart(3") &&
+    homepageImageSequence.includes("frameCount = 81") &&
+    homepageImageSequence.includes("sequenceUnavailable"),
+  "Homepage image sequence prep must support frame_000.webp through frame_080.webp with a poster fallback."
+)
+assert(
   zoomReveal.includes("Built by Students."),
   "Zoom-reveal headline must include 'Built by Students.'."
 )
@@ -305,6 +319,11 @@ assert(
 assert(
   !/--zoom-scale/.test(zoomReveal),
   "Zoom-reveal headline must not use --zoom-scale; this section should no longer zoom in."
+)
+assert(
+  !/--zoom-tracking/.test(zoomReveal) &&
+    globalsCss.includes("letter-spacing: 0"),
+  "Zoom-reveal headline must keep stable letter spacing so the two-line title does not rewrap after scroll."
 )
 assert(
   /--zoom-blur/.test(zoomReveal),
@@ -576,7 +595,8 @@ assert(
 )
 assert(
   about.includes("data-homepage-about-shared-vehicle") &&
-    about.includes('src="/vehicle-fleet/vehicle-sunswift-8.jpg"') &&
+    about.includes('posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"') &&
+    about.includes('sequenceBasePath="/homepage-sequences/about"') &&
     about.includes("bg-[#f6f5f1]"),
   "About section must share the SR8 visual language and light canvas with the scroll reveal."
 )
@@ -714,10 +734,19 @@ assert(
   "Records content must fully fade between progress 0.66 and 0.78, before the section releases."
 )
 assert(
-  /copyClear\s*=\s*clamp\(\(progress - 0\.6\) \/ 0\.12\)/.test(
+  /copyClear\s*=\s*clamp\(\(progress - 0\.03\) \/ 0\.07\)/.test(
     recordsTransition
   ),
-  "Records copy must fully fade between progress 0.60 and 0.72, before the section releases."
+  "Records intro copy must clear before the black wipe crosses the frame."
+)
+assert(
+  /blackCover\s*=\s*clamp\(\(progress - 0\.12\) \/ 0\.13\)/.test(
+    recordsTransition
+  ) &&
+    /contentReveal\s*=\s*clamp\(\(progress - 0\.26\) \/ 0\.08\)/.test(
+      recordsTransition
+    ),
+  "Records carousel content must wait until after the hard black wipe completes."
 )
 assert(
   /-bottom-\[40svh\][^"]*h-\[180svh\]/.test(recordsTransition),
@@ -798,16 +827,19 @@ assert(
 )
 assert(
   recruitmentCta.includes("grid-rows-[0fr]") &&
-    recruitmentCta.includes("group-open:grid-rows-[1fr]") &&
+    recruitmentCta.includes("group-data-[state=open]:grid-rows-[1fr]") &&
     recruitmentCta.includes("before:w-0") &&
-    recruitmentCta.includes("group-open:before:w-full") &&
+    recruitmentCta.includes("group-data-[state=open]:before:w-full") &&
     recruitmentCta.includes("ease-[cubic-bezier(0.16,1,0.3,1)]") &&
-    recruitmentCta.includes("group-open:translate-y-0"),
-  "Recruitment CTA discipline dropdowns must use non-blur open/closed motion with a drawn accent rule."
+    recruitmentCta.includes("group-data-[state=open]:translate-y-0"),
+  "Recruitment CTA discipline panels must use non-blur open/closed motion with a drawn accent rule."
 )
 assert(
-  /<details/.test(recruitmentCta),
-  "Recruitment CTA section must use dropdown details for disciplines."
+  /aria-expanded=\{isOpen\}/.test(recruitmentCta) &&
+    /role="region"/.test(recruitmentCta) &&
+    /useState\("Engineering"\)/.test(recruitmentCta) &&
+    !/<details/.test(recruitmentCta),
+  "Recruitment CTA section must use an accessible state-driven accordion for disciplines."
 )
 assert(
   recruitmentCta.includes("data-homepage-recruitment-discipline"),
@@ -1011,40 +1043,14 @@ assert(
   "Partners page must preserve the Webflow partners overview copy."
 )
 assert(
-  partnersPageContent.includes("data-partners-marquee"),
-  "Partners page must render a cycling partners banner."
-)
-assert(
-  partnersPageContent.includes("data-partner-marquee-card"),
-  "Partners marquee must render compact placeholder cards for every partner."
-)
-assert(
-  partnersPageContent.includes("partner-marquee"),
-  "Partners page must use the partner marquee animation hook."
-)
-assert(
-  partnersPageContent.includes("data-partners-grid"),
-  "Partners page must expose the partners grid."
-)
-assert(
-  partnersPageContent.includes("lg:grid-cols-4"),
-  "Partners grid must render as a 4-column grid on desktop."
-)
-assert(
-  partnersPageContent.includes("max-w-[76rem]"),
-  "Partners grid must be width-constrained so the 4-column layout reads closer to a square logo wall."
-)
-assert(
-  partnersPageContent.includes("aspect-square"),
-  "Partner placeholder cards must be square tiles."
-)
-assert(
-  /backdrop-blur-xl/.test(partnersPageContent),
-  "Partners grid and marquee cards must use the liquid-glass backdrop blur treatment."
-)
-assert(
-  partnersPageContent.includes("data-partner-card"),
-  "Partners page must mark partner placeholder cards."
+  !partnersPageContent.includes("data-partners-marquee") &&
+    !partnersPageContent.includes("data-partner-marquee-card") &&
+    !partnersPageContent.includes("partner-marquee") &&
+    !partnersPageContent.includes("data-partners-grid") &&
+    !partnersPageContent.includes("data-partner-card") &&
+    !partnersPageContent.includes("View grid") &&
+    !partnersPageContent.includes("Powered by shared ambition"),
+  "Partners page must remove the marquee, grid, view-grid CTA, and powered-by header."
 )
 for (const partner of [
   "3M",
@@ -1060,10 +1066,7 @@ for (const partner of [
     `Fallback partner CMS data must include ${partner}.`
   )
 }
-assert(
-  /@keyframes partner-marquee/.test(globalsCss),
-  "globals.css must define the partners marquee animation."
-)
+assert(!/@keyframes partner-marquee/.test(globalsCss), "Partner marquee CSS must be removed.")
 
 // Vehicles gallery contract.
 assert(
@@ -1448,12 +1451,14 @@ assert(
   "Site footer must use a dark vignette transition instead of a hard line."
 )
 assert(
-  /lg:w-5[02]/.test(siteShell),
-  "Site footer UNSW logo must be noticeably larger on desktop."
+  /text-\[clamp\(4\.5rem,13vw,13rem\)\]/.test(siteShell) &&
+    siteShell.includes("Tomorrow, Today."),
+  "Site footer must use a dark large-type editorial headline."
 )
 assert(
-  /text-base[^"]*sm:text-lg/.test(siteShell),
-  "Site footer Sunswift Racing heading must stay smaller than the enlarged UNSW logo."
+  siteShell.includes("sm:grid-cols-[1fr_auto]") &&
+    siteShell.includes("navItems.map"),
+  "Site footer must keep brand/legal/actions organized below the large headline."
 )
 assert(
   /Room G14,\s*Blockhouse \(G6\),\s*University Mall,\s*UNSW,\s*Kensington NSW\s*2052/.test(
@@ -1833,7 +1838,7 @@ assert(
     /data-team-grid/.test(teamRoster) &&
     /data-team-card/.test(teamRoster) &&
     /data-team-department/.test(teamRoster) &&
-    /data-filtered-count/.test(teamRoster),
+    /data-team-department-count/.test(teamRoster),
   "Team roster must expose data hooks for browser verification."
 )
 assert(
@@ -1867,6 +1872,13 @@ assert(
   "Team roster must accept extended CMS team member fields while preserving local fallbacks."
 )
 assert(
+  teamRoster.includes('"member"') &&
+    teamRoster.includes('"members"') &&
+    !teamRoster.includes('"profiles"') &&
+    !teamRoster.includes("member.discipline"),
+  "Team roster must use member copy and stop rendering discipline badges."
+)
+assert(
   teamRoster.includes("team-card-filter-in") &&
     globalsCss.includes("@keyframes team-card-filter-in"),
   "Team filtering must use the team-card-filter-in transition."
@@ -1880,7 +1892,9 @@ assert(
   cmsTypes.includes("export type Partner") &&
     cmsTypes.includes("export type MediaAsset") &&
     cmsTypes.includes("publishedAssetKey") &&
-    cmsTypes.includes("responsibilitiesHtml"),
+    cmsTypes.includes("responsibilitiesHtml") &&
+    !/export type TeamMember = \{[^}]*discipline/.test(cmsTypes) &&
+    !/export type TeamMember = \{[^}]*bio/.test(cmsTypes),
   "CMS types must include extended team, recruitment, partner, and media asset records."
 )
 assert(
@@ -1932,6 +1946,17 @@ assert(
   "Admin team page must expose a stable editor hook for browser regression testing."
 )
 assert(
+  adminTeamPage.includes("TEAM_DEPARTMENTS") &&
+    adminTeamPage.includes("TEAM_HIERARCHIES") &&
+    adminTeamPage.includes('name="department"') &&
+    adminTeamPage.includes('name="hierarchyLevel"') &&
+    adminTeamPage.includes("publishAllTeamMembers") &&
+    !adminTeamPage.includes('name="discipline"') &&
+    !adminTeamPage.includes('name="bio"') &&
+    !adminTeamPage.includes("Optional override"),
+  "Admin team page must gate department/hierarchy with dropdowns, expose publish-all, and hide slug/discipline/bio manual fields."
+)
+assert(
   packageJson.includes(
     '"verify:cms-admin": "node scripts/verify-cms-admin.mjs"'
   ) &&
@@ -1944,8 +1969,9 @@ assert(
   cmsCsv.includes("importTeamCsv") &&
     cmsCsv.includes("importRecruitmentCsv") &&
     cmsCsv.includes("importPartnersCsv") &&
+    cmsCsv.includes("slug: slugify(name)") &&
     !cmsCsv.includes("zID"),
-  "CSV import helpers must cover team, recruitment, and partners without persisting private roster fields."
+  "CSV import helpers must cover team, recruitment, and partners while ignoring private and vestigial roster fields."
 )
 assert(
   adminShell.includes("/admin/partners") &&
@@ -1957,8 +1983,8 @@ assert(
 assert(
   partnersPage.includes('listCmsRecords("partners", "published")') &&
     partnersPageContent.includes("Partner") &&
-    partnersPageContent.includes("partner.website"),
-  "Partners page must render published partner records from the CMS API facade."
+    partnersPageContent.includes("partners.length"),
+  "Partners page must render published partner summary data from the CMS API facade."
 )
 assert(
   cmsAssets.includes("public-media/placeholders/sr7-world-record.mp4") &&

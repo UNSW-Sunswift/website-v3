@@ -190,7 +190,6 @@ const pageIsHealthy = `(() => {
         element.closest("[aria-label='Our Story sections']") ||
         element.closest("[data-vehicles-gallery]") ||
         element.closest("[data-media-highlight-row]") ||
-        element.closest("[data-partners-marquee]") ||
         (element.closest("[data-homepage-recruitment]") && style.position === "absolute") ||
         (element.closest("[data-achievements-page]") && style.position === "absolute");
       return !expectedMotion && rect.width > 0 && rect.height > 0 && style.position !== "fixed" && (rect.left < -1 || rect.right > window.innerWidth + 1);
@@ -214,6 +213,7 @@ const siteFooterContract = `(() => {
   const text = footer.textContent || "";
   for (const phrase of [
     "Sunswift Racing",
+    "Tomorrow, Today.",
     "Room G14, Blockhouse (G6), University Mall, UNSW, Kensington NSW 2052",
     "Stay connected",
     "Copyright © 2025",
@@ -249,10 +249,10 @@ const siteFooterContract = `(() => {
     throw new Error("SITE_FOOTER_MISSING_VIGNETTE");
   }
 
-  const title = Array.from(footer.querySelectorAll("h2")).find((heading) => (heading.textContent || "").includes("Sunswift Racing"));
+  const title = Array.from(footer.querySelectorAll("h2")).find((heading) => (heading.textContent || "").includes("Tomorrow, Today."));
   const titleSize = title ? Number.parseFloat(getComputedStyle(title).fontSize) : 0;
-  if (!title || titleSize > 20) {
-    throw new Error("SUNSWIFT_FOOTER_TITLE_TOO_LARGE:" + titleSize);
+  if (!title || titleSize < 64) {
+    throw new Error("SUNSWIFT_FOOTER_TITLE_TOO_SMALL:" + titleSize);
   }
 
   const link = footer.querySelector('a[href="https://linktr.ee/sunswiftracing"]');
@@ -388,8 +388,8 @@ const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
           return;
         }
 
-        if (!(afterContent < beforeContent - 0.35)) {
-          reject(new Error(\`RECORDS_CONTENT_NOT_CLEARING:\${beforeContent}->\${afterContent}\`));
+        if (beforeContent > 0.1 || afterContent > 0.1) {
+          reject(new Error(\`RECORDS_CONTENT_VISIBLE_DURING_WIPE:\${beforeContent}->\${afterContent}\`));
           return;
         }
 
@@ -815,11 +815,7 @@ const roleStreamContract = `(() => {
     }
   }
 
-  if (stream === "design") {
-    if (!document.querySelector("[data-role-stream-empty]")) {
-      throw new Error("MISSING_DESIGN_EMPTY_STATE");
-    }
-  } else if (cards.length < 1) {
+  if (cards.length < 1 && !document.querySelector("[data-role-stream-empty]")) {
     throw new Error("MISSING_ROLE_STREAM_CARDS:" + stream + ":" + cards.length);
   }
 
@@ -900,76 +896,43 @@ const vehiclesContract = `(() => new Promise((resolve, reject) => {
 
 const partnersContract = `(() => {
   const page = document.querySelector("[data-partners-page]");
-  const marquee = document.querySelector("[data-partners-marquee]");
-  const grid = document.querySelector("[data-partners-grid]");
-  const cards = document.querySelectorAll("[data-partner-card]");
-  const marqueeCards = document.querySelectorAll("[data-partner-marquee-card]");
   const text = document.body.textContent || "";
 
-  if (!page || !marquee || !grid) {
+  if (!page) {
     throw new Error("MISSING_PARTNERS_PAGE");
   }
 
   for (const phrase of [
     "Partners.",
     "Building world-class cars takes more than just engineering - it takes a community.",
-    "Interested in supporting our mission?",
-    "Partner grid",
-    "3M",
-    "Altium",
-    "Ampcontrol",
-    "Audi",
-    "Optus",
-    "UNSW",
-    "WrapStyle Sydney"
+    "Contact us",
+    "active partners and sponsors"
   ]) {
     if (!text.includes(phrase)) {
       throw new Error("MISSING_PARTNERS_COPY:" + phrase);
     }
   }
 
-  if (cards.length < 30) {
-    throw new Error("MISSING_PARTNER_CARDS:" + cards.length);
-  }
-
-  if (marqueeCards.length < 60) {
-    throw new Error("MISSING_PARTNER_MARQUEE_CARDS:" + marqueeCards.length);
-  }
-
-  const gridColumns = getComputedStyle(grid).gridTemplateColumns.split(" ").filter(Boolean).length;
-  if (gridColumns !== 4) {
-    throw new Error("PARTNERS_GRID_NOT_FOUR_COLUMNS:" + gridColumns);
-  }
-
-  const gridWidth = grid.getBoundingClientRect().width;
-  if (gridWidth > 1240) {
-    throw new Error("PARTNERS_GRID_TOO_WIDE:" + Math.round(gridWidth));
-  }
-
-  for (const card of Array.from(cards).slice(0, 8)) {
-    const rect = card.getBoundingClientRect();
-    const ratio = rect.width / rect.height;
-    if (ratio < 0.92 || ratio > 1.08) {
-      throw new Error("PARTNER_CARD_NOT_SQUARE:" + Math.round(rect.width) + "x" + Math.round(rect.height));
+  for (const removed of ["View grid", "Partner grid", "Powered by shared ambition"]) {
+    if (text.includes(removed)) {
+      throw new Error("REMOVED_PARTNERS_COPY_VISIBLE:" + removed);
     }
   }
 
-  const marqueeTrack = marquee.querySelector(".partner-marquee");
-  const animation = marqueeTrack ? getComputedStyle(marqueeTrack).animationName : "";
-  if (!animation || animation === "none") {
-    throw new Error("PARTNER_MARQUEE_NOT_ANIMATED");
+  if (document.querySelector("[data-partners-marquee], [data-partners-grid], [data-partner-card]")) {
+    throw new Error("REMOVED_PARTNERS_SECTIONS_VISIBLE");
   }
 
-  return "PARTNERS_OK:" + cards.length;
+  return "PARTNERS_OK";
 })()`
 
 const teamContract = `(() => new Promise((resolve, reject) => {
   const page = document.querySelector("[data-team-page]");
   const filter = document.querySelector("[data-team-filter]");
   const grid = document.querySelector("[data-team-grid]");
-  const filteredCount = document.querySelector("[data-filtered-count]");
+  const departmentCount = document.querySelector("[data-team-department-count]");
 
-  if (!page || !filter || !grid || !filteredCount) {
+  if (!page || !filter || !grid || !departmentCount) {
     reject(new Error("MISSING_TEAM_ROSTER"));
     return;
   }
@@ -994,7 +957,7 @@ const teamContract = `(() => new Promise((resolve, reject) => {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       const businessCards = Array.from(document.querySelectorAll("[data-team-card]"));
-      if (businessCards.length < 2 || businessCards.length >= initialCards.length) {
+      if (businessCards.length < 1 || businessCards.length >= initialCards.length) {
         reject(new Error("TEAM_FILTER_COUNT_STATIC:" + initialCards.length + "->" + businessCards.length));
         return;
       }
@@ -1011,9 +974,15 @@ const teamContract = `(() => new Promise((resolve, reject) => {
         }
       }
 
-      const count = (filteredCount.textContent || "").trim();
-      if (count !== String(businessCards.length)) {
-        reject(new Error("TEAM_FILTERED_COUNT_STALE:" + count + ":" + businessCards.length));
+      const visibleCountLabel = document.body.textContent || "";
+      if (visibleCountLabel.includes("In view") || visibleCountLabel.includes("profiles")) {
+        reject(new Error("TEAM_OLD_COUNT_COPY_VISIBLE"));
+        return;
+      }
+
+      const count = Number((departmentCount.textContent || "").trim());
+      if (!Number.isFinite(count) || count < 7) {
+        reject(new Error("TEAM_DEPARTMENT_COUNT_INVALID:" + count));
         return;
       }
 

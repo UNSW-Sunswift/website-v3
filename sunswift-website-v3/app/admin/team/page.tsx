@@ -5,11 +5,18 @@ import { AdminShell } from "@/components/site/admin-shell"
 import {
   deleteTeamMember,
   importTeamDrafts,
+  publishAllTeamMembers,
   publishTeamMember,
   saveTeamMemberDraft,
 } from "@/app/admin/actions"
 import { listCmsRecords } from "@/lib/cms/api"
 import { assetUrl } from "@/lib/cms/dynamodb"
+import {
+  DEFAULT_TEAM_DEPARTMENT,
+  DEFAULT_TEAM_HIERARCHY,
+  TEAM_DEPARTMENTS,
+  TEAM_HIERARCHIES,
+} from "@/lib/cms/team-options"
 
 export const dynamic = "force-dynamic"
 export const metadata = {
@@ -26,9 +33,12 @@ export default async function AdminTeamPage() {
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-primary">Team CMS</p>
           <h1 className="mt-3 text-4xl font-medium">Team members</h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            Update names, roles, descriptions and staged headshots. Publish copies the draft record
+            Update names, roles, departments and staged headshots. Publish copies the draft record
             to the public collection.
           </p>
+          <form action={publishAllTeamMembers} className="mt-5">
+            <Button type="submit">Publish all team members</Button>
+          </form>
         </div>
 
         <form
@@ -70,50 +80,46 @@ export default async function AdminTeamPage() {
               />
             </label>
             <label className="grid gap-2 text-sm">
-              Slug
-              <input
-                name="slug"
-                placeholder="Optional override"
-                className="rounded-md border border-input bg-background px-3 py-2"
-              />
-            </label>
-            <label className="grid gap-2 text-sm">
               Role
               <input
                 name="role"
-                placeholder="Solar Engineer"
-                className="rounded-md border border-input bg-background px-3 py-2"
-              />
-            </label>
-            <label className="grid gap-2 text-sm">
-              Discipline
-              <input
-                name="discipline"
-                placeholder="Engineering"
+                placeholder="Solar Engineer…"
                 className="rounded-md border border-input bg-background px-3 py-2"
               />
             </label>
             <label className="grid gap-2 text-sm">
               Department
-              <input
+              <select
                 name="department"
-                placeholder="Embedded"
+                defaultValue={DEFAULT_TEAM_DEPARTMENT}
                 className="rounded-md border border-input bg-background px-3 py-2"
-              />
+              >
+                {TEAM_DEPARTMENTS.map((department) => (
+                  <option key={department} value={department}>
+                    {department}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="grid gap-2 text-sm">
               Hierarchy level
-              <input
+              <select
                 name="hierarchyLevel"
-                placeholder="Lead"
+                defaultValue={DEFAULT_TEAM_HIERARCHY}
                 className="rounded-md border border-input bg-background px-3 py-2"
-              />
+              >
+                {TEAM_HIERARCHIES.map((hierarchy) => (
+                  <option key={hierarchy} value={hierarchy}>
+                    {hierarchy}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="grid gap-2 text-sm">
               Additional roles
               <input
                 name="additionalRoles"
-                placeholder="Media Liaison"
+                placeholder="Media Liaison…"
                 className="rounded-md border border-input bg-background px-3 py-2"
               />
             </label>
@@ -123,15 +129,6 @@ export default async function AdminTeamPage() {
                 name="sortOrder"
                 type="number"
                 defaultValue={0}
-                className="rounded-md border border-input bg-background px-3 py-2"
-              />
-            </label>
-            <label className="grid gap-2 text-sm sm:col-span-2">
-              Bio
-              <textarea
-                name="bio"
-                placeholder="Short summary shown on the public roster."
-                rows={4}
                 className="rounded-md border border-input bg-background px-3 py-2"
               />
             </label>
@@ -172,41 +169,42 @@ export default async function AdminTeamPage() {
                 data-admin-team-editor
               >
               <input type="hidden" name="existingImageKey" value={member.imageKey ?? ""} />
+              <input type="hidden" name="slug" value={member.slug} />
               <label className="grid gap-2 text-sm">
                 Name
                 <input name="name" defaultValue={member.name} className="rounded-md border border-input bg-background px-3 py-2" />
-              </label>
-              <label className="grid gap-2 text-sm">
-                Slug
-                <input name="slug" defaultValue={member.slug} className="rounded-md border border-input bg-background px-3 py-2" />
               </label>
               <label className="grid gap-2 text-sm">
                 Role
                 <input name="role" defaultValue={member.role} className="rounded-md border border-input bg-background px-3 py-2" />
               </label>
               <label className="grid gap-2 text-sm">
-                Discipline
-                <input
-                  name="discipline"
-                  defaultValue={member.discipline}
-                  className="rounded-md border border-input bg-background px-3 py-2"
-                />
-              </label>
-              <label className="grid gap-2 text-sm">
                 Department
-                <input
+                <select
                   name="department"
-                  defaultValue={member.department ?? ""}
+                  defaultValue={member.department ?? DEFAULT_TEAM_DEPARTMENT}
                   className="rounded-md border border-input bg-background px-3 py-2"
-                />
+                >
+                  {TEAM_DEPARTMENTS.map((department) => (
+                    <option key={department} value={department}>
+                      {department}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label className="grid gap-2 text-sm">
                 Hierarchy level
-                <input
+                <select
                   name="hierarchyLevel"
-                  defaultValue={member.hierarchyLevel ?? ""}
+                  defaultValue={member.hierarchyLevel ?? DEFAULT_TEAM_HIERARCHY}
                   className="rounded-md border border-input bg-background px-3 py-2"
-                />
+                >
+                  {TEAM_HIERARCHIES.map((hierarchy) => (
+                    <option key={hierarchy} value={hierarchy}>
+                      {hierarchy}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label className="grid gap-2 text-sm">
                 Additional roles
@@ -222,15 +220,6 @@ export default async function AdminTeamPage() {
                   name="sortOrder"
                   type="number"
                   defaultValue={member.sortOrder ?? 0}
-                  className="rounded-md border border-input bg-background px-3 py-2"
-                />
-              </label>
-              <label className="grid gap-2 text-sm sm:col-span-2">
-                Bio
-                <textarea
-                  name="bio"
-                  defaultValue={member.bio}
-                  rows={4}
                   className="rounded-md border border-input bg-background px-3 py-2"
                 />
               </label>
