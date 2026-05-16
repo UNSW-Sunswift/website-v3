@@ -1751,6 +1751,38 @@
         "AGENTS.md now clarifies that no-gradient rules must be scoped and that purposeful gradients in dropdowns, vignettes, imagery, and feature pages should be preserved unless specifically targeted.",
         "LocalStack-dependent AWS/CDK verification skipped per frontend-only scope."
       ]
+    },
+    {
+      "id": "landing-opal-hard-background-transition",
+      "priority": 59,
+      "title": "Landing Opal-style hard background transition",
+      "status": "complete",
+      "description": "Refine the homepage records-to-recruitment transition with an Opal-style solid white-to-black takeover, fixed left records copy, black Embrace Tomorrow background, and non-blur recruitment dropdown motion while leaving achievements unchanged.",
+      "verification": {
+        "required": [
+          "node scripts/test-homepage-design.mjs",
+          "./node_modules/.bin/tsc --noEmit",
+          "./node_modules/.bin/eslint --quiet",
+          "./node_modules/.bin/next build",
+          "PATH=\"$PWD/node_modules/.bin:$PATH\" VERIFY_URL=http://127.0.0.1:3013 node scripts/verify-browser.mjs"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "node scripts/test-homepage-design.mjs: passed with hard black-wipe records assertion and non-blur recruitment dropdown assertion",
+          "./node_modules/.bin/tsc --noEmit: passed",
+          "./node_modules/.bin/eslint --quiet: passed",
+          "./node_modules/.bin/next build: passed",
+          "VERIFY_URL=http://127.0.0.1:3013 node scripts/verify-browser.mjs: passed against next start"
+        ]
+      },
+      "notes": [
+        "HomepageRecords now uses data-homepage-records-black-wipe to cover the white base with a solid black panel instead of opacity blending through grey.",
+        "The Moving records forward left column no longer receives translate transforms; only the right-side records carousel moves vertically.",
+        "HomepageRecruitment keeps the background fully black by hiding the old yellow accent block hook and removing block-opacity animation.",
+        "Design, Engineering, and Business dropdown reveals now use grid-row, opacity, transform, and an accent rule draw; blur was removed.",
+        "Achievements timeline changes from this turn were explicitly reverted per user direction.",
+        "LocalStack-dependent AWS/CDK verification was skipped for this frontend-only pass."
+      ]
     }
   ]
 }

@@ -46,15 +46,11 @@ const records: Record[] = [
 type RecordsStyle = CSSProperties & {
   "--records-progress"?: number
   "--records-carousel-y"?: string
-  "--records-dark-opacity"?: number
-  "--records-light-opacity"?: number
-  "--records-copy-y"?: string
+  "--records-black-y"?: string
   "--records-copy-opacity"?: number
   "--records-image-scale"?: number
   "--records-handoff-opacity"?: number
-  "--records-handoff-y"?: string
   "--records-content-opacity"?: number
-  "--records-content-y"?: string
   "--records-text-color"?: string
   "--records-muted-color"?: string
   "--records-rule-color"?: string
@@ -88,25 +84,18 @@ export function HomepageRecords() {
       const handoffProgress = clamp((progress - 0.58) / 0.3)
       const contentClear = clamp((progress - 0.66) / 0.12)
       const copyClear = clamp((progress - 0.6) / 0.12)
+      const blackCover = clamp((progress - 0.035) / 0.12)
       const easedCarousel = 1 - Math.pow(1 - carouselProgress, 3)
       const easedHandoff = 1 - Math.pow(1 - handoffProgress, 3)
 
       section.style.setProperty("--records-progress", progress.toFixed(4))
       section.style.setProperty(
+        "--records-black-y",
+        `${((1 - blackCover) * 100).toFixed(3)}%`
+      )
+      section.style.setProperty(
         "--records-carousel-y",
         `${(-easedCarousel * (records.length - 1) * 100).toFixed(3)}svh`
-      )
-      section.style.setProperty(
-        "--records-dark-opacity",
-        String(clamp((progress - 0.04) / 0.3))
-      )
-      section.style.setProperty(
-        "--records-light-opacity",
-        String(1 - clamp((progress - 0.02) / 0.28))
-      )
-      section.style.setProperty(
-        "--records-copy-y",
-        `${((1 - Math.min(progress / 0.16, 1)) * 42 - easedHandoff * 24).toFixed(3)}px`
       )
       section.style.setProperty("--records-copy-opacity", String(1 - copyClear))
       section.style.setProperty(
@@ -118,32 +107,21 @@ export function HomepageRecords() {
         String(easedHandoff)
       )
       section.style.setProperty(
-        "--records-handoff-y",
-        `${((1 - easedHandoff) * 18).toFixed(3)}px`
-      )
-      section.style.setProperty(
         "--records-content-opacity",
         String(1 - contentClear)
       )
-      section.style.setProperty(
-        "--records-content-y",
-        `${(-handoffProgress * 20).toFixed(3)}px`
-      )
-      const textRamp = clamp((progress - 0.1) / 0.28)
-      const textChannel = Math.round(12 + textRamp * 243)
-      const mutedChannel = Math.round(74 + textRamp * 112)
-      const ruleAlpha = 0.18 + textRamp * 0.08
+      const darkTheme = blackCover > 0.72
       section.style.setProperty(
         "--records-text-color",
-        `rgb(${textChannel}, ${textChannel}, ${textChannel})`
+        darkTheme ? "rgb(255, 255, 255)" : "rgb(12, 12, 12)"
       )
       section.style.setProperty(
         "--records-muted-color",
-        `rgb(${mutedChannel}, ${mutedChannel}, ${mutedChannel})`
+        darkTheme ? "rgba(255, 255, 255, 0.58)" : "rgb(74, 74, 74)"
       )
       section.style.setProperty(
         "--records-rule-color",
-        `rgba(${textChannel}, ${textChannel}, ${textChannel}, ${ruleAlpha.toFixed(3)})`
+        darkTheme ? "rgba(255, 255, 255, 0.14)" : "rgba(12, 12, 12, 0.18)"
       )
     }
 
@@ -176,15 +154,11 @@ export function HomepageRecords() {
         {
           "--records-progress": 0,
           "--records-carousel-y": "0svh",
-          "--records-dark-opacity": 0,
-          "--records-light-opacity": 1,
-          "--records-copy-y": "42px",
+          "--records-black-y": "100%",
           "--records-copy-opacity": 1,
           "--records-image-scale": 1,
           "--records-handoff-opacity": 0,
-          "--records-handoff-y": "36px",
           "--records-content-opacity": 1,
-          "--records-content-y": "0px",
           "--records-text-color": "rgb(12, 12, 12)",
           "--records-muted-color": "rgb(74, 74, 74)",
           "--records-rule-color": "rgba(12, 12, 12, 0.18)",
@@ -192,25 +166,14 @@ export function HomepageRecords() {
       }
     >
       <div className="sticky top-0 h-svh overflow-hidden">
+        <div aria-hidden="true" className="absolute inset-0 bg-[#f6f5f1]" />
         <div
+          data-homepage-records-black-wipe
           aria-hidden="true"
-          className="absolute inset-0 bg-[#f6f5f1]"
-          style={{ opacity: "var(--records-light-opacity)" }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[#0a0c0e]"
-          style={{ opacity: "var(--records-dark-opacity)" }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 top-0 h-[30svh] bg-[#f6f5f1]"
-          style={{ opacity: "var(--records-light-opacity)" }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-[24svh] bg-[#0a0c0e]"
-          style={{ opacity: "var(--records-dark-opacity)" }}
+          className="absolute inset-0 bg-[#0a0c0e] will-change-transform"
+          style={{
+            transform: "translate3d(0, var(--records-black-y), 0)",
+          }}
         />
 
         <div className="relative mx-auto grid h-full max-w-[92rem] items-center gap-8 px-4 sm:px-6 lg:grid-cols-[0.86fr_1.14fr]">
@@ -219,8 +182,6 @@ export function HomepageRecords() {
             style={{
               opacity:
                 "calc(var(--records-copy-opacity) * var(--records-content-opacity))",
-              transform:
-                "translate3d(0, calc(var(--records-copy-y) + var(--records-content-y)), 0)",
               color: "var(--records-text-color)",
             }}
           >
@@ -246,7 +207,6 @@ export function HomepageRecords() {
             className="relative z-10 h-svh overflow-hidden"
             style={{
               opacity: "var(--records-content-opacity)",
-              transform: "translate3d(0, var(--records-content-y), 0)",
             }}
           >
             <div

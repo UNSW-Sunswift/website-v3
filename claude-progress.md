@@ -2763,3 +2763,27 @@ Known limits:
 - LocalStack-dependent AWS/CDK checks were skipped for this frontend-only pass.
 - The working tree already contained modified placeholder video assets and a
   `.DS_Store`; they were not changed by this pass.
+
+## 2026-05-17 - Landing Opal-style hard background transition
+
+Implementation:
+
+- Left the achievements timeline unchanged after reverting the in-progress scroll-lock edits.
+- Reworked `HomepageRecords` so the white-to-black transition is a solid black wipe over a white base, avoiding the old grey opacity blend.
+- Removed translate motion from the left "Moving records forward" copy; only the right-side record carousel moves vertically.
+- Removed the visible yellow Embrace Tomorrow background block by keeping the hook hidden on a fully black section.
+- Removed blur from the Design / Engineering / Business dropdown reveal and replaced it with grid-row reveal, transform/opacity motion, and an animated accent rule.
+- Updated `scripts/test-homepage-design.mjs` and `scripts/verify-browser.mjs` to assert the new hard-wipe and non-blur dropdown behavior.
+
+Verification:
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3013 node scripts/verify-browser.mjs`: passed against `next start` on port 3013.
+
+Known limits:
+
+- LocalStack-dependent checks were skipped for this frontend-only pass.
+- Existing dirty placeholder video assets and `.DS_Store` were not touched.

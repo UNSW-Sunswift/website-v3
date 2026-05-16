@@ -355,7 +355,7 @@ const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
     transition.scrollIntoView({ block: "start" });
     const beforeStyle = getComputedStyle(transition);
     const beforeY = beforeStyle.getPropertyValue("--records-carousel-y").trim();
-    const beforeDark = Number(beforeStyle.getPropertyValue("--records-dark-opacity") || 0);
+    const beforeBlackY = Number.parseFloat(beforeStyle.getPropertyValue("--records-black-y") || "100");
     const beforeHandoff = Number(beforeStyle.getPropertyValue("--records-handoff-opacity") || 0);
     const beforeContent = Number(beforeStyle.getPropertyValue("--records-content-opacity") || 1);
     const beforeTextColor = beforeStyle.getPropertyValue("--records-text-color").trim();
@@ -366,7 +366,7 @@ const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
       requestAnimationFrame(() => {
         const afterStyle = getComputedStyle(transition);
         const afterY = afterStyle.getPropertyValue("--records-carousel-y").trim();
-        const afterDark = Number(afterStyle.getPropertyValue("--records-dark-opacity") || 0);
+        const afterBlackY = Number.parseFloat(afterStyle.getPropertyValue("--records-black-y") || "100");
         const afterHandoff = Number(afterStyle.getPropertyValue("--records-handoff-opacity") || 0);
         const afterContent = Number(afterStyle.getPropertyValue("--records-content-opacity") || 1);
         const afterTextColor = afterStyle.getPropertyValue("--records-text-color").trim();
@@ -378,8 +378,8 @@ const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
           return;
         }
 
-        if (!(afterDark > beforeDark + 0.25)) {
-          reject(new Error(\`RECORDS_DARK_FADE_STATIC:\${beforeDark}->\${afterDark}\`));
+        if (!(afterBlackY < beforeBlackY - 50)) {
+          reject(new Error(\`RECORDS_BLACK_WIPE_STATIC:\${beforeBlackY}->\${afterBlackY}\`));
           return;
         }
 
@@ -428,7 +428,6 @@ const recruitmentTransitionWorks = `(() => new Promise((resolve, reject) => {
       requestAnimationFrame(() => {
         const afterStyle = getComputedStyle(section);
         const afterOpacity = Number(afterStyle.getPropertyValue("--recruitment-intro-opacity") || 0);
-        const panelBlur = afterStyle.getPropertyValue("--recruitment-panel-blur").trim();
         const sectionRect = section.getBoundingClientRect();
         const ctaRect = cta.getBoundingClientRect();
         const ctaCenter = ctaRect.left + ctaRect.width / 2;
@@ -438,11 +437,6 @@ const recruitmentTransitionWorks = `(() => new Promise((resolve, reject) => {
 
         if (!(afterOpacity > beforeOpacity + 0.25)) {
           reject(new Error(\`RECRUITMENT_TRANSITION_STATIC:\${beforeOpacity}->\${afterOpacity}\`));
-          return;
-        }
-
-        if (!panelBlur || panelBlur === "16px") {
-          reject(new Error("RECRUITMENT_PANEL_BLUR_STATIC:" + panelBlur));
           return;
         }
 

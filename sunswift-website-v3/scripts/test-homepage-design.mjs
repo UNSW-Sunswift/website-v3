@@ -610,13 +610,26 @@ assert(
   records.includes('"use client"') &&
     records.includes("data-homepage-records-transition") &&
     records.includes("data-homepage-records-carousel") &&
+    records.includes("data-homepage-records-black-wipe") &&
     records.includes("--records-carousel-y") &&
-    records.includes("--records-dark-opacity") &&
+    records.includes("--records-black-y") &&
     records.includes("--records-handoff-opacity") &&
     records.includes("--records-content-opacity") &&
     records.includes("--records-text-color") &&
     records.includes("--records-muted-color"),
-  "Records section must be one client-side sticky section that cycles achievements and hands off into recruitment."
+  "Records section must be one client-side sticky section that cycles achievements and uses an Opal-style hard white-to-black takeover."
+)
+assert(
+  !records.includes("--records-dark-opacity") &&
+    !records.includes("--records-light-opacity") &&
+    !records.includes("--records-copy-y") &&
+    !records.includes("--records-content-y"),
+  "Records section must not fade through the old black/grey/white transition or move the fixed left copy."
+)
+assert(
+  records.includes("translate3d(0, var(--records-black-y), 0)") &&
+    records.includes("translate3d(0, var(--records-carousel-y), 0)"),
+  "Records section must hard-wipe the background while only the right-side record carousel moves vertically."
 )
 assert(
   records.includes("Moving records forward."),
@@ -668,8 +681,13 @@ assert(
 )
 assert(
   recruitmentCta.includes("data-homepage-recruitment-block") &&
-    recruitmentCta.includes("bg-accent-yellow"),
-  "Recruitment CTA section must use a hard accent block behind the headline."
+    recruitmentCta.includes(
+      'data-homepage-recruitment-block className="hidden"'
+    ) &&
+    !/data-homepage-recruitment-block[^>]*bg-accent-yellow/.test(
+      recruitmentCta
+    ),
+  "Recruitment CTA section must keep the background fully black without the yellow accent image/block."
 )
 assert(
   !recruitmentCta.includes("data-homepage-recruitment-gradient") &&
@@ -725,14 +743,13 @@ assert(
   "Recruitment background must not anchor yellow radial gradients to the section top edge."
 )
 assert(
-  recruitmentTransition.includes("top-[25svh]") &&
-    recruitmentTransition.includes("h-[min(58vw,24rem)]") &&
-    recruitmentTransition.includes("data-homepage-recruitment-block") &&
+  recruitmentTransition.includes("data-homepage-recruitment-block") &&
+    recruitmentTransition.includes('className="hidden"') &&
     recruitmentTransition.includes("h-[42svh]") &&
     recruitmentTransition.includes("-top-[34svh]") &&
     recruitmentTransition.includes("overflow-x-clip") &&
     recruitmentTransition.includes("overflow-y-visible"),
-  "Recruitment block must sit lower behind the headline with hard dark handoff blocks to avoid visible seams."
+  "Recruitment background must remain fully black with only hard dark handoff blocks to avoid visible seams."
 )
 assert(
   !recruitmentCta.includes("bg-clip-text") &&
@@ -772,19 +789,21 @@ assert(
   "Recruitment CTA section must animate the headline/CTA vertical entrance."
 )
 assert(
-  /--recruitment-panel-blur/.test(recruitmentCta),
-  "Recruitment CTA section must animate the dropdown panel blur while scrolling in."
+  !/--recruitment-panel-blur|blur-sm|group-open:blur-0/.test(recruitmentCta),
+  "Recruitment CTA section must not use blur on the discipline dropdowns."
 )
 assert(
-  /--recruitment-block-opacity/.test(recruitmentCta),
-  "Recruitment CTA section must animate the background block opacity while scrolling in."
+  !/--recruitment-block-opacity/.test(recruitmentCta),
+  "Recruitment CTA section must not animate a yellow background block."
 )
 assert(
   recruitmentCta.includes("grid-rows-[0fr]") &&
     recruitmentCta.includes("group-open:grid-rows-[1fr]") &&
-    recruitmentCta.includes("group-open:blur-0") &&
+    recruitmentCta.includes("before:w-0") &&
+    recruitmentCta.includes("group-open:before:w-full") &&
+    recruitmentCta.includes("ease-[cubic-bezier(0.16,1,0.3,1)]") &&
     recruitmentCta.includes("group-open:translate-y-0"),
-  "Recruitment CTA discipline dropdowns must animate open/closed state."
+  "Recruitment CTA discipline dropdowns must use non-blur open/closed motion with a drawn accent rule."
 )
 assert(
   /<details/.test(recruitmentCta),

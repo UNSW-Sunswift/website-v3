@@ -19,8 +19,6 @@ type RecruitmentStyle = CSSProperties & {
   "--recruitment-intro-opacity"?: number
   "--recruitment-panel-y"?: string
   "--recruitment-panel-opacity"?: number
-  "--recruitment-panel-blur"?: string
-  "--recruitment-block-opacity"?: number
 }
 
 function clamp(value: number, min = 0, max = 1) {
@@ -63,14 +61,6 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
         "--recruitment-panel-opacity",
         String(clamp((progress - 0.32) / 0.34))
       )
-      section.style.setProperty(
-        "--recruitment-panel-blur",
-        `${(1 - eased) * 16}px`
-      )
-      section.style.setProperty(
-        "--recruitment-block-opacity",
-        String(0.08 + eased * 0.12)
-      )
     }
 
     update()
@@ -96,21 +86,12 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
           "--recruitment-intro-opacity": 0,
           "--recruitment-panel-y": "46px",
           "--recruitment-panel-opacity": 0,
-          "--recruitment-panel-blur": "16px",
-          "--recruitment-block-opacity": 0.08,
         } as RecruitmentStyle
       }
     >
       <div className="pointer-events-none absolute inset-x-0 -top-[34svh] h-[64svh] bg-[#0a0c0e]" />
       <div className="pointer-events-none absolute inset-0 bg-[#0a0c0e]" />
-      <div
-        aria-hidden
-        data-homepage-recruitment-block
-        className="pointer-events-none absolute top-[25svh] left-1/2 h-[min(58vw,24rem)] w-[min(82vw,54rem)] -translate-x-1/2 border border-accent-yellow/18 bg-accent-yellow"
-        style={{
-          opacity: "var(--recruitment-block-opacity)",
-        }}
-      />
+      <div aria-hidden data-homepage-recruitment-block className="hidden" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[42svh] bg-[#0a0c0e]" />
 
       <div className="relative mx-auto max-w-[92rem] px-4 pt-[calc(52svh+3rem)] pb-24 sm:px-6 sm:pt-[calc(52svh+4rem)] sm:pb-32 lg:pt-[calc(52svh+6rem)] lg:pb-40">
@@ -143,7 +124,6 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
           data-homepage-recruitment-disciplines
           style={{
             opacity: "var(--recruitment-panel-opacity)",
-            filter: "blur(var(--recruitment-panel-blur))",
             transform: "translate3d(0, var(--recruitment-panel-y), 0)",
           }}
         >
@@ -169,17 +149,17 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
                   </span>
                 </summary>
 
-                <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-open:grid-rows-[1fr]">
+                <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-open:grid-rows-[1fr]">
                   <div className="overflow-hidden">
-                    <div className="group-open:blur-0 grid gap-5 pt-8 opacity-0 blur-sm transition-[opacity,transform,filter] duration-500 ease-out group-open:translate-y-0 group-open:opacity-100 lg:grid-cols-[0.54fr_1fr]">
-                      <p className="max-w-sm translate-y-3 text-sm leading-6 text-white/52 transition-transform duration-500 group-open:translate-y-0">
+                    <div className="relative grid gap-5 pt-8 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-open:translate-y-0 group-open:opacity-100 before:absolute before:top-0 before:left-0 before:h-px before:w-0 before:bg-accent-yellow before:transition-[width] before:duration-700 before:ease-[cubic-bezier(0.16,1,0.3,1)] group-open:before:w-full lg:grid-cols-[0.54fr_1fr]">
+                      <p className="max-w-sm translate-y-4 text-sm leading-6 text-white/52 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-open:translate-y-0">
                         {stream.summary}
                       </p>
                       <Link
                         href={recruitmentStreamHref(stream)}
                         data-homepage-recruitment-role
                         data-homepage-recruitment-stream-card={stream.name}
-                        className="group/card flex min-h-[8.5rem] translate-y-3 flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-left transition-[border-color,background-color,transform] duration-500 group-open:translate-y-0 hover:-translate-y-1 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
+                        className="group/card flex min-h-[8.5rem] translate-y-5 flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-left transition-[border-color,background-color,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-open:translate-y-0 hover:-translate-y-1 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
                       >
                         <span className="font-mono text-[0.6rem] tracking-[0.22em] text-accent-yellow uppercase">
                           {stream.name}
