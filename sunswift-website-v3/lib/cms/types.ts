@@ -54,6 +54,16 @@ export type MediaAsset = {
   updatedBy?: string
 }
 
+export type TimelineVideoSetting = {
+  slug: string
+  achievementKey: string
+  videoEnabled: boolean
+  videoUrl: string
+  updatedAt?: string
+  updatedBy?: string
+  status?: "draft" | "published"
+}
+
 export type Vehicle = {
   slug: string
   name: string

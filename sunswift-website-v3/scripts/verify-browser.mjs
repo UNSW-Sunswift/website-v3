@@ -49,6 +49,18 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
     return;
   }
 
+  const navVignette = navbar.querySelector("[data-homepage-navbar-vignette]");
+  if (!navVignette) {
+    reject(new Error("MISSING_HOMEPAGE_NAVBAR_VIGNETTE"));
+    return;
+  }
+
+  const navVignetteTop = navbar.querySelector("[data-homepage-navbar-vignette-top]");
+  if (!navVignetteTop) {
+    reject(new Error("MISSING_HOMEPAGE_NAVBAR_VIGNETTE_TOP"));
+    return;
+  }
+
   const requiredLinks = ["About Us", "Who We Are", "Achievements", "Our Team", "Vehicles", "Partners", "Media", "Recruitment", "Contact"];
   const navText = navbar.textContent || "";
   const missingLink = requiredLinks.find((label) => !navText.includes(label));
@@ -151,7 +163,7 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
   }
 
   const expected = title.dataset.fullText;
-  if (expected !== "Today, Tomorrow") {
+  if (expected !== "Tomorrow, Today.") {
     reject(new Error("MISSING_SLOGAN_DATA:" + expected));
     return;
   }
@@ -217,7 +229,7 @@ const siteFooterContract = `(() => {
   const text = footer.textContent || "";
   for (const phrase of [
     "Sunswift Racing",
-    "Tomorrow, Today.",
+    "Built by Students, Driving Sustainability.",
     "Room G14, Blockhouse (G6), University Mall, UNSW, Kensington NSW 2052",
     "Stay connected",
     "Copyright © 2025",
@@ -253,7 +265,7 @@ const siteFooterContract = `(() => {
     throw new Error("SITE_FOOTER_MISSING_VIGNETTE");
   }
 
-  const title = Array.from(footer.querySelectorAll("h2")).find((heading) => (heading.textContent || "").includes("Tomorrow, Today."));
+  const title = Array.from(footer.querySelectorAll("h2")).find((heading) => (heading.textContent || "").includes("Built by Students"));
   const titleSize = title ? Number.parseFloat(getComputedStyle(title).fontSize) : 0;
   if (!title || titleSize < 32 || titleSize > 112) {
     throw new Error("SUNSWIFT_FOOTER_TITLE_SIZE_OFF:" + titleSize);
@@ -311,10 +323,15 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
     return;
   }
 
+  if (reveal.querySelector("[data-homepage-zoom-wipe]")) {
+    reject(new Error("HOMEPAGE_FOCUS_REVEAL_BLACK_WIPE_STILL_PRESENT"));
+    return;
+  }
+
   const before = getComputedStyle(headline);
   const beforeOpacity = Number(before.opacity);
   const beforeTransform = before.transform;
-  const beforeWipe = getComputedStyle(reveal).getPropertyValue("--zoom-wipe-y");
+  const beforeColor = before.color;
 
   reveal.scrollIntoView({ block: "start" });
   window.scrollBy(0, Math.max(window.innerHeight * 0.72, 1));
@@ -324,12 +341,12 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
       const after = getComputedStyle(headline);
       const afterTransform = after.transform;
       const afterOpacity = Number(after.opacity);
-      const afterWipe = getComputedStyle(reveal).getPropertyValue("--zoom-wipe-y");
+      const afterColor = after.color;
       const afterScale = afterTransform.includes("matrix(") ? afterTransform.match(/matrix\\(([^)]+)\\)/)?.[1]?.split(",").slice(0, 4).map((value) => Number(value.trim())) : null;
 
       window.scrollTo(0, 0);
 
-      if (Math.abs(afterOpacity - beforeOpacity) < 0.25 && beforeTransform === afterTransform && beforeWipe === afterWipe) {
+      if (Math.abs(afterOpacity - beforeOpacity) < 0.25 && beforeTransform === afterTransform && beforeColor === afterColor) {
         reject(new Error("FOCUS_REVEAL_STATIC"));
         return;
       }
@@ -339,7 +356,7 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
         return;
       }
 
-      resolve(\`FOCUS_REVEAL_OK:\${beforeOpacity}->\${afterOpacity},\${beforeWipe}->\${afterWipe}\`);
+      resolve(\`FOCUS_REVEAL_OK:\${beforeOpacity}->\${afterOpacity}\`);
     });
   });
 }))()`
@@ -755,7 +772,8 @@ const recruitmentHubContract = `(() => {
   }
 
   const alternativeLink = document.querySelector("[data-alternative-applications-link]");
-  if (!alternativeLink || alternativeLink.getAttribute("href") !== "https://forms.gle/sunswift-business-media-placeholder") {
+  const altHref = alternativeLink ? alternativeLink.getAttribute("href") || "" : "";
+  if (!alternativeLink || !altHref.includes("forms.cloud.microsoft")) {
     throw new Error("MISSING_ALTERNATIVE_APPLICATIONS_LINK");
   }
 
@@ -1044,6 +1062,9 @@ const mediaHighlightsContract = `(() => {
   const juicer = document.querySelector("[data-juicer-sidebar]");
   const scrollRows = document.querySelectorAll("[data-media-highlight-row]");
   const cards = document.querySelectorAll("[data-media-highlight-card]");
+  const backgroundCards = document.querySelectorAll("[data-media-highlight-background-card]");
+  const heroBackground = document.querySelector("[data-media-hero-background]");
+  const heroFade = document.querySelector("[data-media-hero-vertical-fade]");
   const spotlightEmbed = document.querySelector("[data-media-spotlight-embed] iframe");
 
   if (!page || !spotlight || !journey || !juicer) {
@@ -1087,12 +1108,25 @@ const mediaHighlightsContract = `(() => {
     throw new Error("MISSING_MEDIA_PARTNER_VIDEOS:" + partnerVideos.length);
   }
 
-  if (scrollRows.length < 6) {
+  if (scrollRows.length < 5) {
     throw new Error("MISSING_MEDIA_SCROLL_ROWS:" + scrollRows.length);
   }
 
-  if (cards.length < 18) {
+  if (cards.length < 17) {
     throw new Error("MISSING_MEDIA_HIGHLIGHT_LINK_CARDS:" + cards.length);
+  }
+
+  if (!heroBackground || !heroFade) {
+    throw new Error("MISSING_MEDIA_BACKGROUND_BANNER");
+  }
+
+  if (backgroundCards.length !== cards.length) {
+    throw new Error("MEDIA_CARDS_NOT_BACKGROUND_BACKED:" + backgroundCards.length + ":" + cards.length);
+  }
+
+  const cardWithFade = Array.from(backgroundCards).find((card) => card.querySelector("[data-media-highlight-card-fade]"));
+  if (!cardWithFade) {
+    throw new Error("MISSING_MEDIA_CARD_VERTICAL_FADE");
   }
 
   const iframe = juicer.querySelector('iframe[src*="juicer.io"]');
@@ -1106,9 +1140,20 @@ const mediaHighlightsContract = `(() => {
 const contactContract = `(() => {
   const page = document.querySelector("[data-contact-page]");
   const emailLink = document.querySelector("[data-contact-email-link]");
+  const heroBackground = document.querySelector("[data-contact-hero-background]");
+  const heroFade = document.querySelector("[data-contact-hero-vertical-fade]");
 
   if (!page || !emailLink) {
     throw new Error("MISSING_CONTACT_PAGE");
+  }
+
+  if (!heroBackground || !heroFade) {
+    throw new Error("MISSING_CONTACT_BACKGROUND_BANNER");
+  }
+
+  const fadeBackground = getComputedStyle(heroFade).backgroundImage;
+  if (!fadeBackground.includes("linear-gradient") || !fadeBackground.includes("rgb(10, 12, 14)")) {
+    throw new Error("CONTACT_VERTICAL_FADE_MISSING:" + fadeBackground);
   }
 
   const href = emailLink.getAttribute("href") || "";

@@ -1,12 +1,14 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { Suspense } from "react"
+import { ArrowLeft } from "lucide-react"
 
 import {
   getRecruitmentStreamByRolePath,
   recruitmentStreams,
   rolesForRecruitmentStream,
 } from "@/components/site/recruitment-content"
+import { RecruitmentRoleStreamCards } from "@/components/site/recruitment-role-stream-cards"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
 import { listCmsRecords } from "@/lib/cms/api"
 
@@ -76,49 +78,43 @@ export default async function RecruitmentStreamRolePage({
       </div>
 
       <section className="bg-[#0a0c0e] pb-24 text-white lg:pb-32">
-        <div className="mx-auto max-w-[92rem] px-4 sm:px-6">
-          <div
-            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-            data-role-stream-cards={stream.name}
-          >
-            {streamRoles.length > 0 ? (
-              streamRoles.map((role) => (
-                <article
-                  key={role.slug}
-                  id={role.slug}
-                  data-role-stream-card
-                  className="flex min-h-[14rem] scroll-mt-24 flex-col border border-white/10 bg-white/[0.035] p-5 transition-colors duration-300 hover:border-accent-yellow/70 hover:bg-white/[0.07]"
+        <div className="mx-auto max-w-[92rem] px-4 pt-16 sm:px-6 sm:pt-20 lg:pt-28">
+          {streamRoles.length > 0 ? (
+            <Suspense
+              fallback={
+                <div
+                  className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                  data-role-stream-cards={stream.name}
                 >
-                  <div className="font-mono text-[0.62rem] tracking-[0.22em] text-accent-yellow uppercase">
-                    {role.team}
-                  </div>
-                  <h2 className="mt-4 text-2xl leading-tight font-light text-white">
-                    {role.title}
-                  </h2>
-                  <p className="mt-4 line-clamp-4 text-sm leading-6 text-white/56">
-                    {role.description}
-                  </p>
-                  <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4 font-mono text-[0.62rem] tracking-[0.22em] text-white/44 uppercase">
-                    CMS role
-                    <ArrowRight className="size-3.5" />
-                  </div>
-                </article>
-              ))
-            ) : (
-              <div
-                data-role-stream-empty
-                className="flex min-h-[14rem] flex-col justify-between border border-dashed border-white/15 bg-white/[0.02] p-5 sm:col-span-2 lg:col-span-3"
-              >
-                <div className="font-mono text-[0.62rem] tracking-[0.22em] text-white/38 uppercase">
-                  Database ready
+                  {streamRoles.map((role) => (
+                    <div
+                      key={role.slug}
+                      aria-hidden
+                      className="h-36 w-full animate-pulse border border-white/10 bg-white/[0.04] sm:h-[10.5rem]"
+                    />
+                  ))}
                 </div>
-                <p className="max-w-xl text-2xl leading-snug font-light text-white">
-                  Published {stream.name.toLowerCase()} roles will appear here
-                  when they are added to the CMS.
-                </p>
+              }
+            >
+              <RecruitmentRoleStreamCards
+                roles={streamRoles}
+                streamCardsAttr={stream.name}
+              />
+            </Suspense>
+          ) : (
+            <div
+              data-role-stream-empty
+              className="flex min-h-[14rem] flex-col justify-between border border-dashed border-white/15 bg-white/[0.02] p-5 sm:col-span-2 lg:col-span-3"
+            >
+              <div className="font-mono text-[0.62rem] tracking-[0.22em] text-white/38 uppercase">
+                Database ready
               </div>
-            )}
-          </div>
+              <p className="max-w-xl text-2xl leading-snug font-light text-white">
+                Published {stream.name.toLowerCase()} roles will appear here
+                when they are added to the CMS.
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </main>

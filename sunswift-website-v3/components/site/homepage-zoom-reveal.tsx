@@ -25,11 +25,9 @@ export function HomepageZoomReveal() {
       const distance = Math.max(root.offsetHeight - window.innerHeight, 1)
       const progress = Math.min(Math.max(-rect.top / distance, 0), 1)
 
-      // The black handoff clears first; the headline then resolves sharply.
       const revealRamp = Math.min(Math.max((progress - 0.38) / 0.24, 0), 1)
       const opacity = revealRamp
       const textY = lerp(1.25, -0.65, revealRamp)
-      const wipeY = lerp(0, -105, Math.min(progress / 0.24, 1))
 
       // Tone: starts as a faint light gray and darkens to near-black on scroll.
       const toneRamp = Math.pow(revealRamp, 0.85)
@@ -41,7 +39,6 @@ export function HomepageZoomReveal() {
       root.style.setProperty("--zoom-opacity", opacity.toFixed(4))
       root.style.setProperty("--zoom-blur", "0px")
       root.style.setProperty("--zoom-text-y", `${textY.toFixed(4)}vh`)
-      root.style.setProperty("--zoom-wipe-y", `${wipeY.toFixed(4)}%`)
       root.style.setProperty(
         "--zoom-text-color",
         `rgb(${channel}, ${channel}, ${channel})`
@@ -79,7 +76,6 @@ export function HomepageZoomReveal() {
           "--zoom-opacity": 0,
           "--zoom-blur": "0px",
           "--zoom-text-y": "1.25vh",
-          "--zoom-wipe-y": "0%",
           "--zoom-text-color": "rgb(84, 84, 84)",
           "--zoom-render-opacity": 0.4,
         } as CSSProperties
@@ -101,11 +97,6 @@ export function HomepageZoomReveal() {
         </div>
 
         <div className="absolute inset-0 bg-[#f6f5f1]/32" />
-        <div
-          data-homepage-zoom-wipe
-          aria-hidden="true"
-          className="homepage-zoom-wipe pointer-events-none absolute inset-0 bg-black"
-        />
 
         <h2
           data-homepage-zoom-text

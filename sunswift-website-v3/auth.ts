@@ -27,7 +27,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: "/admin/login",
   },
   providers: [
-    Google,
+    Google({
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      },
+    }),
     ...(devAdminLoginEnabled()
       ? [
           Credentials({

@@ -15,13 +15,29 @@ const navItems = [
   { href: "/contact", label: "Contact" },
 ]
 
-export function TransparentNavbar() {
+type TransparentNavbarProps = {
+  /** Hero landing only: vehicles-style top vignette gradient, shorter band than `/vehicles`. */
+  heroEdgeVignette?: boolean
+}
+
+export function TransparentNavbar({
+  heroEdgeVignette = false,
+}: TransparentNavbarProps) {
   return (
     <header
       data-homepage-navbar
       className="absolute inset-x-0 top-0 z-50 bg-transparent text-white"
     >
-      <div className="mx-auto flex h-16 max-w-[92rem] items-center justify-between px-4 sm:px-6">
+      {heroEdgeVignette ? (
+        <div
+          aria-hidden
+          data-homepage-navbar-vignette
+          data-homepage-navbar-vignette-top
+          data-homepage-top-vignette
+          className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[8.75svh] bg-[linear-gradient(180deg,rgba(0,0,0,0.6)_0%,rgba(10,12,14,0.55)_30%,rgba(10,12,14,0.33)_70%,rgba(10,12,14,0)_100%)]"
+        />
+      ) : null}
+      <div className="relative z-10 mx-auto flex h-16 max-w-[92rem] items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
           className="group block"

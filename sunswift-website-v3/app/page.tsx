@@ -17,7 +17,7 @@ export default async function Page() {
   return (
     <main data-homepage>
       <div className="relative">
-        <TransparentNavbar />
+        <TransparentNavbar heroEdgeVignette />
         <HomepageHero />
       </div>
       <HomepageZoomReveal />

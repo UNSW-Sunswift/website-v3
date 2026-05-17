@@ -199,12 +199,6 @@ export function HomepageRecords() {
               color: "var(--records-text-color)",
             }}
           >
-            <p
-              className="font-mono text-[0.68rem] tracking-[0.28em] uppercase"
-              style={{ color: "var(--records-muted-color)" }}
-            >
-              Continue
-            </p>
             <h2 className="mt-5 text-[clamp(3.8rem,10vw,10rem)] leading-[0.86] font-thin tracking-normal">
               Moving records forward.
             </h2>

@@ -141,12 +141,15 @@ export function WhoWeAreEditorialPage() {
               </h2>
             </div>
           </div>
-          <div className="grid auto-rows-[180px] grid-cols-2 gap-px bg-white/10 sm:auto-rows-[240px] lg:grid-cols-4">
+          <div
+            data-who-we-are-gallery
+            className="grid auto-rows-[180px] grid-cols-2 gap-px bg-white/10 sm:auto-rows-[240px] lg:grid-cols-4"
+          >
             {whoWeAre.gallery.map((image, index) => (
               <PlaceholderImage
                 key={`${image}-${index}`}
                 src={image}
-                label={`Image placeholder 0${index + 1}`}
+                showCaption={false}
                 className={index === 0 || index === 4 ? "col-span-2 row-span-2" : ""}
               />
             ))}
@@ -297,9 +300,6 @@ export function OurStoryEditorialPage() {
       <section className="border-y border-white/10 bg-black px-5 py-16 sm:px-8 lg:px-14">
         <div className="mx-auto flex max-w-[92rem] flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-white/45">
-              Continue
-            </p>
             <h2 className="mt-3 text-4xl font-thin leading-tight tracking-tight text-white sm:text-6xl">
               See the milestones.
             </h2>

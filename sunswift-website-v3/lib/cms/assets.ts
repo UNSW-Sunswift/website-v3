@@ -18,3 +18,22 @@ export function publicAssetPath(localPath: string) {
   return `${baseUrl.replace(/\/$/, "")}/${key}`
 }
 
+export function publicAssetUrl(key: string, bucket = process.env.CMS_PUBLIC_ASSETS_BUCKET) {
+  const safeKey = key
+    .split("/")
+    .map((part) => encodeURIComponent(part))
+    .join("/")
+  const baseUrl =
+    process.env.NEXT_PUBLIC_CMS_PUBLIC_ASSET_BASE_URL ??
+    process.env.CMS_PUBLIC_ASSET_BASE_URL
+
+  if (baseUrl) {
+    return `${baseUrl.replace(/\/$/, "")}/${safeKey}`
+  }
+
+  if (process.env.AWS_ENDPOINT_URL) {
+    return `${process.env.AWS_ENDPOINT_URL.replace(/\/$/, "")}/${bucket}/${safeKey}`
+  }
+
+  return `https://${bucket}.s3.${process.env.AWS_REGION ?? "ap-southeast-2"}.amazonaws.com/${safeKey}`
+}

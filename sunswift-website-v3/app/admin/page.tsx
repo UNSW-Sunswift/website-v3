@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, Files, Handshake, ImageIcon, UsersRound } from "lucide-react"
+import { ArrowRight, Files, Film, Handshake, ImageIcon, UsersRound } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { AdminShell } from "@/components/site/admin-shell"
@@ -18,6 +18,7 @@ export default async function AdminPage() {
     publishedRoles,
     draftPartners,
     publishedPartners,
+    timelineVideoSettings,
     assets,
   ] = await Promise.all([
     listCmsRecords("team", "draft"),
@@ -26,6 +27,7 @@ export default async function AdminPage() {
     listCmsRecords("roles", "published"),
     listCmsRecords("partners", "draft"),
     listCmsRecords("partners", "published"),
+    listCmsRecords("timeline", "published"),
     listCmsRecords("assets", "published"),
   ])
 
@@ -50,6 +52,13 @@ export default async function AdminPage() {
       draftCount: draftPartners.length,
       publishedCount: publishedPartners.length,
       href: "/admin/partners",
+    },
+    {
+      icon: Film,
+      label: "Timeline videos",
+      draftCount: 0,
+      publishedCount: timelineVideoSettings.length,
+      href: "/admin/timeline",
     },
   ]
 

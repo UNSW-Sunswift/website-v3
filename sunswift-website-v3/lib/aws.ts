@@ -6,7 +6,9 @@ let dynamoClient: DynamoDBDocumentClient | null = null
 let s3Client: S3Client | null = null
 
 function getAwsBaseConfig() {
-  const endpoint = process.env.AWS_ENDPOINT_URL
+  const endpoint =
+    process.env.AWS_ENDPOINT_URL ??
+    (process.env.NODE_ENV === "production" ? undefined : "http://localhost:4566")
 
   return {
     region: process.env.AWS_REGION ?? "ap-southeast-2",

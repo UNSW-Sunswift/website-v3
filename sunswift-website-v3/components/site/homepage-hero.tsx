@@ -3,8 +3,8 @@
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 
-const SLOGAN = "Today, Tomorrow"
-const LINE_BREAK_INDEX = 6
+const SLOGAN = "Tomorrow, Today."
+const LINE_BREAK_INDEX = 9
 const INTRO_DELAY_MS = 1400
 const INTRO_DURATION_MS = 1350
 const TYPE_INTERVAL_MS = 95

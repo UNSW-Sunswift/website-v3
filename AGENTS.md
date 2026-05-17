@@ -34,6 +34,8 @@ feature work on top of a broken starting state.
 - `init.sh`: standard startup and verification path
 - `session-handoff.md`: optional compact handoff for larger sessions
 
+Whenever a change touches **automated verification**—for example `sunswift-website-v3/scripts/test-homepage-design.mjs`, `verify-browser.mjs`, `verify-cms-admin`, contract selectors, or assertion messages—update **`feature_list.json`** (evidence and/or `last_run` on affected features) and append **`claude-progress.md`** in the **same change batch**, not only at session end.
+
 ## Local CMS Harness
 
 This repository uses LocalStack to provide a local DynamoDB-backed CMS harness

@@ -21,7 +21,17 @@ type AdminRecruitmentPageProps = {
 }
 
 export default async function AdminRecruitmentPage({ searchParams }: AdminRecruitmentPageProps) {
-  const roles = await listCmsRecords("roles", "draft")
+  const [draftRoles, publishedRoles] = await Promise.all([
+    listCmsRecords("roles", "draft"),
+    listCmsRecords("roles", "published"),
+  ])
+  const roles = [
+    ...draftRoles,
+    ...publishedRoles.filter((role) => !draftRoles.some((draftRole) => draftRole.slug === role.slug)),
+  ].sort(
+    (left, right) =>
+      (left.sortOrder ?? 0) - (right.sortOrder ?? 0) || left.title.localeCompare(right.title)
+  )
   const publishStatus = await searchParams
 
   return (
@@ -47,7 +57,7 @@ export default async function AdminRecruitmentPage({ searchParams }: AdminRecrui
         <AdminBulkPublishPanel
           title="Publish role drafts"
           description="Choose the recruitment roles to publish together. Use grid view and zoom out when there are many roles to scan."
-          items={roles.map((role) => ({
+          items={draftRoles.map((role) => ({
             slug: role.slug,
             title: role.title,
             eyebrow: role.team,
@@ -177,16 +187,26 @@ export default async function AdminRecruitmentPage({ searchParams }: AdminRecrui
             <article key={role.slug} className="rounded-lg border border-border bg-card p-5">
               <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
+                  <div className="inline-flex rounded-full border border-border bg-background px-3 py-1 font-mono text-[0.6rem] tracking-[0.18em] text-muted-foreground uppercase">
+                    {role.status === "published" ? "Live" : "Draft"}
+                  </div>
                   <div className="font-mono text-xs uppercase tracking-[0.18em] text-primary">{role.team}</div>
                   <h2 className="mt-2 text-2xl font-medium">{role.title}</h2>
+                  {role.status === "published" ? (
+                    <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
+                      Edit and save to create a staging copy before republishing.
+                    </p>
+                  ) : null}
                 </div>
                 <div className="flex flex-col gap-2 sm:flex-row">
-                  <form action={publishRecruitmentRole}>
-                    <input type="hidden" name="slug" value={role.slug} />
-                    <Button type="submit" variant="outline">
-                      Publish
-                    </Button>
-                  </form>
+                  {role.status !== "published" ? (
+                    <form action={publishRecruitmentRole}>
+                      <input type="hidden" name="slug" value={role.slug} />
+                      <Button type="submit" variant="outline">
+                        Publish
+                      </Button>
+                    </form>
+                  ) : null}
                   <form action={deleteRecruitmentRole}>
                     <input type="hidden" name="slug" value={role.slug} />
                     <input type="hidden" name="deletePublished" value="true" />

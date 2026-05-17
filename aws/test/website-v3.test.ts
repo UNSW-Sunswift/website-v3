@@ -29,6 +29,18 @@ test('CMS infrastructure is created', () => {
 
   template.resourceCountIs('AWS::S3::Bucket', 2);
 
+  template.hasResourceProperties('AWS::S3::Bucket', {
+    CorsConfiguration: Match.objectLike({
+      CorsRules: Match.arrayWith([
+        Match.objectLike({
+          AllowedMethods: Match.arrayWith(['GET', 'HEAD', 'PUT']),
+          AllowedOrigins: ['*'],
+          ExposedHeaders: ['ETag']
+        })
+      ])
+    })
+  });
+
   template.resourceCountIs('AWS::Lambda::Function', 2);
 
   template.hasResourceProperties('AWS::Lambda::Function', {

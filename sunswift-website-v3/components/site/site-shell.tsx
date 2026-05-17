@@ -261,7 +261,7 @@ export function SiteFooter() {
   return (
     <footer
       data-site-footer
-      className="relative isolate z-20 overflow-hidden bg-[#050607] text-white shadow-[0_-32px_80px_rgba(0,0,0,0.34)] before:pointer-events-none before:absolute before:inset-x-0 before:-top-24 before:h-24 before:bg-[linear-gradient(180deg,rgba(5,6,7,0)_0%,rgba(5,6,7,0.42)_52%,#050607_100%)]"
+      className="relative isolate z-20 overflow-hidden bg-[#050607] text-white shadow-[0_-32px_80px_rgba(0,0,0,0.34)] before:pointer-events-none before:absolute before:inset-x-0 before:-top-40 before:h-40 before:bg-[linear-gradient(180deg,rgba(5,6,7,0)_0%,rgba(5,6,7,0.14)_15%,rgba(5,6,7,0.36)_38%,rgba(5,6,7,0.68)_68%,#050607_100%)] sm:before:-top-48 sm:before:h-48"
     >
       <div className="relative z-10 mx-auto max-w-[92rem] px-4 pt-12 pb-6 sm:px-6 sm:pt-14">
         <div className="grid gap-8 border-y border-white/10 py-8 lg:grid-cols-[1fr_auto] lg:items-end">
@@ -269,8 +269,8 @@ export function SiteFooter() {
             <p className="font-mono text-[0.68rem] tracking-[0.28em] text-accent-yellow uppercase">
               Sunswift Racing
             </p>
-            <h2 className="mt-3 text-4xl leading-[0.95] font-light tracking-normal text-white sm:text-5xl lg:text-6xl">
-              Tomorrow, Today.
+            <h2 className="mt-3 text-4xl leading-[0.95] font-light tracking-normal text-white sm:text-4xl lg:text-5xl">
+              Built by Students, Driving Sustainability.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-white/56">
               Student-built solar racing from UNSW Sydney, pushing efficient

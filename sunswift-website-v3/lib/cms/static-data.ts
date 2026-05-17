@@ -1,5 +1,12 @@
 import { publicAssetPath } from "@/lib/cms/assets"
-import type { MediaAsset, Partner, RecruitmentRole, TeamMember, Vehicle } from "@/lib/cms/types"
+import type {
+  MediaAsset,
+  Partner,
+  RecruitmentRole,
+  TeamMember,
+  TimelineVideoSetting,
+  Vehicle,
+} from "@/lib/cms/types"
 
 export type Achievement = {
   year: string
@@ -15,6 +22,38 @@ export type Achievement = {
    * accepts both.)
    */
   videoMp4?: string
+}
+
+export function achievementVideoSlug(achievement: Pick<Achievement, "year" | "title">) {
+  return `${achievement.year}-${achievement.title}`
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+}
+
+export function applyTimelineVideoSettings(
+  sourceAchievements: Achievement[],
+  settings: TimelineVideoSetting[]
+) {
+  const settingsBySlug = new Map(settings.map((setting) => [setting.slug, setting]))
+
+  return sourceAchievements.map((achievement) => {
+    const slug = achievementVideoSlug(achievement)
+    const setting = settingsBySlug.get(slug)
+
+    if (!setting) {
+      return achievement
+    }
+
+    const videoUrl = setting.videoUrl.trim()
+    const videoMp4 = setting.videoEnabled && videoUrl ? videoUrl : undefined
+
+    return {
+      ...achievement,
+      videoMp4,
+    }
+  })
 }
 
 export const fallbackTeamMembers: TeamMember[] = [
@@ -60,6 +99,10 @@ export const fallbackRecruitmentRoles: RecruitmentRole[] = [
     active: true,
     discipline: "Mechanical",
     school: "Engineering",
+    responsibilitiesHtml:
+      "<p>Collaborate across vehicle dynamics, simulation and test days to quantify performance trades.</p><ul><li>Build and correlate vehicle models</li><li>Instrument test sessions and summarise results</li><li>Pilot iterative setup changes safely on track</li></ul>",
+    requirementsHtml:
+      "<p>You are curious about data, pragmatic about timelines, and energised by student-led prototyping.</p>",
     sortOrder: 10,
     status: "published",
   },
@@ -72,6 +115,9 @@ export const fallbackRecruitmentRoles: RecruitmentRole[] = [
     active: true,
     discipline: "Electrical",
     school: "Engineering",
+    responsibilitiesHtml:
+      "<p>Own firmware bring-up across sensors, telemetry links and cockpit controls.</p>",
+    requirementsHtml: "<p>Comfortable reading schematics plus writing defensive, testable C/C++.</p>",
     sortOrder: 20,
     status: "published",
   },
@@ -84,7 +130,26 @@ export const fallbackRecruitmentRoles: RecruitmentRole[] = [
     active: true,
     discipline: "Business",
     school: "Business",
+    responsibilitiesHtml:
+      "<p>Craft succinct partner updates and co-own pipeline hygiene with student leads.</p>",
+    requirementsHtml: "<p>Clear writing, diplomacy and reliable follow-through week to week.</p>",
     sortOrder: 30,
+    status: "published",
+  },
+  {
+    slug: "brand-storyteller",
+    title: "Brand Storyteller",
+    team: "Media",
+    description:
+      "Shape visual narratives across campaigns, shoots and launches so Sunswift stories feel cohesive and unmistakable.",
+    active: true,
+    discipline: "Media",
+    school: "Design & Media",
+    responsibilitiesHtml:
+      "<p>Own story arcs for launches, partner milestones and campus recruitment touchpoints.</p><ul><li>Coordinate shoots with drivers, workshop and paddock timelines</li><li>Edit selects for hero films, thumbnails and reels</li><li>Maintain a lightweight shared asset library</li></ul>",
+    requirementsHtml:
+      "<p>Show a portfolio spanning photo and motion; collaborate clearly with voluntary student schedules.</p>",
+    sortOrder: 40,
     status: "published",
   },
 ]
@@ -168,7 +233,7 @@ export const achievements: Achievement[] = [
     title: "Bridgestone World Solar Challenge '23",
     vehicle: "SR-7",
     description: "Sunswift 7 placed first overall in the cruiser class.",
-    image: "/vehicle-fleet/vehicle-sunswift-7.jpeg",
+    image: "/achievements/bwsc-23-win.avif",
     videoMp4: publicAssetPath("/placeholders/bwsc-23-vid.mp4"),
     kind: "race",
   },
@@ -178,7 +243,8 @@ export const achievements: Achievement[] = [
     vehicle: "SR-7",
     description:
       "Sunswift partnered with Optus to showcase the capabilities of the Optus 5G network, with Audi driver Chaz Mostert driving Sunswift 7 remotely around the Adelaide Parklands circuit.",
-    image: "/vehicle-fleet/vehicle-sunswift-7.jpeg",
+    image: "/achievements/sr7-optus.avif",
+    videoMp4: publicAssetPath("/placeholders/sr7-optus.mp4"),
     kind: "showcase",
   },
   {
@@ -187,7 +253,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-7",
     description:
       "Sunswift 7 achieved the fastest 1000 km achieved by an electric car on a single charge.",
-    image: "/vehicle-fleet/vehicle-sunswift-7.jpeg",
+    image: "/achievements/sr7-world-record.avif",
     videoMp4: publicAssetPath("/placeholders/sr7-world-record.mp4"),
     kind: "record",
   },
@@ -197,9 +263,9 @@ export const achievements: Achievement[] = [
     vehicle: "VIolet",
     description:
       "Sunswift placed 2nd overall in the Cruiser class, and finished first across the line in Adelaide.",
-    image: "/vehicle-fleet/vehicle-violet.avif",
+    image: "/achievements/bwsc-19.avif",
     kind: "race",
-    videoMp4: "/placeholders/timeline-violet-demo.mp4",
+    videoMp4: "/placeholders/violet-bwsc-19.mp4",
   },
   {
     year: "2018",
@@ -207,7 +273,7 @@ export const achievements: Achievement[] = [
     vehicle: "VIolet",
     description:
       "Lowest Energy Consumption Driving Trans-Australia (Perth to Sydney) - Electric Car.",
-    image: "/vehicle-fleet/vehicle-violet.avif",
+    image: "/achievements/world-record-violet.avif",
     kind: "record",
   },
   {
@@ -215,7 +281,7 @@ export const achievements: Achievement[] = [
     title: "Bridgestone World Solar Challenge '17",
     vehicle: "VIolet",
     description: "3rd in Practicality Judging of Cruiser Class in World Solar Challenge.",
-    image: "/vehicle-fleet/vehicle-violet.avif",
+    image: "/achievements/bwsc-17.avif",
     kind: "race",
   },
   {
@@ -223,7 +289,7 @@ export const achievements: Achievement[] = [
     title: "Bridgestone World Solar Challenge '15",
     vehicle: "eVe",
     description: "Sunswift eVe finished 3rd across the line and 4th overall.",
-    image: "/vehicle-fleet/vehicle-eve.jpg",
+    image: "/achievements/bwsc-15.avif",
     kind: "race",
   },
   {
@@ -232,7 +298,7 @@ export const achievements: Achievement[] = [
     vehicle: "eVe",
     description:
       "Sunswift eVe breaks the record for the fastest electric car over 500 kilometres (310mi), with an average speed of 107 kilometres per hour (66mph). The previous record of 73 kilometres per hour (45mph) was set in 1988.",
-    image: "/vehicle-fleet/vehicle-eve.jpg",
+    image: "/achievements/fia-land-record.avif",
     kind: "record",
   },
   {
@@ -241,7 +307,7 @@ export const achievements: Achievement[] = [
     vehicle: "eVe",
     description:
       "Sunswift eVe Line Honours and 3rd overall in Cruiser Class, including a top speed of 128 kilometres per hour (80mph).",
-    image: "/vehicle-fleet/vehicle-eve.jpg",
+    image: "/achievements/bwsc-13.avif",
     kind: "race",
   },
   {
@@ -249,7 +315,7 @@ export const achievements: Achievement[] = [
     title: "World Solar Challenge '11",
     vehicle: "IVy",
     description: "Sunswift IVy finished 1st in the Production Challenge Class and 6th overall.",
-    image: publicAssetPath("/vehicle-fleet/vehicle-ivy.jpg"),
+    image: "/achievements/wsc-11.avif",
     kind: "race",
   },
   {
@@ -257,7 +323,7 @@ export const achievements: Achievement[] = [
     title: "Guinness World Record '11",
     vehicle: "IVy",
     description: "Fastest Solar Powered Vehicle: 88.8 kilometres per hour (55.2mph).",
-    image: publicAssetPath("/vehicle-fleet/vehicle-ivy.jpg"),
+    image: "/achievements/ivy-world-record.avif",
     kind: "record",
   },
   {
@@ -266,7 +332,7 @@ export const achievements: Achievement[] = [
     vehicle: "IVy",
     description:
       "Sunswift IV finished 1st in the Silicon Challenge Class and 4th overall at 3:08pm on 29 October.",
-    image: publicAssetPath("/vehicle-fleet/vehicle-ivy.jpg"),
+    image: "/achievements/wsc-09.avif",
     kind: "race",
   },
   {
@@ -275,7 +341,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-III",
     description:
       "Jaycar Sunswift III broke the world record for a solar car journey from Perth to Sydney. The team finished the journey in 5.5 days, breaking the previous record by 3 days.",
-    image: "/vehicle-fleet/vehicle-iii.jpg",
+    image: "/achievements/engineers-australia.avif",
     kind: "record",
   },
   {
@@ -284,7 +350,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-III",
     description:
       "Placed 4th in the Adventure Challenge. Placed 9th overall in the World Solar Challenge. Prestigious Freescale Technical Innovation Award (Most efficient).",
-    image: "/vehicle-fleet/vehicle-iii.jpg",
+    image: "/achievements/wsc-07.avif",
     kind: "race",
   },
   {
@@ -293,7 +359,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-III",
     description:
       "UNSW Sunswift III was the 9th car (and the first with silicon solar cells) to cross the line, arriving in 5 days.",
-    image: "/vehicle-fleet/vehicle-iii.jpg",
+    image: "/achievements/wsc-05.avif",
     kind: "race",
   },
   {
@@ -301,7 +367,7 @@ export const achievements: Achievement[] = [
     title: "SunRace '03",
     vehicle: "SR-II",
     description: "2nd Place.",
-    image: "/vehicle-fleet/vehicle-ii.jpg",
+    image: "/achievements/sunrace-03.avif",
     kind: "race",
   },
   {
@@ -309,7 +375,7 @@ export const achievements: Achievement[] = [
     title: "SunRace '02",
     vehicle: "SR-II",
     description: "2nd Place.",
-    image: "/vehicle-fleet/vehicle-ii.jpg",
+    image: "/achievements/sunrace-02.avif",
     kind: "race",
   },
   {
@@ -317,7 +383,7 @@ export const achievements: Achievement[] = [
     title: "World Solar Challenge '01",
     vehicle: "SR-II",
     description: "UNSW Sunswift II was the 11th car to cross the line.",
-    image: "/vehicle-fleet/vehicle-ii.jpg",
+    image: "/achievements/wsc-01.avif",
     kind: "race",
   },
   {
@@ -326,7 +392,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-II",
     description:
       "NRMA Sunswift II participated in a trade exhibition in Taipei, on request from the Federal Government.",
-    image: "/vehicle-fleet/vehicle-ii.jpg",
+    image: "/achievements/federal-govt.avif",
     kind: "showcase",
   },
   {
@@ -335,7 +401,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-II",
     description:
       "Three days after completing the Perth-Sydney record attempt the team entered the CitiPower SunRace. NRMA Sunswift II obtained third place in a highly competitive field of five entries, proving the car's reliability and the team's dedication after five continuous weeks on the road.",
-    image: "/vehicle-fleet/vehicle-ii.jpg",
+    image: "/achievements/citipower-sunrace.avif",
     kind: "race",
   },
   {
@@ -344,7 +410,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-II",
     description:
       "The car 'NRMA Sunswift II' completed 4,012 kilometres (2,493 mi) in ten days, despite five days of bad weather. Even though the record of 8½ days was not broken, the attempt was still regarded to be a success with $2.4 million worth of publicity generated.",
-    image: "/vehicle-fleet/vehicle-ii.jpg",
+    image: "/achievements/transcontient-99.avif",
     kind: "record",
   },
   {
@@ -353,7 +419,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-II",
     description:
       "NRMA Sunswift II finished a respectable 18th out of 48 international entries.",
-    image: "/vehicle-fleet/vehicle-ii.jpg",
+    image: "/achievements/wsc-99.avif",
     kind: "race",
   },
   {
@@ -362,7 +428,7 @@ export const achievements: Achievement[] = [
     vehicle: "SR-I",
     description:
       "Sunswift finished 9th out of 46 entries. This was the University's first entry in a solar car event amongst the prestigious and competitive entries from Honda Motors Corporation, the Swiss entry from Biel, and Mitsubishi Materials Corporation.",
-    image: "/vehicle-fleet/vehicle-i.jpg",
+    image: "/achievements/wsc-96.avif",
     kind: "archive",
   },
 ]

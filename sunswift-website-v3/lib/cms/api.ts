@@ -6,22 +6,31 @@ import {
   getPartners,
   getRecruitmentRoles,
   getTeamMembers,
+  getTimelineVideoSettings,
   putMediaAsset,
   putPartner,
   putRecruitmentRole,
   putTeamMember,
+  putTimelineVideoSetting,
   uploadDraftAsset,
 } from "@/lib/cms/dynamodb"
-import type { MediaAsset, Partner, RecruitmentRole, TeamMember } from "@/lib/cms/types"
+import type {
+  MediaAsset,
+  Partner,
+  RecruitmentRole,
+  TeamMember,
+  TimelineVideoSetting,
+} from "@/lib/cms/types"
 
 type CmsStatus = "draft" | "published"
-type CmsCollection = "team" | "roles" | "partners" | "assets"
+type CmsCollection = "team" | "roles" | "partners" | "assets" | "timeline"
 
 type CmsRecordMap = {
   team: TeamMember
   roles: RecruitmentRole
   partners: Partner
   assets: MediaAsset
+  timeline: TimelineVideoSetting
 }
 
 function cmsApiUrl() {
@@ -73,11 +82,14 @@ export async function listCmsRecords<TCollection extends CmsCollection>(
   if (collection === "partners") {
     return (await getPartners(status)) as CmsRecordMap[TCollection][]
   }
+  if (collection === "timeline") {
+    return (await getTimelineVideoSettings(status)) as CmsRecordMap[TCollection][]
+  }
 
   return (await getMediaAssets(status)) as CmsRecordMap[TCollection][]
 }
 
-export async function saveCmsDraft<TCollection extends Exclude<CmsCollection, "assets">>(
+export async function saveCmsDraft<TCollection extends Exclude<CmsCollection, "assets" | "timeline">>(
   collection: TCollection,
   slug: string,
   record: CmsRecordMap[TCollection],
@@ -112,7 +124,36 @@ export async function saveCmsDraft<TCollection extends Exclude<CmsCollection, "a
   return payload
 }
 
-export async function publishCmsDraft<TCollection extends Exclude<CmsCollection, "assets">>(
+export async function saveCmsPublished<TCollection extends "timeline">(
+  collection: TCollection,
+  slug: string,
+  record: CmsRecordMap[TCollection],
+  updatedBy: string
+) {
+  const payload = {
+    ...record,
+    updatedAt: new Date().toISOString(),
+    updatedBy,
+    status: "published" as const,
+  }
+
+  const apiResponse = await cmsFetch<{ item: CmsRecordMap[TCollection] }>(
+    `/cms/admin/${collection}/${slug}/published`,
+    {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }
+  )
+
+  if (apiResponse) {
+    return apiResponse.item
+  }
+
+  await putTimelineVideoSetting(payload as TimelineVideoSetting, "published")
+  return payload
+}
+
+export async function publishCmsDraft<TCollection extends Exclude<CmsCollection, "assets" | "timeline">>(
   collection: TCollection,
   slug: string,
   updatedBy: string
@@ -157,7 +198,7 @@ export async function publishCmsDraft<TCollection extends Exclude<CmsCollection,
   return published
 }
 
-export async function deleteCmsRecord<TCollection extends Exclude<CmsCollection, "assets">>(
+export async function deleteCmsRecord<TCollection extends Exclude<CmsCollection, "assets" | "timeline">>(
   collection: TCollection,
   slug: string,
   status: CmsStatus

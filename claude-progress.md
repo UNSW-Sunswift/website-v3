@@ -1,5 +1,182 @@
 # Claude Progress
 
+## 2026-05-18 - Timeline video admin controls and route transition tuning
+
+Implementation:
+
+- Added `/admin/timeline` as a Timeline CMS section with one compact form per
+  achievement, including a video toggle and editable live video URL.
+- Added a `timeline-videos` CMS collection across the local DynamoDB facade,
+  AWS Lambda CMS handler, and LocalStack seed data.
+- Updated `/achievements` to read published timeline video settings and merge
+  them over the static timeline data, so admins can disable a video or replace
+  its URL without changing code.
+- Tuned route-entry animation behavior: Team now uses the same in-page hero
+  entrance style as Partners, Media uses the longer cinematic reveal, Contact no
+  longer renders a page-entry reveal, and Achievements keeps the subtle reveal.
+- Updated team CSV import behavior so matching rows overwrite imported draft
+  fields instead of preserving stale image keys; imported `Team` hierarchy rows
+  now drop role titles while Officer and above keep imported roles.
+- Made admin team profile cards denser and added an `Extra compact cards`
+  density toggle.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed with assertions for timeline video CMS,
+  route reveal variants, team CSV overwrite behavior, and compact admin cards.
+- `pnpm build`: passed; build output includes dynamic `/achievements` and
+  `/admin/timeline`.
+- `npm run build` in `aws`: passed.
+- `npm test -- --runInBand` in `aws`: passed.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser`: passed, including
+  public achievements, team, media, contact, recruitment, and partners checks.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin`: passed, including
+  `TEAM_DRAFT_EDIT_OK`, `TEAM_PUBLISH_MOVED_OK`, `TIMELINE_ADMIN_OK`,
+  `PARTNERS_ADMIN_OK`, and `ASSETS_ADMIN_OK`.
+- `./init.sh`: passed after implementation with LocalStack DynamoDB/S3, AWS
+  build/test, frontend typecheck/lint, and homepage design contract.
+
+Known limits:
+
+- Existing unrelated dirty files were left untouched.
+
+## 2026-05-18 - Admin public S3 uploads, partner import schema, team grid editing, and route reveal animations
+
+Implementation:
+
+- Added an authenticated `/api/admin/public-assets` route that presigns direct
+  browser uploads into `CMS_PUBLIC_ASSETS_BUCKET`, verifies the uploaded object,
+  registers it as a published public-media asset, and returns the public URL.
+- Added `/admin/assets` large-file upload UI with progress, success/failure
+  status, copyable URL output, and a disabled loading state while uploading.
+- Added public S3 upload CORS to the CDK public assets bucket and LocalStack
+  bucket harness.
+- Updated Google OAuth to request `prompt=select_account` so admins can pick
+  between multiple Google/Gmail accounts at login.
+- Added partner import schema documentation in `PARTNER_IMPORT_SCHEMA.md`; partner
+  imports now accept CSV URLs, logo URLs, and `Sort Order` columns.
+- Reworked `/admin/team` into compact profile grid cards with expandable
+  `Edit profile` panels for live and draft records.
+- Added `PageLoadReveal` and applied image-backed page-entry reveal animations to
+  `/team`, `/media`, `/contact`, `/who-we-are`, and `/recruitment`.
+- Added `VERCEL_AWS_DEPLOYMENT.md` with AWS CDK outputs, Vercel environment
+  variables, OAuth callback setup, direct AWS runtime notes, and the public S3
+  upload flow.
+
+Verification:
+
+- `pnpm typecheck`: passed after implementation and after the uploader
+  loading-state adjustment.
+- `pnpm lint`: passed after implementation and after the uploader loading-state
+  adjustment.
+- `pnpm test:homepage-design`: passed with assertions for S3 upload hooks,
+  OAuth account selection, partner schema, team grid editors, deployment docs,
+  S3 CORS, and page-entry reveal hooks.
+- `pnpm build`: passed; production route list includes
+  `/api/admin/public-assets`.
+- `npm run build` in `aws`: passed.
+- `npm test -- --runInBand` in `aws`: passed with the public S3 CORS assertion.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser`: passed.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin`: passed, including
+  `TEAM_DRAFT_EDIT_OK`, `TEAM_PUBLISH_MOVED_OK`, `PARTNERS_ADMIN_OK`, and
+  `ASSETS_ADMIN_OK`.
+- `./init.sh`: passed after implementation with LocalStack DynamoDB/S3, AWS
+  build/test, frontend typecheck/lint, and homepage design contract.
+
+Known limits:
+
+- The new large-file upload flow depends on production Vercel env vars pointing
+  at the deployed AWS buckets and CloudFront URL; local checks verified the route
+  and UI contracts but did not upload a real large file.
+- Existing unrelated dirty files were left untouched.
+
+## 2026-05-18 - Media and contact background banner treatments
+
+Implementation:
+
+- Updated the media highlights page so the hero image and each highlight card
+  sit behind their text, with vertical fades into the dark page background.
+- Updated the contact page to match that treatment: `/media/contact-banner.jpg`
+  is now the full hero background behind the contact copy instead of a separate
+  right-side image panel.
+- Added static and browser harness selectors for the new contact treatment:
+  `data-contact-hero-background` and `data-contact-hero-vertical-fade`.
+- Extended the existing media harness selectors for the background-backed media
+  hero and highlight cards.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- Manual `pnpm exec agent-browser open http://127.0.0.1:3000/contact`,
+  `wait --load networkidle`, `screenshot --annotate`, and `snapshot -i`:
+  passed; screenshot showed the contact banner behind the hero text with the
+  dark vertical handoff.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser`: passed, including
+  `MEDIA_HIGHLIGHTS_OK` and `CONTACT_OK`.
+
+Known limits:
+
+- This pass did not re-run `./init.sh`; the change is frontend-only and the
+  focused verification above passed against the already-running local app.
+- Existing unrelated dirty files were left untouched.
+
+## 2026-05-17 - LocalStack CMS write-path fix and browser regression recovery
+
+- Fixed the admin CMS save path by defaulting the AWS client config to LocalStack in development when `AWS_ENDPOINT_URL` is unset.
+- Confirmed the first team draft row now saves and persists in `/admin/team` after editing `Alex Rivera` to `Mechanical Lead X`.
+- Re-ran `VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin`; it passed with `DEV_LOGIN_CLICKED`, `ADMIN_DASHBOARD_OK`, `TEAM_DRAFT_EDIT_OK`, `TEAM_PUBLISH_MOVED_OK`, `RECRUITMENT_ADMIN_OK`, `PARTNERS_ADMIN_OK`, and `ASSETS_ADMIN_OK`.
+
+Verification:
+
+- `VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin`: passed.
+- Manual browser save on `/admin/team`: passed after the LocalStack default fix.
+
+## 2026-05-17 - Homepage hero slogan: Tomorrow, Today.
+
+- `HomepageHero` `SLOGAN` is **`Tomorrow, Today.`** (typed effect); first line **`Tomorrow,`** then **`Today.`** (`LINE_BREAK_INDEX` 9).
+- Harness: `test-homepage-design.mjs` asserts the string literal; `verify-browser.mjs` homepage contract checks `h1[data-full-text]` / `dataset.fullText === \"Tomorrow, Today.\"` (`MISSING_SLOGAN_DATA` if wrong).
+
+Verification: `pnpm test:homepage-design`: passed (`sunswift-website-v3`).
+
+## 2026-05-17 - Harness logs: hero navbar vignette, footer contracts, process
+
+**Agent workflow:** Whenever you change behaviour covered by `scripts/test-homepage-design.mjs` or `scripts/verify-browser.mjs` (or their assertions/selectors), update **`feature_list.json`** (evidence / `last_run` on affected features) and **`claude-progress.md`** in the **same batch of work**—not only at end of session. See **`AGENTS.md`** under *Required Artifacts*.
+
+### Landing hero — `TransparentNavbar` (`app/page.tsx` → `heroEdgeVignette`)
+
+- Top wash matches the **vehicles gallery** gradient *shape* but **hero-only** tuning: band **`h-[8.75svh]`**, softer stops **`rgba(0,0,0,0.6)_0%`**, **`rgba(10,12,14,0.55)_30%`**, **`rgba(10,12,14,0.33)_70%`**, transparent foot.
+- DOM hooks for static + browser harness: **`data-homepage-navbar-vignette`**, **`data-homepage-navbar-vignette-top`**, **`data-homepage-top-vignette`**.
+- Browser: **`MISSING_HOMEPAGE_NAVBAR_VIGNETTE`**, **`MISSING_HOMEPAGE_NAVBAR_VIGNETTE_TOP`** if nodes missing.
+
+### Persistent footer — `SiteFooter` / `site-shell.tsx`
+
+- **`::before`** top vignette: **`before:-top-40 before:h-40`**, **`sm:before:-top-48 sm:before:h-48`**, multi-stop dark blend into **`#050607`** (no hard top border).
+- Static contract: **`before:-top-40`**, gradient + shadow strings; editorial **h2** *Built by Students, Driving Sustainability.* with **`lg:text-5xl`** (replacing older “Tomorrow, Today.” headline assertions).
+- **`siteFooterContract`** in **`verify-browser.mjs`**: phrases + h2 finder aligned with that copy.
+
+### `feature_list.json` touched this pass
+
+- **`opal-minimal-hero-scroll-contract`**: `last_run` **2026-05-17**; evidence for navbar vignette hooks + `verify-browser` errors; cross-ref zoom-reveal wipe removal.
+- **`persistent-compact-unsw-footer`**: `last_run` **2026-05-17**; evidence for extended `::before` vignette + headline/type assertions.
+
+Verification: **`pnpm test:homepage-design`**: passed (`sunswift-website-v3`).
+
+## 2026-05-17 - Remove zoom-reveal black frame (hero → focus section)
+
+- Dropped the scroll-driven black handoff layer in `HomepageZoomReveal` (`[data-homepage-zoom-wipe]`, `bg-black` wipe, `--zoom-wipe-y`, and `.homepage-zoom-wipe` in `globals.css`) so the first scroll section sits cleanly after the hero without an intermediate black frame.
+- Focus-reveal scroll behaviour for the SR8 render and “Built by Students. / Driving Sustainability.” headline is unchanged (opacity, glide, tone, render opacity).
+
+Harness:
+
+- `scripts/test-homepage-design.mjs` now requires absence of wipe hooks and the removed `.homepage-zoom-wipe` CSS block.
+- `scripts/verify-browser.mjs` `focusRevealEffectWorks` fails if `[data-homepage-zoom-wipe]` is present; scroll reaction is asserted via headline opacity/transform/colour (no `--zoom-wipe-y`).
+
+Verification: `pnpm test:homepage-design`, `pnpm typecheck` passed (`sunswift-website-v3`).
+
 ## 2026-05-17 - Landing hero/admin amendment pass
 
 Baseline:

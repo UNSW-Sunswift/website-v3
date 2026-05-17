@@ -1,6 +1,14 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { ImageIcon, LayoutDashboard, LogOut, UserRound, UsersRound, Handshake } from "lucide-react"
+import {
+  Film,
+  Handshake,
+  ImageIcon,
+  LayoutDashboard,
+  LogOut,
+  UserRound,
+  UsersRound,
+} from "lucide-react"
 
 import { auth } from "@/auth"
 import { AdminThemeToggle } from "@/components/admin/admin-theme-toggle"
@@ -12,6 +20,7 @@ const adminNav = [
   { href: "/admin/team", label: "Team", icon: UsersRound },
   { href: "/admin/recruitment", label: "Roles", icon: UserRound },
   { href: "/admin/partners", label: "Partners", icon: Handshake },
+  { href: "/admin/timeline", label: "Timeline", icon: Film },
   { href: "/admin/assets", label: "Assets", icon: ImageIcon },
 ]
 

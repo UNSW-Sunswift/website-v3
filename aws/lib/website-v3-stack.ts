@@ -32,7 +32,19 @@ export class WebsiteV3Stack extends Stack {
 
     const publicAssetsBucket = new s3.Bucket(this, 'WebsiteV3PublicAssets', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      enforceSSL: true
+      enforceSSL: true,
+      cors: [
+        {
+          allowedMethods: [
+            s3.HttpMethods.GET,
+            s3.HttpMethods.HEAD,
+            s3.HttpMethods.PUT
+          ],
+          allowedOrigins: ['*'],
+          allowedHeaders: ['*'],
+          exposedHeaders: ['ETag']
+        }
+      ]
     });
 
     const publicAssetsDistribution = new cloudfront.Distribution(this, 'WebsiteV3PublicAssetsDistribution', {

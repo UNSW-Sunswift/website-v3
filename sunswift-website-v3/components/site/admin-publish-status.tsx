@@ -61,14 +61,17 @@ export function AdminPublishStatus({
       role={isSuccess ? "status" : "alert"}
       aria-live="polite"
       className={cn(
-        "mt-6 flex items-start gap-3 rounded-lg border px-4 py-3 text-sm leading-6",
-        isSuccess && "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-        isPartial && "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300",
-        !isSuccess && !isPartial && "border-destructive/30 bg-destructive/10 text-destructive"
+        "pointer-events-none fixed right-4 bottom-4 z-50 w-[min(24rem,calc(100vw-2rem))]",
+        "rounded-2xl border bg-card/95 px-4 py-3 text-sm leading-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur-xl",
+        isSuccess && "border-emerald-500/30 text-emerald-700 dark:text-emerald-300",
+        isPartial && "border-amber-500/30 text-amber-700 dark:text-amber-300",
+        !isSuccess && !isPartial && "border-destructive/30 text-destructive"
       )}
     >
-      <Icon className="mt-0.5 size-4 shrink-0" />
-      <span>{message}</span>
+      <div className="pointer-events-auto flex items-start gap-3">
+        <Icon className="mt-0.5 size-4 shrink-0" />
+        <span>{message}</span>
+      </div>
     </div>
   )
 }

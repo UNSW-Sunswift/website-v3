@@ -10,9 +10,11 @@ import {
   publishCmsDraft,
   recordMediaAsset,
   saveCmsDraft,
+  saveCmsPublished,
   stageCmsUpload,
 } from "@/lib/cms/api"
 import { importPartnersCsv, importRecruitmentCsv, importTeamCsv } from "@/lib/cms/csv"
+import { achievementVideoSlug } from "@/lib/cms/static-data"
 import {
   normalizeTeamDepartment,
   normalizeTeamHierarchy,
@@ -344,8 +346,16 @@ export async function savePartnerDraft(formData: FormData) {
   const slug = slugify(String(formData.get("slug") || name))
   const existingLogoKey = String(formData.get("existingLogoKey") ?? "")
   const file = formData.get("logo")
+  const remoteFile = await fetchUrlAsFile(
+    String(formData.get("logoUrl") ?? ""),
+    `${slug || "partner"}-logo`
+  )
   const logoKey =
-    file instanceof File && file.size > 0 ? await stageCmsUpload(file, slug, "partners") : existingLogoKey
+    file instanceof File && file.size > 0
+      ? await stageCmsUpload(file, slug, "partners")
+      : remoteFile
+        ? await stageCmsUpload(remoteFile, slug, "partners")
+        : existingLogoKey
 
   await saveCmsDraft(
     "partners",
@@ -402,10 +412,14 @@ export async function importTeamDrafts(formData: FormData) {
   const updatedBy = await assertAdmin()
   const text = await formCsvText(formData)
   const members = importTeamCsv(text)
-  const existingDrafts = await listCmsRecords("team", "draft")
-  const existingBySlug = new Map(existingDrafts.map((member) => [member.slug, member]))
+  const [existingDrafts, existingPublished] = await Promise.all([
+    listCmsRecords("team", "draft"),
+    listCmsRecords("team", "published"),
+  ])
+  const existingRecords = [...existingDrafts, ...existingPublished]
+  const existingBySlug = new Map(existingRecords.map((member) => [member.slug, member]))
   const existingByName = new Map(
-    existingDrafts.map((member) => [normalizeNameKey(member.name), member])
+    existingRecords.map((member) => [normalizeNameKey(member.name), member])
   )
 
   for (const member of members) {
@@ -418,7 +432,6 @@ export async function importTeamDrafts(formData: FormData) {
       {
         ...member,
         slug,
-        imageKey: member.imageKey || existing?.imageKey || "",
       },
       updatedBy
     )
@@ -442,8 +455,7 @@ export async function importRecruitmentDrafts(formData: FormData) {
 
 export async function importPartnerDrafts(formData: FormData) {
   const updatedBy = await assertAdmin()
-  const file = formData.get("csv")
-  const text = file instanceof File ? await file.text() : String(formData.get("csvText") ?? "")
+  const text = await formCsvText(formData)
   const partners = importPartnersCsv(text)
 
   for (const partner of partners) {
@@ -451,6 +463,30 @@ export async function importPartnerDrafts(formData: FormData) {
   }
 
   revalidatePath("/admin/partners")
+}
+
+export async function saveTimelineVideoSetting(formData: FormData) {
+  const updatedBy = await assertAdmin()
+  const year = String(formData.get("year") ?? "").trim()
+  const title = String(formData.get("title") ?? "").trim()
+  const slug = slugify(String(formData.get("slug") || achievementVideoSlug({ year, title })))
+  const videoUrl = String(formData.get("videoUrl") ?? "").trim()
+  const videoEnabled = formData.get("videoEnabled") === "on"
+
+  await saveCmsPublished(
+    "timeline",
+    slug,
+    {
+      slug,
+      achievementKey: `${year} ${title}`.trim(),
+      videoEnabled,
+      videoUrl,
+    },
+    updatedBy
+  )
+
+  revalidatePath("/achievements")
+  revalidatePath("/admin/timeline")
 }
 
 export async function seedHeavyMediaAssets() {

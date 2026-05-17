@@ -1,7 +1,10 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Mail, MapPin, Share2 } from "lucide-react"
 
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
+
+const contactBanner = "/media/contact-banner.jpg"
 
 const contactEmail = "richard.hopkins1@unsw.edu.au"
 
@@ -35,22 +38,32 @@ export function ContactPageContent() {
       <div className="relative">
         <TransparentNavbar />
         <section className="relative min-h-[86svh] overflow-hidden bg-[#0a0c0e]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_16%,rgba(245,208,0,0.14)_0%,transparent_32%),linear-gradient(180deg,#050607_0%,#0a0c0e_64%,#050607_100%)]" />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,#000_0%,rgba(10,12,14,0)_100%)]" />
-          <div className="relative mx-auto grid min-h-[86svh] max-w-[92rem] gap-12 px-4 pt-28 pb-14 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-end lg:pt-36 lg:pb-20">
-            <div>
+          <Image
+            src={contactBanner}
+            alt=""
+            fill
+            priority
+            data-contact-hero-background
+            sizes="100vw"
+            className="object-cover object-[58%_44%] opacity-78"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#0a0c0e_0%,rgba(10,12,14,0.9)_34%,rgba(10,12,14,0.42)_66%,rgba(10,12,14,0.1)_100%)]" />
+          <div
+            data-contact-hero-vertical-fade
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[44svh] bg-[linear-gradient(180deg,rgba(10,12,14,0)_0%,rgba(10,12,14,0.72)_62%,#0a0c0e_100%)]"
+          />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[22svh] bg-[linear-gradient(180deg,#050607_0%,rgba(5,6,7,0.58)_45%,rgba(5,6,7,0)_100%)]" />
+          <div className="relative mx-auto flex min-h-[86svh] max-w-[92rem] px-4 pt-28 pb-16 sm:px-6 lg:items-end lg:pt-36 lg:pb-20">
+            <div className="relative z-10 max-w-3xl">
               <p className="font-mono text-[0.68rem] tracking-[0.28em] text-accent-yellow uppercase">
                 Contact
               </p>
               <h1 className="mt-5 max-w-5xl text-[clamp(4.6rem,11vw,11rem)] leading-[0.86] font-thin tracking-normal text-white">
                 Contact us.
               </h1>
-            </div>
-            <div className="max-w-xl lg:pb-4">
-              <p className="text-lg leading-8 text-white/62">
+              <p className="mt-8 max-w-xl text-lg leading-8 text-white/62">
                 For partnerships, media, recruitment and general enquiries,
-                email Sunswift Racing directly. The form has been removed so
-                messages route to the team without another inbox layer.
+                email Sunswift Racing directly.
               </p>
               <a
                 href={`mailto:${contactEmail}`}

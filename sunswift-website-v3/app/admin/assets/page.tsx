@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { AdminPublicAssetUploader } from "@/components/site/admin-public-asset-uploader"
 import { AdminShell } from "@/components/site/admin-shell"
 import { seedHeavyMediaAssets } from "@/app/admin/actions"
 import { listCmsRecords } from "@/lib/cms/api"
@@ -33,6 +34,8 @@ export default async function AdminAssetsPage() {
           </form>
         </div>
 
+        <AdminPublicAssetUploader />
+
         <div className="mt-8 overflow-hidden rounded-lg border border-border bg-card">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-border text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -41,6 +44,7 @@ export default async function AdminAssetsPage() {
                 <th className="px-4 py-3">Type</th>
                 <th className="px-4 py-3">Size</th>
                 <th className="px-4 py-3">Source</th>
+                <th className="px-4 py-3">URL</th>
               </tr>
             </thead>
             <tbody>
@@ -50,6 +54,20 @@ export default async function AdminAssetsPage() {
                   <td className="px-4 py-3">{asset.contentType}</td>
                   <td className="px-4 py-3">{formatSize(asset.size)}</td>
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{asset.source}</td>
+                  <td className="px-4 py-3 font-mono text-xs">
+                    {asset.publicUrl ? (
+                      <a
+                        href={asset.publicUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="break-all text-primary hover:underline"
+                      >
+                        {asset.publicUrl}
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground">Registered asset</span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -59,4 +77,3 @@ export default async function AdminAssetsPage() {
     </AdminShell>
   )
 }
-

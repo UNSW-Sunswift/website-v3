@@ -4,8 +4,14 @@ import Image from "next/image"
 import { ChevronDown } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 
+import { TransparentNavbar } from "@/components/site/transparent-navbar"
 import { cn } from "@/lib/utils"
 import type { TeamMember as CmsTeamMember } from "@/lib/cms/types"
+
+/**
+ * Hydrates from CMS `TeamMember`: `publishedAssetKey`, `hierarchyLevel`, etc.
+ * align with the CMS replacement database schema; placeholderMembers cover local dev.
+ */
 
 /** Publication order (top → bottom), aligned with Webflow / CMS hierarchy levels. */
 export const TEAM_ROSTER_SECTION_ORDER = [
@@ -37,6 +43,8 @@ type RosterMember = {
 }
 
 const placeholderImage = "/placeholders/team-member.svg"
+
+const teamHeroMediaPath = "/media/our-team.jpg"
 
 function hierarchyToSection(level: string | undefined): TeamRosterSection {
   const h = String(level ?? "").trim()
@@ -222,52 +230,67 @@ export function TeamRoster({
       data-team-page
       className="min-h-screen overflow-x-clip bg-[#080808] text-white"
     >
-      <section className="relative isolate pt-32 pb-14 sm:pt-40 lg:pb-20">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_72%_16%,rgba(245,208,0,0.2),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.08),transparent_42%)]" />
-        <div className="mx-auto grid max-w-[92rem] gap-10 px-6 sm:px-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-end lg:px-14">
-          <div>
-            <p className="font-mono text-xs tracking-[0.38em] text-accent-yellow uppercase">
-              Team
-            </p>
-            <h1 className="mt-5 max-w-5xl text-[clamp(4rem,13vw,13rem)] leading-[0.78] font-thin tracking-normal">
-              Our Team.
-            </h1>
+      <div className="relative">
+        <TransparentNavbar />
+        <section
+          data-team-hero
+          className="relative min-h-[86svh] overflow-hidden bg-[#080808]"
+        >
+          <div className="pointer-events-none absolute inset-0 z-[1]">
+            <Image
+              src={teamHeroMediaPath}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-[50%_38%]"
+            />
           </div>
-          <div className="max-w-md lg:justify-self-end">
-            <p className="text-lg leading-7 text-white/70">
-              A student-led racing team spanning engineering, business, media
-              and operations. Profiles are sourced from the CMS replacement
-              database with static fallbacks for local development.
-            </p>
-            <div className="mt-8 grid grid-cols-2 border-y border-white/15 py-5">
-              <div>
-                <p
-                  data-team-count
-                  className="text-3xl font-light tracking-normal text-white"
-                >
-                  {rosterMembers.length}
-                </p>
-                <p className="mt-1 font-mono text-[0.66rem] tracking-[0.22em] text-white/42 uppercase">
-                  Profiles
-                </p>
-              </div>
-              <div className="border-l border-white/15 pl-5">
-                <p
-                  data-team-department-count
-                  className="text-3xl font-light tracking-normal text-white"
-                >
-                  {departmentCount}
-                </p>
-                <p className="mt-1 font-mono text-[0.66rem] tracking-[0.22em] text-white/42 uppercase">
-                  Departments
-                </p>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-[2] bg-[linear-gradient(180deg,transparent_0%,rgba(8,8,8,0.08)_38%,rgba(8,8,8,0.58)_68%,rgba(8,8,8,0.94)_88%,#080808_100%),linear-gradient(90deg,rgba(8,8,8,0.88)_0%,rgba(8,8,8,0.52)_min(28rem,72%),rgba(8,8,8,0.12)_min(42rem,85%),transparent_100%)]"
+          />
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-[3] h-40 bg-[linear-gradient(180deg,#000_0%,rgba(10,12,14,0)_100%)]" />
+          <div className="relative z-10 mx-auto flex min-h-[86svh] max-w-[92rem] flex-col justify-end px-4 pb-12 pt-28 sm:px-6 sm:pb-16 lg:pb-20 lg:pt-36">
+            <div className="max-w-3xl">
+              <h1 className="team-hero-enter team-hero-enter-delay-1 mt-4 max-w-[min(100%,18ch)] text-[clamp(3.25rem,9.5vw,8.25rem)] leading-[0.88] font-thin tracking-normal text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.48)]">
+                Our Team.
+              </h1>
+
+              <div
+                className="team-hero-enter team-hero-enter-delay-2 mt-10 flex flex-wrap gap-4 sm:gap-5"
+                data-team-hero-metrics
+                aria-label="Team roster stats"
+              >
+                <div className="flex min-h-[7.75rem] min-w-[10.5rem] flex-1 flex-col justify-between border border-white/16 bg-black/38 px-5 py-4 backdrop-blur-md sm:max-w-[13rem] sm:flex-none lg:py-5">
+                  <p className="font-mono text-[0.62rem] tracking-[0.22em] text-white/52 uppercase">
+                    Members
+                  </p>
+                  <p
+                    data-team-count
+                    className="mt-5 text-[2.35rem] font-light tracking-tight text-white tabular-nums leading-none sm:text-[2.65rem]"
+                  >
+                    {rosterMembers.length}
+                  </p>
+                </div>
+                <div className="flex min-h-[7.75rem] min-w-[10.5rem] flex-1 flex-col justify-between border border-white/16 bg-black/38 px-5 py-4 backdrop-blur-md sm:max-w-[13rem] sm:flex-none lg:py-5">
+                  <p className="font-mono text-[0.62rem] tracking-[0.22em] text-white/52 uppercase">
+                    Departments
+                  </p>
+                  <p
+                    data-team-department-count
+                    className="mt-5 text-[2.35rem] font-light tracking-tight text-white tabular-nums leading-none sm:text-[2.65rem]"
+                  >
+                    {departmentCount}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <section className="mx-auto max-w-[92rem] px-6 pb-28 sm:px-10 lg:px-14">
+      <section className="mx-auto max-w-[92rem] border-t border-white/10 px-6 pb-28 pt-12 sm:px-10 lg:px-14 lg:pt-14">
         <div
           className={cn(
             "sticky top-0 z-30 -mx-6 border-y border-white/12 bg-[#080808]/84 px-6 py-4 backdrop-blur-2xl sm:-mx-10 sm:px-10 lg:-mx-14 lg:px-14",

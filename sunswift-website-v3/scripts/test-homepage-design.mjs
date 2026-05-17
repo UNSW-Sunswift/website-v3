@@ -165,6 +165,10 @@ const adminPartnersPage = readFileSync(
   join(root, "app/admin/partners/page.tsx"),
   "utf8"
 )
+const adminTimelinePage = readFileSync(
+  join(root, "app/admin/timeline/page.tsx"),
+  "utf8"
+)
 const adminAssetsPage = readFileSync(
   join(root, "app/admin/assets/page.tsx"),
   "utf8"
@@ -177,6 +181,21 @@ const cmsAdminHandler = readFileSync(
   join(root, "../aws/lambda/cms-admin-handler.js"),
   "utf8"
 )
+const pageLoadReveal = readFileSync(
+  join(root, "components/site/page-load-reveal.tsx"),
+  "utf8"
+)
+const publicAssetRoute = readFileSync(
+  join(root, "app/api/admin/public-assets/route.ts"),
+  "utf8"
+)
+const publicAssetUploader = readFileSync(
+  join(root, "components/site/admin-public-asset-uploader.tsx"),
+  "utf8"
+)
+const partnerImportSchema = readFileSync(join(root, "PARTNER_IMPORT_SCHEMA.md"), "utf8")
+const vercelAwsDeployment = readFileSync(join(root, "VERCEL_AWS_DEPLOYMENT.md"), "utf8")
+const awsStack = readFileSync(join(root, "../aws/lib/website-v3-stack.ts"), "utf8")
 
 const failures = []
 
@@ -243,7 +262,7 @@ assert(
   "Role stream pages must derive the browser tab title from the active stream."
 )
 assert(
-  page.includes("<TransparentNavbar />"),
+  /<TransparentNavbar[\s/>]/.test(page),
   "Homepage must render the transparent navbar component."
 )
 assert(
@@ -354,8 +373,9 @@ assert(
   "Zoom-reveal section must drive a --zoom-text-y custom property for the glide effect."
 )
 assert(
-  /--zoom-wipe-y/.test(zoomReveal) && /data-homepage-zoom-wipe/.test(zoomReveal),
-  "Zoom-reveal section must use the shared upward wipe treatment without frame-sequence scroll timing."
+  !/--zoom-wipe-y/.test(zoomReveal) &&
+    !/data-homepage-zoom-wipe/.test(zoomReveal),
+  "Zoom-reveal must not use the black hero handoff wipe; the first scroll section follows the hero directly."
 )
 assert(
   /--zoom-opacity/.test(zoomReveal),
@@ -390,8 +410,8 @@ assert(
   "Zoom-reveal section must use a light canvas so the headline can darken from gray to black."
 )
 assert(
-  /data-homepage-zoom-wipe/.test(zoomReveal) && /bg-black/.test(zoomReveal),
-  "Zoom-reveal section must keep the light canvas but use a black upward wipe during the handoff."
+  !/data-homepage-zoom-wipe/.test(zoomReveal) && !/homepage-zoom-wipe/.test(zoomReveal),
+  "Zoom-reveal must not render the removed black handoff layer."
 )
 assert(
   !/text-shadow:[^;]*rgba\(0,\s*0,\s*0,\s*0\.5/.test(zoomReveal),
@@ -405,6 +425,10 @@ assert(
 assert(
   /\.homepage-zoom-render\s*{/.test(globalsCss),
   "globals.css must style the .homepage-zoom-render helper."
+)
+assert(
+  !/\.homepage-zoom-wipe\s*{/.test(globalsCss),
+  "globals.css must not include the removed .homepage-zoom-wipe handoff layer."
 )
 assert(
   !/\.homepage-zoom-sweep\s*{/.test(globalsCss),
@@ -436,8 +460,8 @@ assert(
   "Hero must expose data-homepage-hero for browser verification."
 )
 assert(
-  hero.includes('"Today, Tomorrow"'),
-  "Hero must use the revised slogan 'Today, Tomorrow'."
+  hero.includes('"Tomorrow, Today."'),
+  "Hero must use the slogan 'Tomorrow, Today.'."
 )
 assert(
   hero.includes("useEffect"),
@@ -477,6 +501,20 @@ assert(
 assert(
   navbar.includes("data-homepage-navbar"),
   "Navbar must expose data-homepage-navbar for verification."
+)
+assert(
+  /<TransparentNavbar[^>]*heroEdgeVignette/.test(page),
+  "Homepage must enable TransparentNavbar heroEdgeVignette for landing contrast."
+)
+assert(
+  navbar.includes("data-homepage-navbar-vignette") &&
+    navbar.includes("data-homepage-navbar-vignette-top") &&
+    navbar.includes("data-homepage-top-vignette") &&
+    navbar.includes("h-[8.75svh]") &&
+    navbar.includes("linear-gradient(180deg,rgba(0,0,0,0.6)_0%") &&
+    navbar.includes("rgba(10,12,14,0.55)_30%") &&
+    navbar.includes("rgba(10,12,14,0.33)_70%"),
+  "Hero-only navbar uses a lighter vehicles-style vignette (≈40% softer alphas) with h-[8.75svh] band."
 )
 assert(/bg-transparent/.test(navbar), "Navbar must be transparent.")
 for (const label of [
@@ -947,9 +985,9 @@ assert(
 )
 assert(
   recruitmentPage.includes(
-    "https://forms.gle/sunswift-business-media-placeholder"
+    "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=pM_2PxXn20i44Qhnufn7o7pdhLeqwPNNryop8wbNiK9UMERaOFI2QkgzMTY4Q1NHTjRPMUROVk5OWS4u",
   ),
-  "Recruitment page must link the alternative applications CTA to the placeholder Google Forms URL."
+  "Recruitment page must link the alternative applications CTA to the business/media Microsoft Forms URL.",
 )
 assert(
   recruitmentPage.includes("Business/media form"),
@@ -1084,6 +1122,11 @@ assert(
 assert(
   partnersPageContent.includes("<TransparentNavbar />"),
   "Partners page must use the transparent navbar."
+)
+assert(
+  partnersPageContent.includes("data-partners-hero") &&
+    partnersPageContent.includes("/media/partners-picture.avif"),
+  "Partners hero must mount data-partners-hero with the public media partners portrait."
 )
 assert(
   partnersPageContent.includes(
@@ -1496,15 +1539,15 @@ assert(
   "Site footer must not use the old hard top border."
 )
 assert(
-  siteShell.includes("before:-top-24") &&
+  siteShell.includes("before:-top-40") &&
+    siteShell.includes("before:h-40") &&
     siteShell.includes("linear-gradient(180deg") &&
     siteShell.includes("shadow-[0_-32px_80px_rgba(0,0,0,0.34)]"),
   "Site footer must use a dark vignette transition instead of a hard line."
 )
 assert(
-  /sm:text-5xl/.test(siteShell) &&
-    /lg:text-6xl/.test(siteShell) &&
-    siteShell.includes("Tomorrow, Today."),
+  /lg:text-5xl/.test(siteShell) &&
+    siteShell.includes("Built by Students, Driving Sustainability."),
   "Site footer must use a restrained dark editorial headline."
 )
 assert(
@@ -1849,6 +1892,16 @@ for (const phrase of [
 }
 
 assert(
+  staticData.includes("/achievements/bwsc-13.avif"),
+  "Achievements milestones must use public/achievements still images (BWSC ’13 → bwsc-13.avif)."
+)
+assert(
+  staticData.includes("/placeholders/violet-bwsc-19.mp4") &&
+    !staticData.includes("timeline-violet-demo"),
+  "BWSC ’19 timeline video must use /placeholders/violet-bwsc-19.mp4 (not timeline-violet-demo)."
+)
+
+assert(
   !staticData.includes("/placeholders/vehicle-violet.svg"),
   "Static CMS data must not reference the removed vehicle-violet.svg."
 )
@@ -1869,8 +1922,9 @@ assert(
   "About pages gallery must use vehicle-fleet vehicle-violet.avif for Violet imagery."
 )
 assert(
-  teamPage.includes("TransparentNavbar") && teamPage.includes("TeamRoster"),
-  "Team route must render the transparent navbar and the front-end roster component."
+  teamPage.includes("<TeamRoster members={members} />") &&
+    teamRoster.includes("<TransparentNavbar />"),
+  "Team route must render the roster with an embedded transparent navbar on the photo hero shell."
 )
 assert(
   teamPage.includes('listCmsRecords("team", "published")') &&
@@ -1989,6 +2043,10 @@ assert(
   "Auth must expose a developer admin credentials provider only for non-production local regression testing."
 )
 assert(
+  authConfig.includes('prompt: "select_account"'),
+  "Google OAuth must request account selection so admins can choose between multiple Google accounts."
+)
+assert(
   adminActions.includes("signInAsDeveloper") &&
     adminActions.includes('signIn("developer"') &&
     adminActions.includes('process.env.NODE_ENV === "production"'),
@@ -2005,6 +2063,16 @@ assert(
 assert(
   adminTeamPage.includes("data-admin-team-editor"),
   "Admin team page must expose a stable editor hook for browser regression testing."
+)
+assert(
+  adminTeamPage.includes("data-admin-team-profile-grid") &&
+    adminTeamPage.includes("data-admin-team-density-toggle") &&
+    adminTeamPage.includes("data-admin-team-edit-panel") &&
+    adminTeamPage.includes("Edit profile") &&
+    adminTeamPage.includes("Extra compact cards") &&
+    adminTeamPage.includes("aspect-square") &&
+    !adminTeamPage.includes("lg:grid-cols-[220px_1fr]"),
+  "Admin team page must use compact grid cards with an extra-compact density toggle and expandable profile editors instead of the old wide list editor."
 )
 assert(
   adminTeamPage.includes("TEAM_DEPARTMENTS") &&
@@ -2040,8 +2108,12 @@ assert(
   adminActions.includes("fetchUrlAsFile") &&
     adminActions.includes("fetchTextUrl") &&
     adminActions.includes('formData.get("headshotUrl")') &&
-    adminActions.includes('formData.get("csvUrl")'),
-  "Team admin actions must accept remote URLs for headshots and team CSV imports."
+    adminActions.includes('formData.get("csvUrl")') &&
+    adminActions.includes("existingRecords") &&
+    !adminActions.includes("existing?.imageKey") &&
+    cmsCsv.includes('hierarchyLevel === "Team"') &&
+    cmsCsv.includes("importedRole"),
+  "Team admin actions must accept remote URLs, overwrite imported team draft fields, and strip imported Team-level role titles."
 )
 assert(
   adminPublishStatus.includes("data-admin-publish-status") &&
@@ -2073,11 +2145,13 @@ assert(
     adminDashboardPage.includes('listCmsRecords("roles", "published")') &&
     adminDashboardPage.includes('listCmsRecords("partners", "draft")') &&
     adminDashboardPage.includes('listCmsRecords("partners", "published")') &&
+    adminDashboardPage.includes('listCmsRecords("timeline", "published")') &&
+    adminDashboardPage.includes("Timeline videos") &&
     !adminDashboardPage.includes("Live content summary") &&
     !adminDashboardPage.includes("published /") &&
     adminDashboardPage.includes("Draft") &&
     adminDashboardPage.includes("Published"),
-  "Admin staging dashboard must show direct draft and published counts for team, roles, and partners without a redundant summary panel."
+  "Admin staging dashboard must show direct draft and published counts for team, roles, partners, and timeline videos without a redundant summary panel."
 )
 assert(
   packageJson.includes(
@@ -2098,10 +2172,72 @@ assert(
 )
 assert(
   adminShell.includes("/admin/partners") &&
+    adminShell.includes("/admin/timeline") &&
     adminShell.includes("/admin/assets") &&
     adminPartnersPage.includes("data-admin-partners-import") &&
-    adminAssetsPage.includes("Register heavy media"),
-  "Admin dashboard must expose partners and assets CMS surfaces."
+    adminAssetsPage.includes("Register heavy media") &&
+    adminAssetsPage.includes("AdminPublicAssetUploader") &&
+    publicAssetUploader.includes("data-admin-public-asset-uploader") &&
+    publicAssetRoute.includes("getSignedUrl") &&
+    publicAssetRoute.includes("HeadObjectCommand") &&
+    publicAssetRoute.includes("recordMediaAsset"),
+  "Admin dashboard must expose partners, assets, and direct-to-S3 public asset uploads with URL registration."
+)
+assert(
+  adminTimelinePage.includes("data-admin-timeline-page") &&
+    adminTimelinePage.includes("data-admin-timeline-grid") &&
+    adminTimelinePage.includes("data-admin-timeline-record") &&
+    adminTimelinePage.includes("saveTimelineVideoSetting") &&
+    adminTimelinePage.includes('name="videoEnabled"') &&
+    adminTimelinePage.includes('name="videoUrl"') &&
+    adminActions.includes("saveTimelineVideoSetting") &&
+    adminActions.includes("saveCmsPublished") &&
+    adminActions.includes('revalidatePath("/achievements")') &&
+    cmsApi.includes('type CmsCollection = "team" | "roles" | "partners" | "assets" | "timeline"') &&
+    cmsDynamodb.includes("putTimelineVideoSetting") &&
+    achievementsPage.includes('listCmsRecords("timeline", "published")') &&
+    achievementsPage.includes("applyTimelineVideoSettings") &&
+    staticData.includes("achievementVideoSlug") &&
+    staticData.includes("applyTimelineVideoSettings") &&
+    cmsTypes.includes("TimelineVideoSetting"),
+  "Admin timeline page must edit live achievement video settings and the achievements route must merge them over static timeline data."
+)
+assert(
+  adminPartnersPage.includes('name="csvUrl"') &&
+    adminPartnersPage.includes('name="logoUrl"') &&
+    adminActions.includes('formData.get("logoUrl")') &&
+    cmsCsv.includes('record["Sort Order"]') &&
+    partnerImportSchema.includes("Partner Import Schema") &&
+    partnerImportSchema.includes("Name,Website,Logo,Sort Order,Slug"),
+  "Partner imports must document the mass-upload schema and support CSV URLs, logo URLs, and sort-order columns."
+)
+assert(
+  vercelAwsDeployment.includes("Vercel + AWS Deployment") &&
+    vercelAwsDeployment.includes("CMS_PUBLIC_ASSET_BASE_URL") &&
+    vercelAwsDeployment.includes("prompt=select_account") &&
+    awsStack.includes("allowedMethods") &&
+    awsStack.includes("s3.HttpMethods.PUT") &&
+    awsStack.includes("exposedHeaders") &&
+    awsStack.includes("ETag"),
+  "Deployment docs and AWS stack must cover Vercel env vars, Google account selection, and public S3 CORS for large uploads."
+)
+assert(
+  pageLoadReveal.includes("data-page-load-reveal") &&
+    pageLoadReveal.includes("data-page-load-variant") &&
+    pageLoadReveal.includes('variant = "subtle"') &&
+    globalsCss.includes("@keyframes page-load-reveal-out") &&
+    globalsCss.includes("@keyframes page-load-image-in") &&
+    globalsCss.includes("@keyframes page-load-subtle-image-in") &&
+    globalsCss.includes("page-load-reveal-out 560ms") &&
+    !teamPage.includes("<PageLoadReveal") &&
+    mediaPage.includes("<PageLoadReveal") &&
+    mediaPage.includes('variant="cinematic"') &&
+    !contactPage.includes("<PageLoadReveal") &&
+    whoWeArePage.includes("<PageLoadReveal") &&
+    whoWeArePage.includes('variant="cinematic"') &&
+    recruitmentPage.includes("<PageLoadReveal") &&
+    achievementsPage.includes("<PageLoadReveal"),
+  "Team must use the partners-style in-page hero transition, contact must not use the route reveal, media/who-we-are keep the longer cinematic reveal, and recruitment/achievements use the faster subtle reveal."
 )
 assert(
   partnersPage.includes('listCmsRecords("partners", "published")') &&
@@ -2193,6 +2329,15 @@ assert(
   /data-media-highlight-card/.test(mediaHighlightsPage),
   "Each media highlight must expose data-media-highlight-card on the link surface."
 )
+assert(
+  mediaHighlightsPage.includes("data-media-hero-background") &&
+    mediaHighlightsPage.includes("data-media-hero-vertical-fade") &&
+    mediaHighlightsPage.includes("data-media-highlight-background-card") &&
+    mediaHighlightsPage.includes("data-media-highlight-card-fade") &&
+    mediaHighlightsPage.includes("linear-gradient(180deg") &&
+    !mediaHighlightsPage.includes("lg:grid-cols-[1.05fr_0.95fr]"),
+  "Media hero and highlight cards must place imagery behind the text with vertical fades into the page background."
+)
 for (const href of [
   "https://aws.amazon.com/solutions/case-studies/unsw-sunswift-racing-case-study/",
   "https://www.altium.com/company/customer-success/driving-greater-energy-efficiency-unsws-sunswift-racing-and-altium",
@@ -2219,6 +2364,15 @@ assert(
   contactPageContent.includes("data-contact-page") &&
     contactPageContent.includes("data-contact-email-link"),
   "Contact page must expose browser verification hooks."
+)
+assert(
+  contactPageContent.includes("data-contact-hero-background") &&
+    contactPageContent.includes("data-contact-hero-vertical-fade") &&
+    contactPageContent.includes("/media/contact-banner.jpg") &&
+    contactPageContent.includes("linear-gradient(180deg") &&
+    contactPageContent.includes("linear-gradient(90deg") &&
+    !contactPageContent.includes("lg:grid-cols-[1.02fr_0.98fr]"),
+  "Contact hero must place the banner behind the text with a vertical fade into the page background."
 )
 assert(
   contactPageContent.includes("mailto:") &&

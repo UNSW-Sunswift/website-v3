@@ -82,11 +82,12 @@ export function importTeamCsv(text: string): TeamMember[] {
       const imageKey = String(record.Headshot ?? "").trim()
       const fallbackRole =
         department === "Business" ? "Business Officer" : `${department} Engineer`.trim()
+      const importedRole = hierarchyLevel === "Team" ? "" : role || fallbackRole
 
       return {
         slug: slugify(name),
         name,
-        role: role || fallbackRole,
+        role: importedRole,
         department,
         hierarchyLevel,
         additionalRoles,
@@ -122,13 +123,14 @@ export function importRecruitmentCsv(text: string): RecruitmentRole[] {
 export function importPartnersCsv(text: string): Partner[] {
   return recordsFromCsv(text).map((record, index) => {
     const name = String(record.Partners ?? record.Name ?? "").trim()
+    const sortOrder = Number(record["Sort Order"] || record.SortOrder || record.Order || index + 1)
 
     return {
       slug: slugify(String(record.Slug || name)),
       name,
       website: String(record["Partner Website"] || record.Website || "#").trim(),
       logoKey: String(record.Logo ?? "").trim(),
-      sortOrder: index + 1,
+      sortOrder: Number.isFinite(sortOrder) ? sortOrder : index + 1,
       status: "draft" as const,
     }
   }).filter((partner) => partner.slug && partner.name)

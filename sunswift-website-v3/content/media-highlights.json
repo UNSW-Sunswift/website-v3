@@ -139,26 +139,6 @@
           "subtitle": "Video description"
         }
       ]
-    },
-    {
-      "id": "team-highlights-external",
-      "heading": "Team Highlights",
-      "items": [
-        {
-          "title": "Sunswift 7: Driving technology forward",
-          "href": "https://www.unsw.edu.au/newsroom/news/2022/10/ev-record-breakers-sunswift-7-goes-1000km-on-a-single-charge-in-worlds-best-time",
-          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b414680027319b21190c_2023-03-Image61c.cropimg.width%3D700.crop%3Dlandscape.avif",
-          "imageAlt": "UNSW newsroom — Guinness record attempt",
-          "subtitle": "UNSW's latest high-performance solar powered car, designed and built by students, is now on track for an incredible Guinness World Record attempt."
-        },
-        {
-          "title": "Sunswift 7: Driving technology forward",
-          "href": "https://news.unsw.edu.au/en/sunswift-7--driving-technology-forward",
-          "imageSrc": "https://cdn.prod.website-files.com/68170b56936df62525bb06bd/6852b3a4bec1c0fd9509f7f1_Sunswift%207%20speeds%20by%20with%20drivers%20wearing%20helmets(1).avif",
-          "imageAlt": "Sunswift 7 — technology forward",
-          "subtitle": "UNSW's latest high-performance solar powered car, designed and built by students, is now on track for an incredible Guinness World Record attempt."
-        }
-      ]
     }
   ]
 }

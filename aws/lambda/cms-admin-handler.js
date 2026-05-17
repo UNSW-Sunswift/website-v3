@@ -8,6 +8,7 @@ const collectionConfig = {
   roles: { id: "recruitment-roles", kind: "role" },
   partners: { id: "partners", kind: "partner" },
   assets: { id: "media-assets", kind: "asset" },
+  timeline: { id: "timeline-videos", kind: "timeline-video" },
 }
 
 function response(statusCode, body) {
@@ -44,7 +45,7 @@ async function list(collection, status) {
 
 async function saveDraft(collection, slug, body) {
   const config = collectionConfig[collection]
-  if (!config || collection === "assets") {
+  if (!config || collection === "assets" || collection === "timeline") {
     return response(404, { error: "Unknown mutable CMS collection" })
   }
 
@@ -61,9 +62,28 @@ async function saveDraft(collection, slug, body) {
   return response(200, { item })
 }
 
+async function savePublished(collection, slug, body) {
+  const config = collectionConfig[collection]
+  if (!config || collection !== "timeline") {
+    return response(404, { error: "Unknown live CMS collection" })
+  }
+
+  const item = {
+    ...body,
+    id: config.id,
+    type: itemType(config.kind, slug, "published"),
+    slug,
+    status: "published",
+    updatedAt: body.updatedAt || new Date().toISOString(),
+  }
+
+  await dynamo.send(new PutCommand({ TableName: process.env.CMS_TABLE_NAME, Item: item }))
+  return response(200, { item })
+}
+
 async function publish(collection, slug, updatedBy) {
   const config = collectionConfig[collection]
-  if (!config || collection === "assets") {
+  if (!config || collection === "assets" || collection === "timeline") {
     return response(404, { error: "Unknown mutable CMS collection" })
   }
 
@@ -136,6 +156,10 @@ exports.handler = async (event) => {
 
   if (method === "PUT" && parts[0] === "cms" && parts[1] === "admin" && parts[4] === "draft") {
     return saveDraft(parts[2], parts[3], body)
+  }
+
+  if (method === "PUT" && parts[0] === "cms" && parts[1] === "admin" && parts[4] === "published") {
+    return savePublished(parts[2], parts[3], body)
   }
 
   if (method === "POST" && parts[0] === "cms" && parts[1] === "admin" && parts[4] === "publish") {

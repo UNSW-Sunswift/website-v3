@@ -7,7 +7,9 @@
       "status": "complete",
       "description": "Provide a local LocalStack DynamoDB setup that mimics the CMS data layer for the webapp and is usable by future coding agents.",
       "verification": {
-        "required": ["./init.sh"],
+        "required": [
+          "./init.sh"
+        ],
         "last_run": "2026-05-15",
         "evidence": [
           "bash -n init.sh: passed",
@@ -427,19 +429,21 @@
           "pnpm build",
           "pnpm verify:browser"
         ],
-        "last_run": "2026-05-15",
+        "last_run": "2026-05-17",
         "evidence": [
           "./init.sh: passed with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
           "pnpm test:homepage-design: passed with assertions that --zoom-scale is no longer used and blur/glide/sweep properties are present",
           "pnpm typecheck: passed",
           "pnpm lint: passed",
           "pnpm build: passed after network escalation for next/font Google Fonts fetch",
-          "pnpm verify:browser: passed on desktop 1440x1000 and mobile 390x844; focus reveal changed from blur(18px) to blur(0px) and rejected zoom-scale transforms"
+          "pnpm verify:browser: passed on desktop 1440x1000 and mobile 390x844; focus reveal changed from blur(18px) to blur(0px) and rejected zoom-scale transforms",
+          "2026-05-17: removed the black full-bleed handoff wipe between hero and focus-reveal (`HomepageZoomReveal`): deleted `[data-homepage-zoom-wipe]`, `--zoom-wipe-y`, and `.homepage-zoom-wipe` in globals; static contract forbids wipe hooks; `verify-browser` focus reveal checks headline motion and rejects any remaining wipe node"
         ]
       },
       "notes": [
         "Section naming still uses the existing homepage-zoom-reveal filename/data hooks to avoid broad churn, but the behavior no longer scales the headline.",
-        "Browser verifier now ignores intentional off-canvas motion layers and reads hidden mobile nav labels via textContent."
+        "Browser verifier now ignores intentional off-canvas motion layers and reads hidden mobile nav labels via textContent.",
+        "The hero-to-second-section transition is now a direct edge from `HomepageHero` (black) into the light `#f6f5f1` zoom-reveal stage with no black intermediate frame."
       ]
     },
     {
@@ -487,14 +491,16 @@
           "pnpm build",
           "pnpm verify:browser"
         ],
-        "last_run": "2026-05-15",
+        "last_run": "2026-05-17",
         "evidence": [
           "./init.sh: passed with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract",
           "pnpm typecheck: passed",
           "pnpm lint: passed",
           "pnpm test:homepage-design: passed",
+          "pnpm test:homepage-design (2026-05-17): landing `TransparentNavbar heroEdgeVignette` uses vehicles-style top gradient with lighter alphas, band `h-[8.75svh]`, hooks `data-homepage-navbar-vignette`, `data-homepage-navbar-vignette-top`, `data-homepage-top-vignette`; zoom-reveal black wipe removed (see feature homepage-sustainability-focus-reveal)",
           "pnpm build: passed",
-          "pnpm verify:browser: passed on desktop 1440x1000 and mobile 390x844; verified slogan-only homepage contract, hero image, no public chrome, no dev overlay, no horizontal overflow, and active scroll effect"
+          "pnpm verify:browser: desktop 1440x1000 + mobile 390x844; homepage contract includes navbar vignette DOM checks (`MISSING_HOMEPAGE_NAVBAR_VIGNETTE`, `MISSING_HOMEPAGE_NAVBAR_VIGNETTE_TOP`)",
+          "Homepage hero typing slogan: `Tomorrow, Today.` (`data-full-text` on `h1`; `verify-browser.mjs` expects `dataset.fullText` to match)"
         ]
       },
       "notes": [
@@ -800,12 +806,13 @@
           "./node_modules/.bin/eslint --quiet",
           "./node_modules/.bin/next build"
         ],
-        "last_run": "2026-05-15",
+        "last_run": "2026-05-17",
         "evidence": [
-          "node scripts/test-homepage-design.mjs: passed with persistent footer, dark UNSW asset, address, Linktree, copyright, and duplicate-footer assertions",
+          "node scripts/test-homepage-design.mjs: passed with persistent footer, dark UNSW asset, address, Linktree, copyright, duplicate-footer assertions, extended top `::before` vignette (before:-top-40/h-40, sm:before:-top-48), editorial h2 copy Built by Students, Driving Sustainability., lg:text-5xl",
           "./node_modules/.bin/tsc --noEmit: passed",
           "./node_modules/.bin/eslint --quiet: passed",
-          "./node_modules/.bin/next build: passed"
+          "./node_modules/.bin/next build: passed",
+          "scripts/verify-browser.mjs siteFooterContract: gradient ::before, headline phrase, Linktree; 2026-05-17 aligned with site-shell.tsx"
         ]
       },
       "notes": [
@@ -1648,7 +1655,9 @@
       "status": "complete",
       "description": "Align the vehicles detail heading with the overview panel and confirm the admin theme switch placement via browser regression.",
       "verification": {
-        "required": ["VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin"],
+        "required": [
+          "VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin"
+        ],
         "last_run": "2026-05-16",
         "evidence": [
           "VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin: passed"
@@ -2085,6 +2094,142 @@
         "HomepageRecords now contains the two actual record cards, removes the redundant three-decades summary, and uses a contrast-aware year colour on white.",
         "CMS Staging keeps direct draft/published collection cards but removes the redundant Live content summary panel.",
         "The untracked new_animation_task.md file was not changed."
+      ]
+    },
+    {
+      "id": "cms-localstack-write-path-recovery",
+      "priority": 68,
+      "title": "LocalStack CMS write-path recovery",
+      "status": "complete",
+      "description": "Fix the admin CMS development write path so LocalStack is used automatically when the endpoint env var is missing, then verify the team draft save and browser regression recover.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm verify:cms-admin"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "./init.sh: passed with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.",
+          "Manual /admin/team save: passed after editing the first draft row from Mechanical Lead to Mechanical Lead X.",
+          "VERIFY_URL=http://localhost:3000 pnpm verify:cms-admin: passed with DEV_LOGIN_CLICKED, ADMIN_DASHBOARD_OK, TEAM_DRAFT_EDIT_OK, TEAM_PUBLISH_MOVED_OK, RECRUITMENT_ADMIN_OK, PARTNERS_ADMIN_OK, and ASSETS_ADMIN_OK."
+        ]
+      },
+      "notes": [
+        "lib/aws.ts now defaults the dev AWS client config to LocalStack when AWS_ENDPOINT_URL is unset.",
+        "The team editor browser path once again persists draft edits before publish.",
+        "The untracked new_animation_task.md file was not changed."
+      ]
+    },
+    {
+      "id": "public-media-contact-background-banners",
+      "priority": 69,
+      "title": "Public media and contact background banner treatments",
+      "status": "complete",
+      "description": "Move the media highlights and contact page banner imagery behind the text with vertical fades into the page background, and guard those treatments in the static and browser harnesses.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-18",
+        "evidence": [
+          "pnpm typecheck: passed.",
+          "pnpm lint: passed.",
+          "pnpm test:homepage-design: passed with media and contact background-banner assertions.",
+          "Manual pnpm exec agent-browser open/wait/screenshot --annotate/snapshot -i checked /contact on http://127.0.0.1:3000; screenshot showed contact-banner imagery behind the hero text with a dark vertical handoff.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser: passed, including MEDIA_HIGHLIGHTS_OK and CONTACT_OK."
+        ]
+      },
+      "notes": [
+        "MediaHighlightsPage exposes data-media-hero-background, data-media-hero-vertical-fade, data-media-highlight-background-card, and data-media-highlight-card-fade so banners and highlight cards stay image-backed with vertical fades.",
+        "ContactPageContent now uses /media/contact-banner.jpg as the full hero background behind the contact copy, with data-contact-hero-background and data-contact-hero-vertical-fade selectors.",
+        "scripts/test-homepage-design.mjs and scripts/verify-browser.mjs both guard the new media/contact background banner treatments.",
+        "Existing dirty work outside this feature was preserved."
+      ]
+    },
+    {
+      "id": "admin-public-s3-partner-schema-route-reveals",
+      "priority": 70,
+      "title": "Admin public S3 uploads, partner import schema, team grid editing, and route reveals",
+      "status": "complete",
+      "description": "Add authenticated direct-to-S3 public media uploads with returned URLs, force Google account selection for admin OAuth, document partner mass-import schema, compact the admin team editor into grid cards, and add image-backed page-entry reveal animations for key public routes.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:browser",
+          "pnpm verify:cms-admin",
+          "npm run build (aws)",
+          "npm test -- --runInBand (aws)"
+        ],
+        "last_run": "2026-05-18",
+        "evidence": [
+          "pnpm typecheck: passed after implementation and after uploader loading-state adjustment.",
+          "pnpm lint: passed after implementation and after uploader loading-state adjustment.",
+          "pnpm test:homepage-design: passed with assertions for S3 uploader, OAuth account selection, partner schema, team grid editors, deployment docs, S3 CORS, and page-entry reveal hooks.",
+          "pnpm build: passed; production build includes /api/admin/public-assets.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser: passed, including homepage, team, media, contact, recruitment, partners, and public page contracts.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin: passed, including TEAM_DRAFT_EDIT_OK, TEAM_PUBLISH_MOVED_OK, PARTNERS_ADMIN_OK, and ASSETS_ADMIN_OK.",
+          "npm run build in aws: passed.",
+          "npm test -- --runInBand in aws: passed with the S3 CORS assertion.",
+          "./init.sh: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "/admin/assets now includes an authenticated direct-to-S3 uploader that presigns PUT requests, uploads to CMS_PUBLIC_ASSETS_BUCKET, registers the object as a published public-media asset, and displays the public URL.",
+        "Google OAuth provider now sends prompt=select_account so admins can choose among multiple Google accounts.",
+        "PARTNER_IMPORT_SCHEMA.md documents Name, Website, Logo, Sort Order, and optional Slug columns; partners import accepts CSV URLs and logo URLs.",
+        "/admin/team now renders compact profile grid cards with expandable Edit profile panels for draft and live records.",
+        "PageLoadReveal adds a route-entry background-image wipe/fade to /team, /media, /contact, /who-we-are, and /recruitment while honoring prefers-reduced-motion.",
+        "VERCEL_AWS_DEPLOYMENT.md records the AWS CDK outputs, Vercel env vars, direct AWS runtime setup, Google OAuth callback setup, and large-media upload flow.",
+        "The repo had unrelated dirty files before this pass; they were preserved."
+      ]
+    },
+    {
+      "id": "timeline-video-admin-and-route-transition-tuning",
+      "priority": 71,
+      "title": "Timeline video admin controls and public route transition tuning",
+      "status": "complete",
+      "description": "Add a Timeline admin section for live achievement video URL toggles, merge those settings into the public achievements timeline, tune page-load transitions, tighten team CSV overwrite/import behavior, and add an extra-compact team management density option.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:browser",
+          "pnpm verify:cms-admin",
+          "npm run build (aws)",
+          "npm test -- --runInBand (aws)",
+          "./init.sh"
+        ],
+        "last_run": "2026-05-18",
+        "evidence": [
+          "pnpm typecheck: passed after team import, transition, and timeline video admin changes.",
+          "pnpm lint: passed.",
+          "pnpm test:homepage-design: passed with assertions for subtle/cinematic route reveal variants, no team/contact route overlay, timeline video CMS controls, team CSV overwrite behavior, and extra-compact team admin cards.",
+          "pnpm build: passed; production route list includes dynamic /achievements and /admin/timeline.",
+          "npm run build in aws: passed.",
+          "npm test -- --runInBand in aws: passed.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser: passed, including achievements, team, media, contact, recruitment, partners, and route health contracts.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin: passed, including TEAM_DRAFT_EDIT_OK, TEAM_PUBLISH_MOVED_OK, TIMELINE_ADMIN_OK, PARTNERS_ADMIN_OK, and ASSETS_ADMIN_OK.",
+          "./init.sh: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "/admin/timeline now renders one form per achievement with a video-enabled checkbox and live video URL input; saving writes a published timeline video setting and revalidates /achievements.",
+        "The achievements route is dynamic and applies published timeline video settings over static timeline data, so disabled videos fall back to poster images immediately.",
+        "The CMS facade, DynamoDB local path, Lambda handler, and LocalStack seed now understand the timeline-videos collection.",
+        "Team CSV imports now overwrite matching draft fields instead of preserving stale image keys, and imported Team-level members have blank role titles while Officer and above keep imported roles.",
+        "The team admin grid is denser by default and includes an Extra compact cards toggle for easier management.",
+        "Our Team now uses the same in-page hero entrance style as Partners, Media keeps a longer cinematic route reveal, and Contact no longer renders a route-entry reveal."
       ]
     }
   ]

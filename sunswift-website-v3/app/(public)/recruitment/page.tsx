@@ -5,6 +5,7 @@ import {
   recruitmentStreamHref,
   recruitmentStreams,
 } from "@/components/site/recruitment-content"
+import { PageLoadReveal } from "@/components/site/page-load-reveal"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
 
 export const dynamic = "force-static"
@@ -12,18 +13,29 @@ export const metadata = {
   title: "Recruitment",
 }
 
-const intakeNotes = [
-  "Business and media students support operations, marketing, partnerships, recruitment, events and Sunswift's public presence.",
-  "Engineering students work across electrical, mechanical, software, renewable and chemical systems for the solar electric vehicle.",
-  "Engineering applications are managed through UNSW ChallENG/VIP pathways; business and media applicants can use the alternative form for faster routing.",
-]
+/** Hero intake row — phrases are asserted verbatim in homepage design regression. */
+const intakeSummaries = [
+  {
+    focus: "Operations & presence",
+    body: "Business and media students support operations, marketing, partnerships, recruitment, events and Sunswift's public presence.",
+  },
+  {
+    focus: "Vehicle programs",
+    body: "Engineering students work across electrical, mechanical, software, renewable and chemical systems for the solar electric vehicle.",
+  },
+  {
+    focus: "How to join",
+    body: "Engineering applications are managed through UNSW ChallENG/VIP pathways. Business and media applicants can also use the alternative form for applying as well.",
+  },
+] as const
 
 const alternativeApplicationsUrl =
-  "https://forms.gle/sunswift-business-media-placeholder"
+  "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=pM_2PxXn20i44Qhnufn7o7pdhLeqwPNNryop8wbNiK9UMERaOFI2QkgzMTY4Q1NHTjRPMUROVk5OWS4u"
 
 export default async function RecruitmentPage() {
   return (
     <main data-recruitment-hub className="bg-[#0a0c0e] text-white">
+      <PageLoadReveal image="/media/our-team.jpg" label="Recruitment" />
       <div className="relative">
         <TransparentNavbar />
         <section className="relative overflow-hidden bg-[#0a0c0e] text-white">
@@ -46,7 +58,7 @@ export default async function RecruitmentPage() {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
-                    href="https://www.unsw.edu.au/engineering/student-life/student-opportunities/challeng"
+                    href="https://www.unsw.edu.au/challeng/vertically-integrated-projects/explore-vertically-integrated-projects/sunswift-racing"
                     className="inline-flex items-center gap-3 border border-accent-yellow bg-accent-yellow px-5 py-3 font-mono text-[0.68rem] tracking-[0.24em] text-black uppercase transition-colors duration-300 hover:bg-white"
                   >
                     Apply here
@@ -66,13 +78,35 @@ export default async function RecruitmentPage() {
               </div>
             </div>
 
-            <div className="mt-16 grid gap-px overflow-hidden border border-white/10 bg-white/10 md:grid-cols-3">
-              {intakeNotes.map((note, index) => (
-                <div key={note} className="bg-[#0a0c0e]/95 p-6">
-                  <div className="font-mono text-[0.62rem] tracking-[0.24em] text-accent-yellow uppercase">
-                    0{index + 1}
+            <div
+              className="mt-16 grid gap-px overflow-hidden border border-white/10 bg-white/10 md:grid-cols-3"
+              data-recruitment-hub-intake
+            >
+              {intakeSummaries.map((panel) => (
+                <div
+                  key={panel.body}
+                  className="relative bg-[#0a0c0e]/95 p-6 sm:p-7"
+                >
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-yellow/22 to-transparent"
+                  />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-3">
+                      <span
+                        aria-hidden
+                        className="size-[7px] shrink-0 rotate-45 rounded-[1px] border border-accent-yellow/75 bg-accent-yellow/14 shadow-[inset_0_0_0_1px_rgba(245,208,0,0.06)]"
+                      />
+                      <p className="font-mono text-[0.58rem] leading-relaxed tracking-[0.28em] text-white/62 uppercase">
+                        {panel.focus}
+                      </p>
+                    </div>
+                    <div
+                      aria-hidden
+                      className="mt-3 h-px w-14 max-w-[44%] bg-gradient-to-r from-accent-yellow/55 to-transparent"
+                    />
+                    <p className="mt-5 text-sm leading-6 text-white/56">{panel.body}</p>
                   </div>
-                  <p className="mt-5 text-sm leading-6 text-white/56">{note}</p>
                 </div>
               ))}
             </div>
@@ -93,8 +127,7 @@ export default async function RecruitmentPage() {
             </div>
             <p className="max-w-2xl text-base leading-7 text-white/56 sm:text-lg">
               Each stream has a different relationship to the car and the team.
-              Pick a stream to jump into the available roles page, where the
-              matching CMS role cards are grouped for fast scanning.
+              Pick a stream to jump into the available roles page!
             </p>
           </div>
 

@@ -53,6 +53,20 @@ ensure_bucket() {
 ensure_bucket "$ASSETS_BUCKET"
 ensure_bucket "$PUBLIC_ASSETS_BUCKET"
 
+awslocal s3api put-bucket-cors \
+  --bucket "$PUBLIC_ASSETS_BUCKET" \
+  --cors-configuration '{
+    "CORSRules": [
+      {
+        "AllowedHeaders": ["*"],
+        "AllowedMethods": ["GET", "HEAD", "PUT"],
+        "AllowedOrigins": ["*"],
+        "ExposeHeaders": ["ETag"],
+        "MaxAgeSeconds": 3000
+      }
+    ]
+  }' >/dev/null
+
 awslocal dynamodb put-item \
   --table-name "$TABLE_NAME" \
   --item '{
@@ -169,6 +183,40 @@ awslocal dynamodb put-item \
 awslocal dynamodb put-item \
   --table-name "$TABLE_NAME" \
   --item '{
+    "id": { "S": "recruitment-roles" },
+    "type": { "S": "role#brand-storyteller#published" },
+    "slug": { "S": "brand-storyteller" },
+    "title": { "S": "Brand Storyteller" },
+    "team": { "S": "Media" },
+    "description": { "S": "Shape visual narratives across campaigns, shoots and launches so Sunswift stories feel cohesive and unmistakable." },
+    "active": { "BOOL": true },
+    "discipline": { "S": "Media" },
+    "school": { "S": "Design & Media" },
+    "sortOrder": { "N": "15" },
+    "responsibilitiesHtml": { "S": "<p>Own story arcs for launches, partner milestones and campus recruitment touchpoints.</p><ul><li>Coordinate shoots with drivers, workshop and paddock timelines</li><li>Edit selects for hero films, thumbnails and reels</li><li>Maintain a lightweight shared asset library</li></ul>" },
+    "requirementsHtml": { "S": "<p>Show a portfolio spanning photo and motion; collaborate clearly with voluntary student schedules.</p>" },
+    "status": { "S": "published" }
+  }' >/dev/null
+
+awslocal dynamodb put-item \
+  --table-name "$TABLE_NAME" \
+  --item '{
+    "id": { "S": "recruitment-roles" },
+    "type": { "S": "role#brand-storyteller#draft" },
+    "slug": { "S": "brand-storyteller" },
+    "title": { "S": "Brand Storyteller" },
+    "team": { "S": "Media" },
+    "description": { "S": "Shape visual narratives across campaigns, shoots and launches so Sunswift stories feel cohesive and unmistakable." },
+    "active": { "BOOL": true },
+    "discipline": { "S": "Media" },
+    "school": { "S": "Design & Media" },
+    "sortOrder": { "N": "15" },
+    "status": { "S": "draft" }
+  }' >/dev/null
+
+awslocal dynamodb put-item \
+  --table-name "$TABLE_NAME" \
+  --item '{
     "id": { "S": "media-assets" },
     "type": { "S": "asset#team-headshots#draft" },
     "slug": { "S": "team-headshots" },
@@ -272,6 +320,18 @@ seed_partner "total-tools" "Total Tools" "https://www.totaltools.com.au/" "320"
 seed_partner "trace" "TRaCE" "https://trace.org.au/" "330"
 seed_partner "unsw" "UNSW" "https://www.unsw.edu.au/" "340"
 seed_partner "wrapstyle-sydney" "WrapStyle Sydney" "https://wrapstylesydney.com/" "350"
+
+awslocal dynamodb put-item \
+  --table-name "$TABLE_NAME" \
+  --item '{
+    "id": { "S": "timeline-videos" },
+    "type": { "S": "timeline-video#2023-bridgestone-world-solar-challenge-23#published" },
+    "slug": { "S": "2023-bridgestone-world-solar-challenge-23" },
+    "achievementKey": { "S": "2023 Bridgestone World Solar Challenge '\''23" },
+    "videoEnabled": { "BOOL": true },
+    "videoUrl": { "S": "/placeholders/bwsc-23-vid.mp4" },
+    "status": { "S": "published" }
+  }' >/dev/null
 
 awslocal dynamodb put-item \
   --table-name "$TABLE_NAME" \

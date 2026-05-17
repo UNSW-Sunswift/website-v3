@@ -24,7 +24,19 @@ type AdminPartnersPageProps = {
 }
 
 export default async function AdminPartnersPage({ searchParams }: AdminPartnersPageProps) {
-  const partners = await listCmsRecords("partners", "draft")
+  const [draftPartners, publishedPartners] = await Promise.all([
+    listCmsRecords("partners", "draft"),
+    listCmsRecords("partners", "published"),
+  ])
+  const partners = [
+    ...draftPartners,
+    ...publishedPartners.filter(
+      (partner) => !draftPartners.some((draftPartner) => draftPartner.slug === partner.slug)
+    ),
+  ].sort(
+    (left, right) =>
+      (left.sortOrder ?? 0) - (right.sortOrder ?? 0) || left.name.localeCompare(right.name)
+  )
   const publishStatus = await searchParams
 
   return (
@@ -51,7 +63,7 @@ export default async function AdminPartnersPage({ searchParams }: AdminPartnersP
         <AdminBulkPublishPanel
           title="Publish partner drafts"
           description="Select the partners that should be pushed live. Grid view turns each partner into a compact selectable button for faster batch publishing."
-          items={partners.map((partner) => ({
+          items={draftPartners.map((partner) => ({
             slug: partner.slug,
             title: partner.name,
             eyebrow: "Partner",
@@ -68,12 +80,30 @@ export default async function AdminPartnersPage({ searchParams }: AdminPartnersP
           data-admin-partners-import
         >
           <h2 className="text-xl font-medium">Import partners CSV</h2>
-          <input
-            name="csv"
-            type="file"
-            accept=".csv,text/csv"
-            className="mt-4 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Use the documented partner schema: Name, Website, Logo, Sort Order, and optional Slug.
+            Upload a file or paste a CSV URL.
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <label className="grid gap-2 text-sm">
+              Upload CSV file
+              <input
+                name="csv"
+                type="file"
+                accept=".csv,text/csv"
+                className="w-full rounded-md border border-input bg-background p-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              Or paste CSV URL
+              <input
+                name="csvUrl"
+                type="url"
+                placeholder="https://example.com/partners.csv…"
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+              />
+            </label>
+          </div>
           <Button type="submit" className="mt-4">
             Import drafts
           </Button>
@@ -125,6 +155,15 @@ export default async function AdminPartnersPage({ searchParams }: AdminPartnersP
               Staged logo
               <input name="logo" type="file" accept="image/*" className="rounded-md border border-input bg-background px-3 py-2" />
             </label>
+            <label className="grid gap-2 text-sm">
+              Or paste logo URL
+              <input
+                name="logoUrl"
+                type="url"
+                placeholder="https://example.com/logo.svg…"
+                className="rounded-md border border-input bg-background px-3 py-2"
+              />
+            </label>
             <div className="sm:col-span-2">
               <Button type="submit">Save draft</Button>
             </div>
@@ -147,12 +186,22 @@ export default async function AdminPartnersPage({ searchParams }: AdminPartnersP
                     </div>
                   )}
                 </div>
-                <form action={publishPartner} className="mt-4">
-                  <input type="hidden" name="slug" value={partner.slug} />
-                  <Button type="submit" variant="outline" className="w-full">
-                    Publish
-                  </Button>
-                </form>
+                <div className="mt-4 flex items-center justify-between gap-3 rounded-md border border-border bg-background px-3 py-2 text-xs">
+                  <span className="font-mono tracking-[0.18em] text-muted-foreground uppercase">
+                    {partner.status === "published" ? "Live" : "Draft"}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {partner.status === "published" ? "Edit to stage changes" : "Ready to publish"}
+                  </span>
+                </div>
+                {partner.status !== "published" ? (
+                  <form action={publishPartner} className="mt-4">
+                    <input type="hidden" name="slug" value={partner.slug} />
+                    <Button type="submit" variant="outline" className="w-full">
+                      Publish
+                    </Button>
+                  </form>
+                ) : null}
                 <form action={deletePartner} className="mt-2">
                   <input type="hidden" name="slug" value={partner.slug} />
                   <input type="hidden" name="deletePublished" value="true" />
@@ -187,6 +236,15 @@ export default async function AdminPartnersPage({ searchParams }: AdminPartnersP
                 <label className="grid gap-2 text-sm">
                   Staged logo
                   <input name="logo" type="file" accept="image/*" className="rounded-md border border-input bg-background px-3 py-2" />
+                </label>
+                <label className="grid gap-2 text-sm">
+                  Or paste logo URL
+                  <input
+                    name="logoUrl"
+                    type="url"
+                    placeholder="https://example.com/logo.svg…"
+                    className="rounded-md border border-input bg-background px-3 py-2"
+                  />
                 </label>
                 <div className="sm:col-span-2">
                   <Button type="submit">Save draft</Button>

@@ -5,6 +5,7 @@ const adminUrl = new URL("/admin", baseUrl).toString()
 const teamUrl = new URL("/admin/team", baseUrl).toString()
 const recruitmentUrl = new URL("/admin/recruitment", baseUrl).toString()
 const partnersUrl = new URL("/admin/partners", baseUrl).toString()
+const timelineUrl = new URL("/admin/timeline", baseUrl).toString()
 const assetsUrl = new URL("/admin/assets", baseUrl).toString()
 
 function runAgentBrowser(args, options = {}) {
@@ -101,7 +102,7 @@ const adminDashboardContract = `(() => new Promise((resolve, reject) => {
   const tick = () => {
     const text = document.body.textContent || "";
     if (location.pathname === "/admin" && text.includes("CMS staging")) {
-      for (const phrase of ["Team members", "Recruitment roles", "Partners", "Draft", "Published", "Published S3 assets", "developer@sunswift.unsw.edu.au"]) {
+      for (const phrase of ["Team members", "Recruitment roles", "Partners", "Timeline videos", "Draft", "Published", "Published S3 assets", "developer@sunswift.unsw.edu.au"]) {
         if (!text.includes(phrase)) {
           reject(new Error("MISSING_DASHBOARD_COPY:" + phrase));
           return;
@@ -136,11 +137,12 @@ const teamDraftEditContract = `(() => new Promise((resolve, reject) => {
   const bulkPublish = document.querySelector("[data-admin-bulk-publish]");
   const selectAll = bulkPublish?.querySelector("[data-admin-select-all]");
   const publishSelected = bulkPublish?.querySelector("[data-admin-publish-selected]");
+  const densityToggle = document.querySelector("[data-admin-team-density-toggle] input");
   const csvUrl = importForm?.querySelector('input[name="csvUrl"]');
   const headshotUrl = form?.querySelector('input[name="headshotUrl"]');
   const visibleText = document.body.textContent || "";
 
-  if (!form || !importForm || !roleInput || !departmentSelect || !hierarchySelect || !bulkPublish || !selectAll || !publishSelected || !csvUrl || !headshotUrl) {
+  if (!form || !importForm || !roleInput || !departmentSelect || !hierarchySelect || !bulkPublish || !selectAll || !publishSelected || !densityToggle || !csvUrl || !headshotUrl) {
     reject(new Error("MISSING_TEAM_ADMIN_EDITOR"));
     return;
   }
@@ -263,10 +265,28 @@ const partnersContract = `(() => {
   return "PARTNERS_ADMIN_OK";
 })()`
 
+const timelineContract = `(() => {
+  const text = document.body.textContent || "";
+  if (!document.querySelector("[data-admin-timeline-page]") || !document.querySelector("[data-admin-timeline-grid]")) {
+    throw new Error("MISSING_TIMELINE_ADMIN_PAGE");
+  }
+  const record = document.querySelector("[data-admin-timeline-record]");
+  if (!record || !record.querySelector('input[name="videoEnabled"]') || !record.querySelector('input[name="videoUrl"]')) {
+    throw new Error("MISSING_TIMELINE_VIDEO_FIELDS");
+  }
+  if (!text.includes("Timeline videos") || !text.includes("Save live video setting")) {
+    throw new Error("MISSING_TIMELINE_ADMIN_COPY");
+  }
+  return "TIMELINE_ADMIN_OK";
+})()`
+
 const assetsContract = `(() => {
   const text = document.body.textContent || "";
-  if (!text.includes("Public media assets") || !text.includes("Register heavy media")) {
+  if (!text.includes("Public media assets") || !text.includes("Register heavy media") || !text.includes("Upload to public S3")) {
     throw new Error("MISSING_ASSETS_ADMIN_COPY");
+  }
+  if (!document.querySelector("[data-admin-public-asset-uploader]")) {
+    throw new Error("MISSING_PUBLIC_ASSET_UPLOADER");
   }
   if (!text.includes("public-media/placeholders/sr7-world-record.mp4")) {
     throw new Error("MISSING_HEAVY_MEDIA_RECORD");
@@ -309,6 +329,11 @@ try {
   runAgentBrowser(["wait", "--load", "networkidle"])
   console.log(evalInBrowser(pageHealthContract("Admin Partners | Sunswift Racing")))
   console.log(evalInBrowser(partnersContract))
+
+  runAgentBrowser(["open", timelineUrl])
+  runAgentBrowser(["wait", "--load", "networkidle"])
+  console.log(evalInBrowser(pageHealthContract("Admin Timeline | Sunswift Racing")))
+  console.log(evalInBrowser(timelineContract))
 
   runAgentBrowser(["open", assetsUrl])
   runAgentBrowser(["wait", "--load", "networkidle"])

@@ -8,6 +8,8 @@ import { TransparentNavbar } from "@/components/site/transparent-navbar"
 
 import { cn } from "@/lib/utils"
 
+const highlightsBanner = "/media/highlights-banner.jpg"
+
 type MediaHighlightItem = {
   title: string
   href: string
@@ -52,31 +54,33 @@ function MediaHighlightCard({
       target="_blank"
       rel="noopener noreferrer"
       data-media-highlight-card
+      data-media-highlight-background-card
       data-section-id={sectionId}
       {...extra}
       className={cn(
-        "group flex w-[20rem] shrink-0 snap-start flex-col overflow-hidden rounded-sm border border-white/10 bg-white/[0.035] transition-[border-color,background-color] duration-300",
-        "hover:border-accent-yellow/50 hover:bg-white/[0.06]",
+        "group relative flex h-[22rem] w-[20rem] shrink-0 snap-start overflow-hidden rounded-sm border border-white/10 bg-[#050607] transition-[border-color,box-shadow] duration-300",
+        "hover:border-accent-yellow/50 hover:shadow-[0_28px_90px_rgba(0,0,0,0.42)]",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-yellow",
       )}
     >
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/40">
-        <Image
-          src={item.imageSrc}
-          alt={item.imageAlt}
-          fill
-          sizes="(max-width: 1024px) 78vw, 320px"
-          className="object-cover transition duration-500 group-hover:brightness-[0.88] group-hover:scale-[1.03]"
-          unoptimized={item.imageSrc.includes("website-files.com")}
-        />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/75 to-transparent" />
-      </div>
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="text-base leading-snug font-light text-white/95">
+      <Image
+        src={item.imageSrc}
+        alt={item.imageAlt}
+        fill
+        sizes="(max-width: 1024px) 78vw, 320px"
+        className="object-cover opacity-78 transition duration-500 group-hover:scale-[1.03] group-hover:opacity-90"
+        unoptimized={item.imageSrc.includes("website-files.com")}
+      />
+      <div
+        data-media-highlight-card-fade
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,6,7,0.08)_0%,rgba(5,6,7,0.3)_42%,rgba(5,6,7,0.82)_78%,#0a0c0e_100%)]"
+      />
+      <div className="relative z-10 mt-auto flex flex-col gap-2 p-4">
+        <h3 className="text-base leading-snug font-light text-white">
           {item.title}
         </h3>
         {item.subtitle ? (
-          <p className="line-clamp-3 text-sm leading-relaxed text-white/50">
+          <p className="line-clamp-3 text-sm leading-relaxed text-white/66">
             {item.subtitle}
           </p>
         ) : null}
@@ -233,9 +237,7 @@ function HorizontalSection({
           ? { "data-media-team-highlights": "" as const }
           : section.id === "partner-spotlights"
             ? { "data-media-partner-spotlights": "" as const }
-            : section.id === "team-highlights-external"
-              ? { "data-media-team-highlights-external": "" as const }
-              : {}
+            : {}
   return (
     <section
       data-media-highlight-section
@@ -302,36 +304,51 @@ export function MediaHighlightsPage() {
         <div className="relative min-w-0">
           <section
             data-media-hero
-            className="relative min-h-[76svh] overflow-hidden border-b border-white/10 bg-[#0a0c0e]"
+            className="relative min-h-[82svh] overflow-hidden border-b border-white/10 bg-[#0a0c0e]"
           >
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(245,208,0,0.14)_0%,transparent_32%),linear-gradient(180deg,#050607_0%,#0a0c0e_62%,#050607_100%)]" />
-            <div className="relative mx-auto flex min-h-[76svh] max-w-[80rem] flex-col justify-end px-6 pt-32 pb-16 sm:px-10 lg:pt-40 lg:pb-20">
-              <p className="font-mono text-[0.66rem] tracking-[0.28em] text-accent-yellow uppercase">
-                Media
-              </p>
-              <h1 className="mt-5 max-w-5xl text-[clamp(4.6rem,12vw,12rem)] leading-[0.84] font-thin tracking-normal text-white">
-                Highlights.
-              </h1>
-              <p className="mt-8 max-w-xl text-lg leading-8 text-white/62">
-                Explore stories, videos, and partner coverage —
-                same structure as the Sunswift Webflow highlights page, rebuilt for
-                this site.
-              </p>
-              <div className="mt-10 flex flex-wrap gap-3">
-                <a
-                  href="#media-spotlight"
-                  className="inline-flex items-center gap-3 border border-accent-yellow bg-accent-yellow px-5 py-3 font-mono text-[0.66rem] tracking-[0.24em] text-black uppercase transition-colors duration-300 hover:bg-white"
-                >
-                  View highlights
-                  <ArrowRight className="size-4" />
-                </a>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-3 border border-white/20 px-5 py-3 font-mono text-[0.66rem] tracking-[0.24em] text-white uppercase transition-colors duration-300 hover:border-accent-yellow hover:bg-accent-yellow hover:text-black"
-                >
-                  Press enquiries
-                  <ArrowRight className="size-4" />
-                </Link>
+            <Image
+              data-media-hero-background
+              src={highlightsBanner}
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 1024px) 72vw, 100vw"
+              className="object-cover object-[56%_45%] opacity-82"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#0a0c0e_0%,rgba(10,12,14,0.86)_30%,rgba(10,12,14,0.34)_62%,rgba(10,12,14,0.06)_100%)]" />
+            <div
+              data-media-hero-vertical-fade
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[42svh] bg-[linear-gradient(180deg,rgba(10,12,14,0)_0%,rgba(10,12,14,0.72)_66%,#0a0c0e_100%)]"
+            />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[22svh] bg-[linear-gradient(180deg,#050607_0%,rgba(5,6,7,0.56)_45%,rgba(5,6,7,0)_100%)]" />
+
+            <div className="relative mx-auto flex min-h-[82svh] max-w-[92rem] px-6 pt-32 pb-16 sm:px-10 lg:pt-36 lg:pb-24">
+              <div className="relative z-10 flex max-w-3xl flex-col justify-end">
+                <p className="font-mono text-[0.66rem] tracking-[0.28em] text-accent-yellow uppercase">
+                  Media
+                </p>
+                <h1 className="mt-5 max-w-5xl text-[clamp(4.6rem,12vw,12rem)] leading-[0.84] font-thin tracking-normal text-white">
+                  Highlights.
+                </h1>
+                <p className="mt-8 max-w-xl text-lg leading-8 text-white/62">
+                  Explore stories, videos, and partner coverage here!
+                </p>
+                <div className="mt-10 flex flex-wrap gap-3">
+                  <a
+                    href="#media-spotlight"
+                    className="inline-flex items-center gap-3 border border-accent-yellow bg-accent-yellow px-5 py-3 font-mono text-[0.66rem] tracking-[0.24em] text-black uppercase transition-colors duration-300 hover:bg-white"
+                  >
+                    View highlights
+                    <ArrowRight className="size-4" />
+                  </a>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center gap-3 border border-white/20 px-5 py-3 font-mono text-[0.66rem] tracking-[0.24em] text-white uppercase transition-colors duration-300 hover:border-accent-yellow hover:bg-accent-yellow hover:text-black"
+                  >
+                    Press enquiries
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </div>
               </div>
             </div>
           </section>
