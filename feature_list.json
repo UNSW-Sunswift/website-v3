@@ -1896,6 +1896,40 @@
         "Browser verification now checks the mid-scroll state so copy cannot disappear before the black wipe covers the frame.",
         "The untracked new_animation_task.md file was not changed."
       ]
+    },
+    {
+      "id": "footer-sunswift-logo-transparent-treatment",
+      "priority": 63,
+      "title": "Footer Sunswift logo transparent treatment",
+      "status": "complete",
+      "description": "Update the shared site footer Sunswift Racing logo to match the transparent-background navbar treatment instead of rendering inside a white box.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "./init.sh: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.",
+          "pnpm test:homepage-design: passed.",
+          "pnpm typecheck: passed.",
+          "pnpm lint: passed.",
+          "pnpm build: passed.",
+          "Manual agent-browser footer check against http://127.0.0.1:3013: footer logo link class was group block bg-transparent and computed background was rgba(0, 0, 0, 0).",
+          "PATH=\"$PWD/node_modules/.bin:$PATH\" VERIFY_URL=http://127.0.0.1:3013 pnpm verify:browser: passed.",
+          "./init.sh: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "SiteFooter now wraps the SunswiftBrandLogo with className=\"group block bg-transparent\".",
+        "Footer SunswiftBrandLogo uses w-28 sm:w-32 to match the transparent navbar scale more closely.",
+        "The homepage design contract now prevents the footer logo from returning to a white backing.",
+        "The untracked new_animation_task.md file was not changed."
+      ]
     }
   ]
 }

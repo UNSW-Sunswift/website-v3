@@ -545,6 +545,12 @@ assert(
   "Public navigation and footer must use the Sunswift brand logo asset instead of plain text wordmarks."
 )
 assert(
+  /<Link\s+href="\/"\s+aria-label="Sunswift Racing home"\s+className="group block bg-transparent"\s*>\s*<SunswiftBrandLogo className="w-28 sm:w-32"/.test(
+    siteShell
+  ),
+  "Site footer Sunswift logo must match the transparent-background navbar treatment instead of sitting on a white backing."
+)
+assert(
   brandLogo.includes("/brand/sunswift-logo.svg") &&
     brandLogo.includes('alt="Sunswift Racing"') &&
     /group-hover:brightness-\[0\.[0-7]/.test(brandLogo),

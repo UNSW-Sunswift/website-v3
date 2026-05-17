@@ -2888,3 +2888,39 @@ Known limits:
 - `next start` logged the existing Auth.js missing-secret warning when the
   browser verifier visited `/admin/login`; the verifier still passed.
 - The untracked `new_animation_task.md` file was not changed.
+
+## 2026-05-17 - Footer Sunswift logo transparent treatment
+
+Implementation:
+
+- Updated the shared site footer so the Sunswift Racing home logo link uses the
+  same transparent wrapper treatment as the transparent navbar, removing the
+  white footer backing around the mark.
+- Increased the footer Sunswift logo sizing to `w-28 sm:w-32` so it matches the
+  navbar proportions more closely.
+- Added a homepage design contract assertion that the footer Sunswift logo stays
+  on a transparent wrapper instead of returning to a white box.
+
+Verification:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS
+  build/test, frontend typecheck/lint, and homepage design contract.
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm build`: passed.
+- `pnpm exec agent-browser open http://127.0.0.1:3013 && pnpm exec
+  agent-browser wait --load networkidle && pnpm exec agent-browser eval
+  'window.scrollTo(0, document.body.scrollHeight); "scrolled"' && pnpm exec
+  agent-browser screenshot --annotate`: passed; computed footer logo link
+  background was `rgba(0, 0, 0, 0)`.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3013 pnpm
+  verify:browser`: passed against `next start` on port 3013.
+- `./init.sh`: passed after implementation with LocalStack DynamoDB/S3, AWS
+  build/test, frontend typecheck/lint, and homepage design contract.
+
+Known limits:
+
+- `next start` logged the existing Auth.js missing-secret warning when the
+  browser verifier visited `/admin/login`; the verifier still passed.
+- The untracked `new_animation_task.md` file was not changed.

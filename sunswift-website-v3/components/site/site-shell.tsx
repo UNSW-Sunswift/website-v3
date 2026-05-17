@@ -291,8 +291,12 @@ export function SiteFooter() {
 
         <div className="grid gap-8 py-7 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
-            <Link href="/" aria-label="Sunswift Racing home" className="block bg-white px-2 py-1">
-              <SunswiftBrandLogo className="w-24 sm:w-28" />
+            <Link
+              href="/"
+              aria-label="Sunswift Racing home"
+              className="group block bg-transparent"
+            >
+              <SunswiftBrandLogo className="w-28 sm:w-32" />
             </Link>
             <Image
               src={footerUnswLogoSrc}
