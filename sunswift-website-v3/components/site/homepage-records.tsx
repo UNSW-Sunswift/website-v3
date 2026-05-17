@@ -76,12 +76,12 @@ export function HomepageRecords() {
       const rect = section.getBoundingClientRect()
       const distance = Math.max(section.offsetHeight - window.innerHeight, 1)
       const progress = clamp(-rect.top / distance)
-      // Keep the black takeover early, then clear records copy/content only at
-      // the final handoff so the section never hits an empty transition frame.
+      // Keep the record content present until the end of the scroll so the handoff
+      // into recruitment does not pause on an empty black hold.
       const carouselProgress = clamp((progress - 0.08) / 0.5)
-      const handoffProgress = clamp((progress - 0.58) / 0.3)
-      const contentClear = clamp((progress - 0.66) / 0.12)
-      const copyClear = clamp((progress - 0.6) / 0.12)
+      const handoffProgress = clamp((progress - 0.91) / 0.07)
+      const contentClear = clamp((progress - 0.97) / 0.04)
+      const copyClear = clamp((progress - 0.955) / 0.05)
       const blackCover = clamp((progress - 0.035) / 0.12)
       const easedCarousel = 1 - Math.pow(1 - carouselProgress, 3)
       const easedHandoff = 1 - Math.pow(1 - handoffProgress, 3)
@@ -147,7 +147,7 @@ export function HomepageRecords() {
       ref={sectionRef}
       data-homepage-records
       data-homepage-records-transition
-      className="relative h-[390svh] bg-[#0a0c0e] text-white"
+      className="relative h-[330svh] bg-[#0a0c0e] text-white"
       style={
         {
           "--records-progress": 0,
@@ -267,7 +267,7 @@ export function HomepageRecords() {
 
           <div
             data-homepage-records-handoff
-            className="pointer-events-none absolute inset-x-0 -bottom-[40svh] z-30 h-[180svh] bg-[#0a0c0e]"
+            className="pointer-events-none absolute inset-x-0 -bottom-[12svh] z-[5] h-[64svh] bg-[#0a0c0e]"
             style={{
               opacity: "var(--records-handoff-opacity)",
             }}

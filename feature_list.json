@@ -1972,6 +1972,41 @@
         "The AWS CMS admin publish handler now deletes the draft item after writing the published item.",
         "The untracked new_animation_task.md file was not changed."
       ]
+    },
+    {
+      "id": "scroll-transition-dead-space-reduction",
+      "priority": 65,
+      "title": "Achievements and records transition dead-space reduction",
+      "status": "complete",
+      "description": "Remove the oversized black-pane handoff on the achievements route and tighten the homepage records-to-recruitment transition so scrolling does not pause on an empty black viewport.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "./init.sh: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.",
+          "pnpm test:homepage-design: passed.",
+          "pnpm typecheck: passed.",
+          "pnpm lint: passed.",
+          "pnpm build: passed.",
+          "Manual agent-browser open/wait/screenshot --annotate/snapshot -i checked /achievements and the homepage records-to-recruitment handoff on http://127.0.0.1:3000.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser: passed, including RECORDS_TRANSITION_OK, RECRUITMENT_TRANSITION_OK, and ACHIEVEMENTS_MOBILE_OK.",
+          "./init.sh: passed after artifact updates with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "AchievementsTimeline no longer renders data-achievements-block-handoff or the full-screen void overlay; the intro uses a shorter pinned range and keeps the vehicle image visible into the timeline.",
+        "HomepageRecords keeps record content visible until the natural section exit, moves the compact handoff layer behind the content, and shortens the scroll range.",
+        "HomepageRecruitment starts closer to the records exit with a delayed opacity ramp, replacing the previous long black lead-in.",
+        "The browser contract now guards against records content clearing too early.",
+        "The untracked new_animation_task.md file was not changed."
+      ]
     }
   ]
 }

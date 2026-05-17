@@ -47,12 +47,11 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
         "--recruitment-intro-y",
         `${(1 - eased) * 34}px`
       )
-      // Delay the intro fade-in so the recruitment headline only appears after the
-      // records section is fully out of view. Without this, the intro pops in
-      // through the records dark veil and feels like a layering glitch.
+      // Bring the recruitment headline in shortly after the records content clears
+      // so the handoff does not sit on a blank black viewport.
       section.style.setProperty(
         "--recruitment-intro-opacity",
-        String(clamp((progress - 0.26) / 0.18))
+        String(clamp((progress - 0.18) / 0.18))
       )
       section.style.setProperty(
         "--recruitment-panel-y",
@@ -60,7 +59,7 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
       )
       section.style.setProperty(
         "--recruitment-panel-opacity",
-        String(clamp((progress - 0.32) / 0.34))
+        String(clamp((progress - 0.3) / 0.28))
       )
     }
 
@@ -80,7 +79,7 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
       data-homepage-recruitment
       data-recruitment-source="cms"
       data-recruitment-role-count={roles.length}
-      className="relative z-10 -mt-[104svh] overflow-x-clip overflow-y-visible bg-[#0a0c0e] text-white"
+      className="relative z-10 -mt-[64svh] overflow-x-clip overflow-y-visible bg-[#0a0c0e] text-white"
       style={
         {
           "--recruitment-intro-y": "34px",
@@ -90,12 +89,12 @@ export function HomepageRecruitment({ roles }: HomepageRecruitmentProps) {
         } as RecruitmentStyle
       }
     >
-      <div className="pointer-events-none absolute inset-x-0 -top-[34svh] h-[64svh] bg-[#0a0c0e]" />
+      <div className="pointer-events-none absolute inset-x-0 -top-[14svh] h-[34svh] bg-[#0a0c0e]" />
       <div className="pointer-events-none absolute inset-0 bg-[#0a0c0e]" />
       <div aria-hidden data-homepage-recruitment-block className="hidden" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[42svh] bg-[#0a0c0e]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[18svh] bg-[#0a0c0e]" />
 
-      <div className="relative mx-auto max-w-[92rem] px-4 pt-[calc(52svh+3rem)] pb-24 sm:px-6 sm:pt-[calc(52svh+4rem)] sm:pb-32 lg:pt-[calc(52svh+6rem)] lg:pb-40">
+      <div className="relative mx-auto max-w-[92rem] px-4 pt-[calc(8svh+3rem)] pb-24 sm:px-6 sm:pt-[calc(8svh+4rem)] sm:pb-32 lg:pt-[calc(8svh+6rem)] lg:pb-40">
         <div
           data-homepage-recruitment-intro
           className="mx-auto flex max-w-5xl flex-col items-center text-center"

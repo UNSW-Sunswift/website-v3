@@ -739,29 +739,29 @@ assert(
   "Recruitment CTA must not keep the old animated gradient treatment."
 )
 
-// Records → recruitment transition timing contract: content + copy + handoff must complete inside
-// the records section so the recruitment headline doesn't bleed through during scroll.
+// Records → recruitment transition timing contract: content should remain present until
+// the final handoff so the scroll never pauses on an empty black viewport.
 const recordsTransition = readFileSync(
   join(root, "components/site/homepage-records.tsx"),
   "utf8"
 )
 assert(
-  /handoffProgress\s*=\s*clamp\(\(progress - 0\.58\) \/ 0\.3\)/.test(
+  /handoffProgress\s*=\s*clamp\(\(progress - 0\.91\) \/ 0\.07\)/.test(
     recordsTransition
   ),
-  "Records handoff must start at progress 0.58 so the dark veil is fully covering the recruitment glow by the end of the section."
+  "Records handoff must start near the end so the section does not hold on a blank black plane."
 )
 assert(
-  /contentClear\s*=\s*clamp\(\(progress - 0\.66\) \/ 0\.12\)/.test(
+  /contentClear\s*=\s*clamp\(\(progress - 0\.97\) \/ 0\.04\)/.test(
     recordsTransition
   ),
-  "Records content must remain readable through the wipe and fade only near the final handoff."
+  "Records content must remain readable until the natural section exit."
 )
 assert(
-  /copyClear\s*=\s*clamp\(\(progress - 0\.6\) \/ 0\.12\)/.test(
+  /copyClear\s*=\s*clamp\(\(progress - 0\.955\) \/ 0\.05\)/.test(
     recordsTransition
   ),
-  "Records intro copy must remain readable through the black wipe and clear only near the final handoff."
+  "Records intro copy must remain readable until the natural section exit."
 )
 assert(
   /blackCover\s*=\s*clamp\(\(progress - 0\.035\) \/ 0\.12\)/.test(
@@ -775,8 +775,10 @@ assert(
   "Records carousel content must stay visible during the hard black wipe instead of creating an empty black frame."
 )
 assert(
-  /-bottom-\[40svh\][^"]*h-\[180svh\]/.test(recordsTransition),
-  "Records handoff overlay must be tall enough (h-[180svh] with -bottom-[40svh]) to cover the recruitment glow bleeding in from below."
+  /-bottom-\[12svh\][^"]*z-\[5\][^"]*h-\[64svh\]/.test(
+    recordsTransition
+  ),
+  "Records handoff overlay must be compact and sit below the record content so it does not darken the handoff."
 )
 assert(
   !/gradient|linear-gradient|radial-gradient|conic-gradient/.test(
@@ -789,8 +791,8 @@ const recruitmentTransition = readFileSync(
   "utf8"
 )
 assert(
-  /clamp\(\(progress - 0\.26\) \/ 0\.18\)/.test(recruitmentTransition),
-  "Recruitment intro opacity must wait until progress 0.26 so the headline only appears after the records dark veil completes."
+  /clamp\(\(progress - 0\.18\) \/ 0\.18\)/.test(recruitmentTransition),
+  "Recruitment intro opacity must begin early enough to avoid a blank records-to-recruitment pause."
 )
 assert(
   !recruitmentTransition.includes("circle_at_78%_18%") &&
@@ -798,13 +800,13 @@ assert(
   "Recruitment background must not anchor yellow radial gradients to the section top edge."
 )
 assert(
-  recruitmentTransition.includes("data-homepage-recruitment-block") &&
+    recruitmentTransition.includes("data-homepage-recruitment-block") &&
     recruitmentTransition.includes('className="hidden"') &&
-    recruitmentTransition.includes("h-[42svh]") &&
-    recruitmentTransition.includes("-top-[34svh]") &&
+    recruitmentTransition.includes("h-[18svh]") &&
+    recruitmentTransition.includes("-top-[14svh]") &&
     recruitmentTransition.includes("overflow-x-clip") &&
     recruitmentTransition.includes("overflow-y-visible"),
-  "Recruitment background must remain fully black with only hard dark handoff blocks to avoid visible seams."
+  "Recruitment background must keep a compact hard-dark join without a long blank lead-in."
 )
 assert(
   !recruitmentCta.includes("bg-clip-text") &&
@@ -1762,12 +1764,12 @@ assert(
   "Achievements intro must appear before the separate sticky timeline section."
 )
 
-// Cinematic intro→timeline transition contract.
+// Simple intro→timeline transition contract.
 assert(
-  /height:\s*isMobileTimeline\s*\?\s*"145svh"\s*:\s*"240svh"/.test(
+  /height:\s*isMobileTimeline\s*\?\s*"125svh"\s*:\s*"165svh"/.test(
     achievementsTimeline
   ),
-  "Achievements intro section must use a shorter pinned range on mobile and a 240svh cinematic range on desktop."
+  "Achievements intro section must use a short pinned range so it does not pause on a black pane."
 )
 assert(
   /sticky\s+top-0\s+h-svh/.test(achievementsTimeline),
@@ -1778,12 +1780,11 @@ assert(
   "Achievements intro transition must compute a phaseScatter stage for the headline scatter."
 )
 assert(
-  /phaseBlockHandoff/.test(achievementsTimeline),
-  "Achievements intro transition must compute a block handoff stage."
-)
-assert(
-  /data-achievements-block-handoff/.test(achievementsTimeline),
-  "Achievements intro must render a block handoff panel during the transition."
+  /phaseImageExit/.test(achievementsTimeline) &&
+    !/phaseBlockHandoff/.test(achievementsTimeline) &&
+    !/data-achievements-block-handoff/.test(achievementsTimeline) &&
+    !/voidOpacity/.test(achievementsTimeline),
+  "Achievements intro must fade the image into the timeline without a full-screen black handoff panel."
 )
 assert(
   !/data-achievements-wipe|phaseWipe|phaseHandoff|yearStamp/.test(

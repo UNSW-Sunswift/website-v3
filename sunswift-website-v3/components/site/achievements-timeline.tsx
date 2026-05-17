@@ -66,23 +66,23 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
   const minimalOpacity = 1
   const progressPercent = `${Math.round(progress * 1000) / 10}%`
 
-  // Cinematic intro→timeline transition driven by introExit (0 = top, 1 = fully scrolled away).
-  // The intro is pinned across a ~2.4×svh scroll range so the choreography is unmistakable.
+  // Intro→timeline transition driven by introExit (0 = top, 1 = fully scrolled away).
+  // Keep this short and image-led so scrolling does not pause on an empty black pane.
   const easeOutCubic = (t: number) =>
     1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3)
   const easeInCubic = (t: number) => Math.pow(Math.max(0, Math.min(1, t)), 3)
 
   const phaseScatter = Math.max(0, Math.min(1, (introExit - 0.18) / 0.42))
-  const phaseBlockHandoff = Math.max(0, Math.min(1, (introExit - 0.68) / 0.32))
+  const phaseImageExit = Math.max(0, Math.min(1, (introExit - 0.74) / 0.26))
 
   const bgZoom = 1 + easeOutCubic(introExit) * 0.45
   const bgRotate = introExit * -2.2
-  const bgBrightness = 1 - easeOutCubic(phaseBlockHandoff) * 0.8
+  const bgBrightness = 1 - easeOutCubic(phaseImageExit) * 0.34
   const bgOpacity = Math.max(
-    0,
+    0.16,
     0.35 +
       easeOutCubic(phaseScatter) * 0.16 -
-      easeInCubic(phaseBlockHandoff) * 0.51
+      easeInCubic(phaseImageExit) * 0.35
   )
 
   const kickerOpacity = Math.max(0, 1 - phaseScatter * 1.6)
@@ -104,10 +104,6 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
 
   const overviewOpacity = Math.max(0, 1 - phaseScatter * 2.4)
   const overviewY = -easeInCubic(phaseScatter) * 80
-
-  const blockHandoffProgress = easeOutCubic(phaseBlockHandoff)
-  const blockHandoffY = (1 - blockHandoffProgress) * 100
-  const voidOpacity = easeInCubic(phaseBlockHandoff)
 
   const scrollHintOpacity = Math.max(0, 1 - introExit * 5)
   const scrollHintY = introExit * -18
@@ -325,7 +321,7 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
         data-achievements-intro-section
         data-intro-exit={Math.round(introExit * 1000) / 1000}
         className="relative"
-        style={{ height: isMobileTimeline ? "145svh" : "240svh" }}
+        style={{ height: isMobileTimeline ? "125svh" : "165svh" }}
       >
         <div className="sticky top-0 h-svh w-full overflow-hidden">
           {/* Background image: zooms in dramatically and darkens through the transition */}
@@ -355,23 +351,6 @@ export function AchievementsTimeline({ achievements, overview }: Props) {
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#050607_0%,rgba(5,6,7,0.84)_34%,rgba(5,6,7,0.54)_66%,rgba(5,6,7,0.88)_100%)]" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[24svh] bg-[linear-gradient(180deg,#000_0%,rgba(10,12,14,0.92)_28%,rgba(10,12,14,0)_100%)]" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[26svh] bg-[linear-gradient(0deg,#0a0c0e_0%,rgba(10,12,14,0)_100%)]" />
-
-          {/* Void overlay: fills the screen with black as the timeline hand-off begins */}
-          <div
-            className="pointer-events-none absolute inset-0 bg-[#0a0c0e]"
-            style={{ opacity: voidOpacity }}
-            aria-hidden="true"
-          />
-
-          <div
-            data-achievements-block-handoff
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-[7] h-full bg-[#0a0c0e] will-change-transform"
-            style={{
-              transform: `translate3d(0, ${blockHandoffY}%, 0)`,
-              opacity: blockHandoffProgress,
-            }}
-            aria-hidden="true"
-          />
 
           {/* Hero copy: kicker, headline (word-by-word scatter), overview */}
           <div className="relative z-10 flex h-full items-end px-5 pt-28 pb-[12svh] sm:px-8 lg:px-14">

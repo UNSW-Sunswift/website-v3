@@ -1,5 +1,30 @@
 # Claude Progress
 
+## 2026-05-17 - Achievements and records transition dead-space reduction
+
+Baseline:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Implementation:
+
+- Removed the full-screen black block handoff and void overlay from `AchievementsTimeline`.
+- Shortened the achievements intro pinned range and kept the vehicle image visible through the intro exit so the timeline handoff no longer pauses on a plain black pane.
+- Kept homepage record content visible until the natural records section exit, moved the compact records handoff layer behind content, and shortened the records scroll range.
+- Pulled `HomepageRecruitment` closer to the records exit while delaying its opacity ramp, so `Embrace Tomorrow` enters during the handoff without a long black lead-in.
+- Updated homepage static and browser contracts to enforce the new no-empty-hold transition behavior.
+
+Verification:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm build`: passed.
+- Manual `pnpm exec agent-browser open`, `wait --load networkidle`, `screenshot --annotate`, and `snapshot -i`: passed against `/achievements` and the homepage records-to-recruitment handoff on `http://127.0.0.1:3000`.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser`: passed, including `RECORDS_TRANSITION_OK`, `RECRUITMENT_TRANSITION_OK`, and `ACHIEVEMENTS_MOBILE_OK`.
+- Final `./init.sh`: passed after artifact updates with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
 ## 2026-05-17 - Partners grid and publish status with draft archive
 
 Baseline:

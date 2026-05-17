@@ -407,8 +407,8 @@ const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
               return;
             }
 
-            if (beforeContent < 0.85 || afterContent > 0.2) {
-              reject(new Error(\`RECORDS_CONTENT_VISIBILITY_OFF:\${beforeContent}->\${afterContent}\`));
+            if (beforeContent < 0.85 || afterContent < 0.75) {
+              reject(new Error(\`RECORDS_CONTENT_CLEARS_TOO_EARLY:\${beforeContent}->\${afterContent}\`));
               return;
             }
 
