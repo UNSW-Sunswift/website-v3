@@ -142,22 +142,42 @@
 
 .homepage-hero-image {
   filter: saturate(0.92) contrast(1.02);
-  opacity: var(--hero-opacity);
-  transform: perspective(1200px) translate3d(0, var(--hero-image-y), 0)
-    scale(var(--hero-scale));
+  opacity: 0;
+  transform: perspective(1200px) translate3d(0, 3svh, 0) scale(1.035);
   transform-origin: 50% 78%;
+  transition:
+    opacity 900ms ease,
+    transform 1500ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 
 .homepage-hero-wipe {
-  transform: translate3d(0, var(--hero-wipe-y), 0);
+  transform: translate3d(0, 0, 0);
+  transition: transform 1350ms cubic-bezier(0.76, 0, 0.24, 1);
   will-change: transform;
 }
 
 .homepage-hero-title {
-  transform: translate3d(0, var(--hero-title-y), 0);
-  opacity: var(--hero-title-opacity);
+  transform: translate3d(0, 0.85rem, 0);
+  opacity: 0;
+  transition:
+    opacity 520ms ease,
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
+}
+
+[data-homepage-hero][data-hero-intro-started="true"] .homepage-hero-image {
+  opacity: 1;
+  transform: perspective(1200px) translate3d(0, 0, 0) scale(1);
+}
+
+[data-homepage-hero][data-hero-intro-started="true"] .homepage-hero-wipe {
+  transform: translate3d(0, -105%, 0);
+}
+
+[data-homepage-hero][data-hero-reveal-complete="true"] .homepage-hero-title {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
 }
 
 .homepage-hero-caret {
@@ -182,6 +202,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .homepage-hero-image,
+  .homepage-hero-wipe,
+  .homepage-hero-title {
+    transition-duration: 1ms;
+  }
+
   .homepage-hero-caret {
     animation: none;
     opacity: 0.7;
@@ -265,11 +291,6 @@
   will-change: opacity;
 }
 
-.homepage-zoom-sweep {
-  left: var(--zoom-sweep-x);
-  will-change: left;
-}
-
 .homepage-zoom-wipe {
   transform: translate3d(0, var(--zoom-wipe-y), 0);
   will-change: transform;
@@ -290,9 +311,6 @@
   .homepage-zoom-render {
     transform: none;
     opacity: 0.45;
-  }
-  .homepage-zoom-sweep {
-    display: none;
   }
   .homepage-zoom-wipe {
     display: none;

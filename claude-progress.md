@@ -1,5 +1,37 @@
 # Claude Progress
 
+## 2026-05-17 - Landing hero/admin amendment pass
+
+Baseline:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+- Baseline agent-browser check on `http://127.0.0.1:3000/` showed the hero still holding on the black scroll-driven state.
+
+Implementation:
+
+- Changed `HomepageHero` from a scroll-driven reveal to a timed one-screen intro: after 1.4 seconds the black curtain rises upward from the bottom, then the black `Today, Tomorrow` typewriter starts after reveal completion.
+- Removed the hero’s white image wash and removed the zoom-reveal section’s old white sweep/top-bottom wash overlays.
+- Updated the “What is Sunswift Racing?” image frame to a wider non-square treatment, removed the `SR8 in development` label, and removed the white gradient overlay.
+- Removed the redundant `Three decades of solar engineering` records card, leaving the two actual records, and added a contrast-aware year colour so `2022` is readable on the white state.
+- Removed the redundant `Live content summary` panel from CMS staging while keeping direct draft/published cards.
+- Updated homepage static and browser verification contracts for the timed hero, simplified image overlays, two-record carousel, and dashboard copy.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- Manual `pnpm exec agent-browser open`, `wait --load networkidle`, `wait`, and `screenshot --annotate`: passed for the timed hero, about image, and records start on `http://127.0.0.1:3000`.
+- `VERIFY_URL=http://127.0.0.1:3014 pnpm verify:browser`: passed against `next start`, including `HOMEPAGE_CONTRACT_OK`, `HERO_TIMED_INTRO_OK`, `FOCUS_REVEAL_OK`, and `RECORDS_TRANSITION_OK`.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin`: passed against the existing `next dev` server, including `ADMIN_DASHBOARD_OK`, `TEAM_PUBLISH_MOVED_OK`, `RECRUITMENT_ADMIN_OK`, `PARTNERS_ADMIN_OK`, and `ASSETS_ADMIN_OK`.
+- Final `./init.sh`: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Known limits:
+
+- `verify:cms-admin` still needs the non-production dev login, so it was run against the existing `next dev` server on port 3000; public browser verification used `next start` on port 3014.
+- The untracked `new_animation_task.md` file was not changed.
+
 ## 2026-05-17 - SR8 landing motion and admin CMS dashboard
 
 Baseline:

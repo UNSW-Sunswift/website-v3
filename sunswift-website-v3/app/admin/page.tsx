@@ -69,7 +69,7 @@ export default async function AdminPage() {
           </Button>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {contentCollections.map(({ icon: Icon, label, draftCount, publishedCount, href }) => (
             <Link
               key={label}
@@ -95,9 +95,6 @@ export default async function AdminPage() {
               </div>
             </Link>
           ))}
-        </div>
-
-        <div className="mt-4 grid gap-4 md:grid-cols-[1fr_2fr]">
           <Link
             href="/admin/assets"
             className="rounded-lg border border-border bg-card p-5 transition-[border-color,box-shadow] duration-200 hover:border-primary/40 hover:shadow-sm"
@@ -106,21 +103,6 @@ export default async function AdminPage() {
             <div className="mt-8 font-mono text-3xl tabular-nums">{assets.length}</div>
             <div className="mt-2 text-sm text-muted-foreground">Published S3 assets</div>
           </Link>
-          <div className="rounded-lg border border-border bg-card p-5">
-            <p className="font-mono text-xs tracking-[0.2em] text-muted-foreground uppercase">
-              Live content summary
-            </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              {contentCollections.map(({ label, draftCount, publishedCount }) => (
-                <div key={`${label}-summary`} className="border-l border-border pl-4">
-                  <div className="text-sm font-medium">{label}</div>
-                  <div className="mt-2 text-xs leading-5 text-muted-foreground">
-                    {publishedCount} published / {draftCount} draft
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
     </AdminShell>

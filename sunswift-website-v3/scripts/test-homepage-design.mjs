@@ -354,10 +354,6 @@ assert(
   "Zoom-reveal section must drive a --zoom-text-y custom property for the glide effect."
 )
 assert(
-  /--zoom-sweep-x/.test(zoomReveal),
-  "Zoom-reveal section must drive a --zoom-sweep-x custom property for the light sweep."
-)
-assert(
   /--zoom-wipe-y/.test(zoomReveal) && /data-homepage-zoom-wipe/.test(zoomReveal),
   "Zoom-reveal section must use the shared upward wipe treatment without frame-sequence scroll timing."
 )
@@ -374,8 +370,8 @@ assert(
   "Zoom-reveal must interpolate the headline tone from a gray channel to black on scroll."
 )
 assert(
-  /homepage-zoom-sweep/.test(zoomReveal),
-  "Zoom-reveal section must render the moving light sweep overlay."
+  !/homepage-zoom-sweep/.test(zoomReveal) && !/inset-x-0 top-0 h-\[14svh\]/.test(zoomReveal),
+  "Zoom-reveal section must not render the old white sweep or top/bottom wash overlays."
 )
 assert(
   /font-light/.test(zoomReveal),
@@ -411,8 +407,8 @@ assert(
   "globals.css must style the .homepage-zoom-render helper."
 )
 assert(
-  /\.homepage-zoom-sweep\s*{/.test(globalsCss),
-  "globals.css must style the .homepage-zoom-sweep helper."
+  !/\.homepage-zoom-sweep\s*{/.test(globalsCss),
+  "globals.css must not keep the removed .homepage-zoom-sweep helper."
 )
 assert(
   !/transform:\s*scale\(var\(--zoom-scale\)\)/.test(globalsCss),
@@ -445,7 +441,7 @@ assert(
 )
 assert(
   hero.includes("useEffect"),
-  "Hero must include scroll-reactive behavior."
+  "Hero must include timed intro behavior."
 )
 assert(
   /setInterval|setTimeout/.test(hero),
@@ -462,12 +458,12 @@ assert(
 assert(
   hero.includes('src="/media/sr8-hero-render.png"') &&
     hero.includes("data-homepage-hero-wipe") &&
+    hero.includes("data-hero-intro-started") &&
     hero.includes("data-hero-reveal-complete") &&
-    hero.includes("--hero-wipe-y") &&
-    hero.includes("--hero-image-y") &&
-    hero.includes("--hero-title-opacity") &&
+    hero.includes("INTRO_DELAY_MS") &&
+    !/window\.addEventListener\("scroll"/.test(hero) &&
     hero.includes("revealComplete"),
-  "Hero must use the SR8 hero render with a black-to-image upward wipe before the black typewriter text appears."
+  "Hero must use the SR8 render with an automated bottom-rising black wipe before the black typewriter text appears."
 )
 assert(
   /sr-only/.test(hero),
@@ -636,11 +632,12 @@ assert(
 assert(
   about.includes("data-homepage-about-shared-vehicle") &&
     about.includes('src="/media/sr8-hero-3.png"') &&
-    about.includes("SR8 in development") &&
+    about.includes("aspect-[16/10]") &&
+    !about.includes("SR8 in development") &&
     about.includes("Since") &&
     about.includes("UNSW") &&
     about.includes("bg-[#f6f5f1]"),
-  "About section must use the new SR8 visual and richer editorial/stat treatment."
+  "About section must use the new non-square SR8 visual and richer editorial/stat treatment without the development label."
 )
 assert(
   aboutFlat.includes("What is Sunswift Racing?"),
@@ -678,7 +675,8 @@ assert(
     records.includes("--records-handoff-opacity") &&
     records.includes("--records-content-opacity") &&
     records.includes("--records-text-color") &&
-    records.includes("--records-muted-color"),
+    records.includes("--records-muted-color") &&
+    records.includes("--records-year-color"),
   "Records section must be one client-side sticky section that cycles achievements and uses an Opal-style hard white-to-black takeover."
 )
 assert(
@@ -721,12 +719,17 @@ assert(
   recordsFlat.includes("single charge"),
   "Records section must describe the single-charge distance record."
 )
-for (const recordId of ["thousand-km", "speed-record", "world-firsts"]) {
+for (const recordId of ["thousand-km", "speed-record"]) {
   assert(
     records.includes(recordId),
     `Records section must include the ${recordId} record entry.`
   )
 }
+assert(
+  !records.includes("Three decades of solar engineering.") &&
+    !records.includes("world-firsts"),
+  "Records section must not duplicate the three-decades summary now covered by the about stats."
+)
 
 const recruitmentFlat = recruitmentCta.replace(/\s+/g, " ")
 assert(
@@ -2070,11 +2073,11 @@ assert(
     adminDashboardPage.includes('listCmsRecords("roles", "published")') &&
     adminDashboardPage.includes('listCmsRecords("partners", "draft")') &&
     adminDashboardPage.includes('listCmsRecords("partners", "published")') &&
-    adminDashboardPage.includes("Live content summary") &&
-    adminDashboardPage.includes("published /") &&
+    !adminDashboardPage.includes("Live content summary") &&
+    !adminDashboardPage.includes("published /") &&
     adminDashboardPage.includes("Draft") &&
     adminDashboardPage.includes("Published"),
-  "Admin staging dashboard must show draft and published counts for team, roles, and partners."
+  "Admin staging dashboard must show direct draft and published counts for team, roles, and partners without a redundant summary panel."
 )
 assert(
   packageJson.includes(

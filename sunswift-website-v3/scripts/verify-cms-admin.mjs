@@ -101,11 +101,15 @@ const adminDashboardContract = `(() => new Promise((resolve, reject) => {
   const tick = () => {
     const text = document.body.textContent || "";
     if (location.pathname === "/admin" && text.includes("CMS staging")) {
-      for (const phrase of ["Team members", "Recruitment roles", "Partners", "Draft", "Published", "Live content summary", "Published S3 assets", "developer@sunswift.unsw.edu.au"]) {
+      for (const phrase of ["Team members", "Recruitment roles", "Partners", "Draft", "Published", "Published S3 assets", "developer@sunswift.unsw.edu.au"]) {
         if (!text.includes(phrase)) {
           reject(new Error("MISSING_DASHBOARD_COPY:" + phrase));
           return;
         }
+      }
+      if (text.includes("Live content summary")) {
+        reject(new Error("REDUNDANT_DASHBOARD_SUMMARY"));
+        return;
       }
 
       resolve("ADMIN_DASHBOARD_OK");

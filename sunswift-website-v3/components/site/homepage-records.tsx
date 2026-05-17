@@ -32,15 +32,6 @@ const records: Record[] = [
     year: "2014",
     image: "/vehicle-fleet/vehicle-eve.jpg",
   },
-  {
-    id: "world-firsts",
-    metric: "7",
-    unit: "cars built",
-    title: "Three decades of solar engineering.",
-    body: "Seven generations of student-built solar vehicles since 1996, with the eighth in production - a continuous record of innovation out of UNSW Sydney.",
-    year: "1996 - Today",
-    image: "/vehicle-fleet/vehicle-violet.avif",
-  },
 ]
 
 type RecordsStyle = CSSProperties & {
@@ -53,6 +44,7 @@ type RecordsStyle = CSSProperties & {
   "--records-content-opacity"?: number
   "--records-text-color"?: string
   "--records-muted-color"?: string
+  "--records-year-color"?: string
   "--records-rule-color"?: string
   "--records-stage-opacity"?: number
   "--records-stage-y"?: string
@@ -129,6 +121,10 @@ export function HomepageRecords() {
         darkTheme ? "rgba(255, 255, 255, 0.58)" : "rgb(74, 74, 74)"
       )
       section.style.setProperty(
+        "--records-year-color",
+        darkTheme ? "rgb(255, 218, 0)" : "rgba(12, 12, 12, 0.62)"
+      )
+      section.style.setProperty(
         "--records-rule-color",
         darkTheme ? "rgba(255, 255, 255, 0.14)" : "rgba(12, 12, 12, 0.18)"
       )
@@ -158,7 +154,7 @@ export function HomepageRecords() {
       ref={sectionRef}
       data-homepage-records
       data-homepage-records-transition
-      className="relative h-[330svh] bg-[#0a0c0e] text-white"
+      className="relative h-[270svh] bg-[#0a0c0e] text-white"
       style={
         {
           "--records-progress": 0,
@@ -170,6 +166,7 @@ export function HomepageRecords() {
           "--records-content-opacity": 1,
           "--records-text-color": "rgb(12, 12, 12)",
           "--records-muted-color": "rgb(74, 74, 74)",
+          "--records-year-color": "rgba(12, 12, 12, 0.62)",
           "--records-rule-color": "rgba(12, 12, 12, 0.18)",
           "--records-stage-opacity": 0.72,
           "--records-stage-y": "18px",
@@ -241,7 +238,10 @@ export function HomepageRecords() {
                   className="grid h-svh items-center gap-8 py-24 lg:grid-cols-[0.95fr_1.05fr]"
                 >
                   <div>
-                    <span className="font-mono text-[0.65rem] tracking-[0.28em] text-accent-yellow/75 uppercase">
+                    <span
+                      className="font-mono text-[0.65rem] tracking-[0.28em] uppercase"
+                      style={{ color: "var(--records-year-color)" }}
+                    >
                       {record.year}
                     </span>
                     <div className="mt-7 flex items-baseline gap-3">

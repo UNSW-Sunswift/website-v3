@@ -29,7 +29,6 @@ export function HomepageZoomReveal() {
       const revealRamp = Math.min(Math.max((progress - 0.38) / 0.24, 0), 1)
       const opacity = revealRamp
       const textY = lerp(1.25, -0.65, revealRamp)
-      const sweepX = lerp(-42, 142, Math.min(progress / 0.82, 1))
       const wipeY = lerp(0, -105, Math.min(progress / 0.24, 1))
 
       // Tone: starts as a faint light gray and darkens to near-black on scroll.
@@ -42,7 +41,6 @@ export function HomepageZoomReveal() {
       root.style.setProperty("--zoom-opacity", opacity.toFixed(4))
       root.style.setProperty("--zoom-blur", "0px")
       root.style.setProperty("--zoom-text-y", `${textY.toFixed(4)}vh`)
-      root.style.setProperty("--zoom-sweep-x", `${sweepX.toFixed(4)}%`)
       root.style.setProperty("--zoom-wipe-y", `${wipeY.toFixed(4)}%`)
       root.style.setProperty(
         "--zoom-text-color",
@@ -81,7 +79,6 @@ export function HomepageZoomReveal() {
           "--zoom-opacity": 0,
           "--zoom-blur": "0px",
           "--zoom-text-y": "1.25vh",
-          "--zoom-sweep-x": "-42%",
           "--zoom-wipe-y": "0%",
           "--zoom-text-color": "rgb(84, 84, 84)",
           "--zoom-render-opacity": 0.4,
@@ -103,17 +100,11 @@ export function HomepageZoomReveal() {
           />
         </div>
 
-        <div className="absolute inset-0 bg-[#f6f5f1]/64" />
+        <div className="absolute inset-0 bg-[#f6f5f1]/32" />
         <div
           data-homepage-zoom-wipe
           aria-hidden="true"
           className="homepage-zoom-wipe pointer-events-none absolute inset-0 bg-black"
-        />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[14svh] bg-[#f6f5f1]/90" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[14svh] bg-[#f6f5f1]/90" />
-        <div
-          aria-hidden="true"
-          className="homepage-zoom-sweep pointer-events-none absolute inset-y-[18svh] w-[34vw] -translate-x-1/2 bg-white/35 opacity-70 mix-blend-screen blur-2xl"
         />
 
         <h2

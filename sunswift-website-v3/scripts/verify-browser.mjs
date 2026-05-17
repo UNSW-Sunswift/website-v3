@@ -100,7 +100,7 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
     return;
   }
   const recordCards = records.querySelectorAll("[data-homepage-record]");
-  if (recordCards.length < 3) {
+  if (recordCards.length < 2) {
     reject(new Error("MISSING_RECORD_CARDS:" + recordCards.length));
     return;
   }
@@ -157,11 +157,10 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
   }
 
   hero.scrollIntoView({ block: "start" });
-  window.scrollBy(0, Math.max(window.innerHeight * 0.72, 1));
 
   const deadline = Date.now() + 5000;
   const tick = () => {
-    if (title.dataset.typingComplete === "true") {
+    if (hero.getAttribute("data-hero-reveal-complete") === "true" && title.dataset.typingComplete === "true") {
       window.scrollTo(0, 0);
       resolve("HOMEPAGE_CONTRACT_OK");
       return;
@@ -190,7 +189,7 @@ const pageIsHealthy = `(() => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
       const expectedMotion =
-        element.matches(".homepage-hero-image, .homepage-zoom-render, .homepage-zoom-sweep") ||
+        element.matches(".homepage-hero-image, .homepage-zoom-render") ||
         element.closest(".homepage-zoom-render, [data-achievements-timeline]") ||
         element.closest("[aria-label='Our Story sections']") ||
         element.closest("[data-vehicles-gallery]") ||
@@ -268,29 +267,39 @@ const siteFooterContract = `(() => {
   return "SITE_FOOTER_OK";
 })()`
 
-const scrollEffectWorks = `(() => new Promise((resolve, reject) => {
+const heroIntroEffectWorks = `(() => new Promise((resolve, reject) => {
   const hero = document.querySelector("[data-homepage-hero]");
+  const title = hero?.querySelector("h1");
+  const wipe = hero?.querySelector("[data-homepage-hero-wipe]");
 
-  if (!hero) {
+  if (!hero || !title || !wipe) {
     reject(new Error("MISSING_HOMEPAGE_HERO"));
     return;
   }
 
-  const before = getComputedStyle(hero).getPropertyValue("--hero-title-y").trim();
-  window.scrollTo(0, Math.max(window.innerHeight * 0.55, 1));
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const after = getComputedStyle(hero).getPropertyValue("--hero-title-y").trim();
+  hero.scrollIntoView({ block: "start" });
+  if (hero.getAttribute("data-hero-reveal-complete") === "true" && title.dataset.typingComplete === "true") {
+    window.scrollTo(0, 0);
+    resolve("HERO_TIMED_INTRO_OK:already-complete");
+    return;
+  }
+  const before = getComputedStyle(wipe).transform;
+  const deadline = Date.now() + 5200;
+  const tick = () => {
+    const after = getComputedStyle(wipe).transform;
+    if (hero.getAttribute("data-hero-reveal-complete") === "true" && title.dataset.typingComplete === "true" && before !== after) {
       window.scrollTo(0, 0);
-
-      if (before === after || after === "0rem") {
-        reject(new Error(\`SCROLL_EFFECT_STATIC:\${before}->\${after}\`));
-        return;
-      }
-
-      resolve(\`SCROLL_EFFECT_OK:\${before}->\${after}\`);
-    });
-  });
+      resolve(\`HERO_TIMED_INTRO_OK:\${before}->\${after}\`);
+      return;
+    }
+    if (Date.now() > deadline) {
+      window.scrollTo(0, 0);
+      reject(new Error(\`HERO_TIMED_INTRO_STALLED:\${before}->\${after}\`));
+      return;
+    }
+    setTimeout(tick, 80);
+  };
+  tick();
 }))()`
 
 const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
@@ -1159,7 +1168,7 @@ const commands = [
   ["eval", pageIsHealthy],
   ["eval", siteFooterContract],
   ["eval", homepageContract],
-  ["eval", scrollEffectWorks],
+  ["eval", heroIntroEffectWorks],
   ["eval", focusRevealEffectWorks],
   ["eval", recordsTransitionWorks],
   ["eval", recruitmentTransitionWorks],
@@ -1171,7 +1180,7 @@ const commands = [
   ["eval", pageIsHealthy],
   ["eval", siteFooterContract],
   ["eval", homepageContract],
-  ["eval", scrollEffectWorks],
+  ["eval", heroIntroEffectWorks],
   ["eval", focusRevealEffectWorks],
   ["eval", recordsTransitionWorks],
   ["eval", recruitmentTransitionWorks],

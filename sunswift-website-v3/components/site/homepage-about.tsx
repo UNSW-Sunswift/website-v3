@@ -50,19 +50,15 @@ export function HomepageAbout() {
         </div>
         <div
           data-homepage-about-shared-vehicle
-          className="relative aspect-[16/11] w-full overflow-hidden border border-black/10 bg-[#eceae4] shadow-[0_34px_110px_rgba(0,0,0,0.12)] lg:aspect-[5/4]"
+          className="relative aspect-[16/10] w-full overflow-hidden border border-black/10 bg-[#eceae4] shadow-[0_28px_86px_rgba(0,0,0,0.1)]"
         >
           <Image
             src="/media/sr8-hero-3.png"
             alt="Sunswift Racing solar vehicle in the lab"
             fill
-            className="object-cover object-[50%_54%]"
+            className="object-cover object-[50%_50%]"
             sizes="(min-width: 1024px) 46vw, 100vw"
           />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(246,245,241,0.04)_0%,rgba(246,245,241,0.2)_100%)]" />
-          <div className="absolute bottom-4 left-4 border border-black/10 bg-[#f6f5f1]/78 px-3 py-2 font-mono text-[0.6rem] tracking-[0.22em] text-black/58 uppercase backdrop-blur-md">
-            SR8 in development
-          </div>
         </div>
       </div>
     </section>
