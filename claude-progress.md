@@ -1,5 +1,37 @@
 # Claude Progress
 
+## 2026-05-17 - SR8 landing motion and admin CMS dashboard
+
+Baseline:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Implementation:
+
+- Replaced the landing hero with `/media/sr8-hero-render.png`, added the black-to-image upward wipe, and delayed the black `Today, Tomorrow` typewriter until the reveal completes.
+- Replaced the built-by-students surface with static `/media/sr8-hero-2.png`, removed scroll-timed frame playback there, and tightened the wipe/title reveal so it no longer holds on a muddy black or blurred intermediate pane.
+- Reworked the “What is Sunswift Racing?” homepage section into a more editorial layout using `/media/sr8-hero-3.png`, plus added a subtle records-section entrance ramp.
+- Made team CSV import and headshot controls accept URLs, with remote headshots staged into CMS assets, and made the file upload controls visibly button-like.
+- Removed the batch-publish list view so Team/Roles/Partners publishing stays grid-only with select-all and selected publish controls.
+- Expanded CMS Staging into a content dashboard showing draft and published counts for team members, recruitment roles, and partners.
+- Updated browser/static/admin contracts for the new landing motion, admin dashboard counts, grid-only publishing, and URL inputs.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed.
+- Manual `pnpm exec agent-browser open`, `wait --load networkidle`, and `screenshot --annotate`: passed against `http://127.0.0.1:3014/` for the hero, built-by-students, and Who we are sections.
+- `VERIFY_URL=http://127.0.0.1:3014 pnpm verify:browser`: passed against `next start`, including `HOMEPAGE_CONTRACT_OK`, `FOCUS_REVEAL_OK`, `RECORDS_TRANSITION_OK`, and partner/team route checks.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin`: passed against the existing `next dev` server, including `ADMIN_DASHBOARD_OK`, `TEAM_DRAFT_EDIT_OK`, `TEAM_PUBLISH_MOVED_OK`, `RECRUITMENT_ADMIN_OK`, `PARTNERS_ADMIN_OK`, and `ASSETS_ADMIN_OK`.
+- Final `./init.sh`: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Known limits:
+
+- `verify:cms-admin` needs the non-production dev login, so it was run against the existing `next dev` server on port 3000; `next start` was used for public browser verification on port 3014.
+- The untracked `new_animation_task.md` file was not changed.
+
 ## 2026-05-17 - Achievements and records transition dead-space reduction
 
 Baseline:

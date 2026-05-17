@@ -101,7 +101,7 @@ const adminDashboardContract = `(() => new Promise((resolve, reject) => {
   const tick = () => {
     const text = document.body.textContent || "";
     if (location.pathname === "/admin" && text.includes("CMS staging")) {
-      for (const phrase of ["Draft team members", "Draft recruitment roles", "Draft partners", "Published S3 assets", "developer@sunswift.unsw.edu.au"]) {
+      for (const phrase of ["Team members", "Recruitment roles", "Partners", "Draft", "Published", "Live content summary", "Published S3 assets", "developer@sunswift.unsw.edu.au"]) {
         if (!text.includes(phrase)) {
           reject(new Error("MISSING_DASHBOARD_COPY:" + phrase));
           return;
@@ -132,11 +132,17 @@ const teamDraftEditContract = `(() => new Promise((resolve, reject) => {
   const bulkPublish = document.querySelector("[data-admin-bulk-publish]");
   const selectAll = bulkPublish?.querySelector("[data-admin-select-all]");
   const publishSelected = bulkPublish?.querySelector("[data-admin-publish-selected]");
-  const gridButton = bulkPublish?.querySelector('button[aria-label="Grid view"]');
+  const csvUrl = importForm?.querySelector('input[name="csvUrl"]');
+  const headshotUrl = form?.querySelector('input[name="headshotUrl"]');
   const visibleText = document.body.textContent || "";
 
-  if (!form || !importForm || !roleInput || !departmentSelect || !hierarchySelect || !bulkPublish || !selectAll || !publishSelected || !gridButton) {
+  if (!form || !importForm || !roleInput || !departmentSelect || !hierarchySelect || !bulkPublish || !selectAll || !publishSelected || !csvUrl || !headshotUrl) {
     reject(new Error("MISSING_TEAM_ADMIN_EDITOR"));
+    return;
+  }
+
+  if (bulkPublish.getAttribute("data-admin-bulk-view") !== "grid" || bulkPublish.querySelector('button[aria-label="List view"]')) {
+    reject(new Error("BULK_PUBLISH_NOT_GRID_ONLY"));
     return;
   }
 

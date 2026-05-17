@@ -2007,6 +2007,46 @@
         "The browser contract now guards against records content clearing too early.",
         "The untracked new_animation_task.md file was not changed."
       ]
+    },
+    {
+      "id": "landing-sr8-hero-admin-dashboard-media-imports",
+      "priority": 66,
+      "title": "SR8 landing motion, admin dashboard, and media URL imports",
+      "status": "complete",
+      "description": "Replace the landing-page image surfaces with SR8 renders, clean up the hero and scroll handoffs, add URL import support for team media, simplify batch publishing to grid-only selection, and expand CMS staging into a draft/published content dashboard.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "pnpm verify:browser",
+          "pnpm verify:cms-admin"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "./init.sh: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.",
+          "pnpm typecheck: passed.",
+          "pnpm lint: passed.",
+          "pnpm test:homepage-design: passed.",
+          "pnpm build: passed.",
+          "Manual agent-browser open/wait/screenshot --annotate checked the landing hero, built-by-students handoff, and Who we are section on http://127.0.0.1:3014.",
+          "VERIFY_URL=http://127.0.0.1:3014 pnpm verify:browser: passed against next start, including HOMEPAGE_CONTRACT_OK and FOCUS_REVEAL_OK.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin: passed against the existing next dev server, including ADMIN_DASHBOARD_OK, TEAM_DRAFT_EDIT_OK, TEAM_PUBLISH_MOVED_OK, RECRUITMENT_ADMIN_OK, PARTNERS_ADMIN_OK, and ASSETS_ADMIN_OK.",
+          "./init.sh: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "HomepageHero now uses /media/sr8-hero-render.png with a black-to-image upward wipe and starts the black Today, Tomorrow typewriter only after reveal completion.",
+        "HomepageZoomReveal now uses /media/sr8-hero-2.png as a static surface with a fast upward wipe and opacity-only title reveal instead of scroll-timed frame playback.",
+        "HomepageAbout now uses /media/sr8-hero-3.png and a more editorial Who we are layout with stats.",
+        "HomepageRecords has a subtle entrance ramp into the records section.",
+        "Team admin CSV import and headshot inputs accept URLs; URL headshots are staged into the CMS asset bucket.",
+        "Batch publish selection is grid-only, with list-view controls removed.",
+        "CMS Staging now shows draft and published counts for team members, recruitment roles, and partners.",
+        "The untracked new_animation_task.md file was not changed."
+      ]
     }
   ]
 }

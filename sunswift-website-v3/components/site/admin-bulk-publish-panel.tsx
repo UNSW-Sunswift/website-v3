@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState, type ComponentProps } from "react"
-import { Check, Grid3X3, List, Minus, Plus } from "lucide-react"
+import { Check, Minus, Plus } from "lucide-react"
 import { useFormStatus } from "react-dom"
 
 import { Button } from "@/components/ui/button"
@@ -55,7 +55,6 @@ export function AdminBulkPublishPanel({
   emptyLabel,
 }: AdminBulkPublishPanelProps) {
   const [selected, setSelected] = useState<Set<string>>(() => new Set())
-  const [view, setView] = useState<"list" | "grid">("list")
   const [compact, setCompact] = useState(false)
   const allSelected = items.length > 0 && selected.size === items.length
   const selectedSlugs = useMemo(() => Array.from(selected), [selected])
@@ -79,7 +78,7 @@ export function AdminBulkPublishPanel({
   return (
     <section
       data-admin-bulk-publish
-      data-admin-bulk-view={view}
+      data-admin-bulk-view="grid"
       data-admin-bulk-density={compact ? "compact" : "comfortable"}
       className="mt-8 rounded-lg border border-border bg-card p-5"
     >
@@ -106,32 +105,6 @@ export function AdminBulkPublishPanel({
             <Check className="size-4" />
             {allSelected ? "Clear all" : "Select all"}
           </Button>
-          <div className="flex overflow-hidden rounded-4xl border border-border bg-background">
-            <button
-              type="button"
-              aria-label="List view"
-              aria-pressed={view === "list"}
-              onClick={() => setView("list")}
-              className={cn(
-                "grid size-9 place-items-center text-muted-foreground transition-[background-color,color] duration-200 focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:outline-none",
-                view === "list" && "bg-muted text-foreground"
-              )}
-            >
-              <List className="size-4" />
-            </button>
-            <button
-              type="button"
-              aria-label="Grid view"
-              aria-pressed={view === "grid"}
-              onClick={() => setView("grid")}
-              className={cn(
-                "grid size-9 place-items-center border-l border-border text-muted-foreground transition-[background-color,color] duration-200 focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:outline-none",
-                view === "grid" && "bg-muted text-foreground"
-              )}
-            >
-              <Grid3X3 className="size-4" />
-            </button>
-          </div>
           <Button
             type="button"
             variant="outline"
@@ -154,11 +127,7 @@ export function AdminBulkPublishPanel({
             data-admin-bulk-grid
             className={cn(
               "grid gap-2",
-              view === "grid"
-                ? compact
-                  ? "sm:grid-cols-3 lg:grid-cols-5"
-                  : "sm:grid-cols-2 lg:grid-cols-3"
-                : "grid-cols-1"
+              compact ? "sm:grid-cols-3 lg:grid-cols-5" : "sm:grid-cols-2 lg:grid-cols-3"
             )}
           >
             {items.map((item) => {

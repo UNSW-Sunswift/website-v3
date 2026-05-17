@@ -76,14 +76,28 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
           <h2 className="text-xl font-medium">Import team CSV</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             Accepts the old Webflow team roster CSV or the sr-headshots output CSV. Private roster
-            fields such as zID and UNSW email are ignored.
+            fields such as zID and UNSW email are ignored. Upload a file or paste a CSV URL.
           </p>
-          <input
-            name="csv"
-            type="file"
-            accept=".csv,text/csv"
-            className="mt-4 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <label className="grid gap-2 text-sm">
+              Upload CSV file
+              <input
+                name="csv"
+                type="file"
+                accept=".csv,text/csv"
+                className="w-full rounded-md border border-input bg-background p-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              Or paste CSV URL
+              <input
+                name="csvUrl"
+                type="url"
+                placeholder="https://example.com/team.csv…"
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+              />
+            </label>
+          </div>
           <Button type="submit" className="mt-4">
             Import drafts
           </Button>
@@ -159,10 +173,26 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
                 className="rounded-md border border-input bg-background px-3 py-2"
               />
             </label>
-            <label className="grid gap-2 text-sm sm:col-span-2">
-              Staged headshot
-              <input name="headshot" type="file" accept="image/*" className="rounded-md border border-input bg-background px-3 py-2" />
-            </label>
+            <div className="grid gap-3 sm:col-span-2 md:grid-cols-2">
+              <label className="grid gap-2 text-sm">
+                Upload headshot file
+                <input
+                  name="headshot"
+                  type="file"
+                  accept="image/*"
+                  className="rounded-md border border-input bg-background p-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90"
+                />
+              </label>
+              <label className="grid gap-2 text-sm">
+                Or paste image URL
+                <input
+                  name="headshotUrl"
+                  type="url"
+                  placeholder="https://example.com/headshot.jpg…"
+                  className="rounded-md border border-input bg-background px-3 py-2"
+                />
+              </label>
+            </div>
             <div className="sm:col-span-2">
               <Button type="submit">Save draft</Button>
             </div>
@@ -250,10 +280,26 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
                   className="rounded-md border border-input bg-background px-3 py-2"
                 />
               </label>
-              <label className="grid gap-2 text-sm sm:col-span-2">
-                Staged headshot
-                <input name="headshot" type="file" accept="image/*" className="rounded-md border border-input bg-background px-3 py-2" />
-              </label>
+              <div className="grid gap-3 sm:col-span-2 md:grid-cols-2">
+                <label className="grid gap-2 text-sm">
+                  Upload headshot file
+                  <input
+                    name="headshot"
+                    type="file"
+                    accept="image/*"
+                    className="rounded-md border border-input bg-background p-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm">
+                  Or paste image URL
+                  <input
+                    name="headshotUrl"
+                    type="url"
+                    placeholder="https://example.com/headshot.jpg…"
+                    className="rounded-md border border-input bg-background px-3 py-2"
+                  />
+                </label>
+              </div>
                 <div className="sm:col-span-2">
                   <Button type="submit">Save draft</Button>
                 </div>

@@ -151,18 +151,23 @@ const homepageContract = `(() => new Promise((resolve, reject) => {
   }
 
   const expected = title.dataset.fullText;
-  if (expected !== "Tomorrow, Today.") {
+  if (expected !== "Today, Tomorrow") {
     reject(new Error("MISSING_SLOGAN_DATA:" + expected));
     return;
   }
 
+  hero.scrollIntoView({ block: "start" });
+  window.scrollBy(0, Math.max(window.innerHeight * 0.72, 1));
+
   const deadline = Date.now() + 5000;
   const tick = () => {
     if (title.dataset.typingComplete === "true") {
+      window.scrollTo(0, 0);
       resolve("HOMEPAGE_CONTRACT_OK");
       return;
     }
     if (Date.now() > deadline) {
+      window.scrollTo(0, 0);
       reject(new Error("TYPING_NEVER_COMPLETED:" + (title.textContent || "").trim()));
       return;
     }
@@ -298,8 +303,9 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
   }
 
   const before = getComputedStyle(headline);
-  const beforeFilter = before.filter;
-  const beforeTracking = before.letterSpacing;
+  const beforeOpacity = Number(before.opacity);
+  const beforeTransform = before.transform;
+  const beforeWipe = getComputedStyle(reveal).getPropertyValue("--zoom-wipe-y");
 
   reveal.scrollIntoView({ block: "start" });
   window.scrollBy(0, Math.max(window.innerHeight * 0.72, 1));
@@ -308,13 +314,13 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
     requestAnimationFrame(() => {
       const after = getComputedStyle(headline);
       const afterTransform = after.transform;
-      const afterFilter = after.filter;
-      const afterTracking = after.letterSpacing;
+      const afterOpacity = Number(after.opacity);
+      const afterWipe = getComputedStyle(reveal).getPropertyValue("--zoom-wipe-y");
       const afterScale = afterTransform.includes("matrix(") ? afterTransform.match(/matrix\\(([^)]+)\\)/)?.[1]?.split(",").slice(0, 4).map((value) => Number(value.trim())) : null;
 
       window.scrollTo(0, 0);
 
-      if (beforeFilter === afterFilter && beforeTracking === afterTracking) {
+      if (Math.abs(afterOpacity - beforeOpacity) < 0.25 && beforeTransform === afterTransform && beforeWipe === afterWipe) {
         reject(new Error("FOCUS_REVEAL_STATIC"));
         return;
       }
@@ -324,7 +330,7 @@ const focusRevealEffectWorks = `(() => new Promise((resolve, reject) => {
         return;
       }
 
-      resolve(\`FOCUS_REVEAL_OK:\${beforeFilter}->\${afterFilter}\`);
+      resolve(\`FOCUS_REVEAL_OK:\${beforeOpacity}->\${afterOpacity},\${beforeWipe}->\${afterWipe}\`);
     });
   });
 }))()`

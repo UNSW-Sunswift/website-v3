@@ -1,9 +1,8 @@
 "use client"
 
+import Image from "next/image"
 import type { CSSProperties } from "react"
 import { useEffect, useRef } from "react"
-
-import { HomepageImageSequence } from "@/components/site/homepage-image-sequence"
 
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t
@@ -26,33 +25,29 @@ export function HomepageZoomReveal() {
       const distance = Math.max(root.offsetHeight - window.innerHeight, 1)
       const progress = Math.min(Math.max(-rect.top / distance, 0), 1)
 
-      // Headline resolves into focus without changing size.
-      const revealRamp = Math.min(progress / 0.62, 1)
-      const opacity = lerp(0.42, 1, Math.min(progress / 0.32, 1))
-      const blur = lerp(10, 0, revealRamp)
-      const textY = lerp(4, -1.5, revealRamp)
+      // The black handoff clears first; the headline then resolves sharply.
+      const revealRamp = Math.min(Math.max((progress - 0.38) / 0.24, 0), 1)
+      const opacity = revealRamp
+      const textY = lerp(1.25, -0.65, revealRamp)
       const sweepX = lerp(-42, 142, Math.min(progress / 0.82, 1))
+      const wipeY = lerp(0, -105, Math.min(progress / 0.24, 1))
 
       // Tone: starts as a faint light gray and darkens to near-black on scroll.
-      const toneRamp = Math.pow(Math.min(progress / 0.65, 1), 0.85)
-      const channel = Math.round(lerp(186, 12, toneRamp))
+      const toneRamp = Math.pow(revealRamp, 0.85)
+      const channel = Math.round(lerp(84, 12, toneRamp))
 
-      // Background vehicle render glides in with a quiet parallax pass.
-      const renderX = lerp(3.5, -2.5, Math.min(progress / 0.86, 1))
-      const renderY = lerp(4, -4, Math.min(progress / 0.86, 1))
-      const renderOpacity = lerp(0.34, 0.68, Math.min(progress / 0.8, 1))
+      const renderOpacity = lerp(0.4, 0.7, Math.min(progress / 0.55, 1))
 
       root.style.setProperty("--zoom-progress", progress.toFixed(4))
       root.style.setProperty("--zoom-opacity", opacity.toFixed(4))
-      root.style.setProperty("--zoom-blur", `${blur.toFixed(4)}px`)
+      root.style.setProperty("--zoom-blur", "0px")
       root.style.setProperty("--zoom-text-y", `${textY.toFixed(4)}vh`)
       root.style.setProperty("--zoom-sweep-x", `${sweepX.toFixed(4)}%`)
+      root.style.setProperty("--zoom-wipe-y", `${wipeY.toFixed(4)}%`)
       root.style.setProperty(
         "--zoom-text-color",
         `rgb(${channel}, ${channel}, ${channel})`
       )
-      root.style.setProperty("--zoom-render-x", `${renderX.toFixed(4)}vw`)
-      root.style.setProperty("--zoom-render-y", `${renderY.toFixed(4)}vh`)
       root.style.setProperty("--zoom-render-opacity", renderOpacity.toFixed(4))
     }
 
@@ -83,14 +78,13 @@ export function HomepageZoomReveal() {
       style={
         {
           "--zoom-progress": 0,
-          "--zoom-opacity": 0.42,
-          "--zoom-blur": "10px",
-          "--zoom-text-y": "4vh",
+          "--zoom-opacity": 0,
+          "--zoom-blur": "0px",
+          "--zoom-text-y": "1.25vh",
           "--zoom-sweep-x": "-42%",
-          "--zoom-text-color": "rgb(186, 186, 186)",
-          "--zoom-render-x": "3.5vw",
-          "--zoom-render-y": "4vh",
-          "--zoom-render-opacity": 0.34,
+          "--zoom-wipe-y": "0%",
+          "--zoom-text-color": "rgb(84, 84, 84)",
+          "--zoom-render-opacity": 0.4,
         } as CSSProperties
       }
     >
@@ -100,17 +94,21 @@ export function HomepageZoomReveal() {
           aria-hidden="true"
           className="homepage-zoom-render absolute inset-0"
         >
-          <HomepageImageSequence
+          <Image
+            src="/media/sr8-hero-2.png"
             alt=""
-            posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"
-            sequenceBasePath="/homepage-sequences/zoom-reveal"
-            scrollContainerSelector="[data-homepage-zoom-reveal]"
+            fill
+            className="object-cover object-[50%_54%] [filter:grayscale(0.18)_brightness(1.02)_contrast(0.98)]"
             sizes="100vw"
-            imageClassName="object-cover [filter:grayscale(0.85)_brightness(1.1)_contrast(0.95)]"
           />
         </div>
 
         <div className="absolute inset-0 bg-[#f6f5f1]/64" />
+        <div
+          data-homepage-zoom-wipe
+          aria-hidden="true"
+          className="homepage-zoom-wipe pointer-events-none absolute inset-0 bg-black"
+        />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[14svh] bg-[#f6f5f1]/90" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[14svh] bg-[#f6f5f1]/90" />
         <div

@@ -54,6 +54,8 @@ type RecordsStyle = CSSProperties & {
   "--records-text-color"?: string
   "--records-muted-color"?: string
   "--records-rule-color"?: string
+  "--records-stage-opacity"?: number
+  "--records-stage-y"?: string
 }
 
 function clamp(value: number, min = 0, max = 1) {
@@ -76,6 +78,7 @@ export function HomepageRecords() {
       const rect = section.getBoundingClientRect()
       const distance = Math.max(section.offsetHeight - window.innerHeight, 1)
       const progress = clamp(-rect.top / distance)
+      const entryProgress = clamp((window.innerHeight - rect.top) / (window.innerHeight * 0.72))
       // Keep the record content present until the end of the scroll so the handoff
       // into recruitment does not pause on an empty black hold.
       const carouselProgress = clamp((progress - 0.08) / 0.5)
@@ -87,6 +90,14 @@ export function HomepageRecords() {
       const easedHandoff = 1 - Math.pow(1 - handoffProgress, 3)
 
       section.style.setProperty("--records-progress", progress.toFixed(4))
+      section.style.setProperty(
+        "--records-stage-opacity",
+        (0.72 + entryProgress * 0.28).toFixed(4)
+      )
+      section.style.setProperty(
+        "--records-stage-y",
+        `${((1 - entryProgress) * 18).toFixed(4)}px`
+      )
       section.style.setProperty(
         "--records-black-y",
         `${((1 - blackCover) * 100).toFixed(3)}%`
@@ -160,6 +171,8 @@ export function HomepageRecords() {
           "--records-text-color": "rgb(12, 12, 12)",
           "--records-muted-color": "rgb(74, 74, 74)",
           "--records-rule-color": "rgba(12, 12, 12, 0.18)",
+          "--records-stage-opacity": 0.72,
+          "--records-stage-y": "18px",
         } as RecordsStyle
       }
     >
@@ -174,7 +187,13 @@ export function HomepageRecords() {
           }}
         />
 
-        <div className="relative mx-auto grid h-full max-w-[92rem] items-center gap-8 px-4 sm:px-6 lg:grid-cols-[0.86fr_1.14fr]">
+        <div
+          className="relative mx-auto grid h-full max-w-[92rem] items-center gap-8 px-4 sm:px-6 lg:grid-cols-[0.86fr_1.14fr]"
+          style={{
+            opacity: "var(--records-stage-opacity)",
+            transform: "translate3d(0, var(--records-stage-y), 0)",
+          }}
+        >
           <div
             className="relative z-20 max-w-2xl"
             style={{

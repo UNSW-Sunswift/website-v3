@@ -1,18 +1,19 @@
 "use client"
 
+import Image from "next/image"
 import type { CSSProperties } from "react"
 import { useEffect, useRef, useState } from "react"
 
-import { HomepageImageSequence } from "@/components/site/homepage-image-sequence"
-
-const SLOGAN = "Tomorrow, Today."
-const LINE_BREAK_INDEX = 9
+const SLOGAN = "Today, Tomorrow"
+const LINE_BREAK_INDEX = 6
 const TYPE_INTERVAL_MS = 95
 const TYPE_START_DELAY_MS = 350
 
 export function HomepageHero() {
   const rootRef = useRef<HTMLElement>(null)
+  const typingStartedRef = useRef(false)
   const [typed, setTyped] = useState("")
+  const [revealComplete, setRevealComplete] = useState(false)
 
   useEffect(() => {
     const root = rootRef.current
@@ -28,18 +29,29 @@ export function HomepageHero() {
       const rect = root.getBoundingClientRect()
       const distance = Math.max(root.offsetHeight - window.innerHeight, 1)
       const progress = Math.min(Math.max(-rect.top / distance, 0), 1)
+      const revealProgress = Math.min(progress / 0.64, 1)
+      const titleProgress = Math.min(Math.max((progress - 0.58) / 0.2, 0), 1)
 
       root.style.setProperty("--hero-progress", progress.toFixed(4))
-      root.style.setProperty("--hero-scale", (1 + progress * 0.075).toFixed(4))
       root.style.setProperty(
-        "--hero-x",
-        `${(15.5 - progress * 2).toFixed(4)}vw`
+        "--hero-scale",
+        (1.09 - revealProgress * 0.09).toFixed(4)
       )
+      root.style.setProperty(
+        "--hero-image-y",
+        `${(18 - revealProgress * 18).toFixed(4)}svh`
+      )
+      root.style.setProperty("--hero-wipe-y", `${(-revealProgress * 105).toFixed(4)}%`)
       root.style.setProperty(
         "--hero-title-y",
-        `${(progress * -5.5).toFixed(4)}rem`
+        `${((1 - titleProgress) * 1.2 - progress * 1.2).toFixed(4)}rem`
       )
-      root.style.setProperty("--hero-opacity", (1 - progress * 0.16).toFixed(4))
+      root.style.setProperty("--hero-title-opacity", titleProgress.toFixed(4))
+      root.style.setProperty("--hero-opacity", (0.35 + revealProgress * 0.65).toFixed(4))
+
+      if (revealProgress >= 1) {
+        setRevealComplete(true)
+      }
     }
 
     const requestUpdate = () => {
@@ -63,6 +75,11 @@ export function HomepageHero() {
   }, [])
 
   useEffect(() => {
+    if (!revealComplete || typingStartedRef.current) {
+      return
+    }
+
+    typingStartedRef.current = true
     let index = 0
     let intervalId: ReturnType<typeof setInterval> | undefined
 
@@ -82,7 +99,7 @@ export function HomepageHero() {
         clearInterval(intervalId)
       }
     }
-  }, [])
+  }, [revealComplete])
 
   const firstLine = typed.slice(0, LINE_BREAK_INDEX)
   const secondLine =
@@ -93,33 +110,40 @@ export function HomepageHero() {
     <section
       ref={rootRef}
       data-homepage-hero
-      className="relative h-[180svh] overflow-clip bg-[#272c30] text-white"
+      data-hero-reveal-complete={revealComplete ? "true" : "false"}
+      className="relative h-[185svh] overflow-clip bg-black text-black"
       style={
         {
           "--hero-progress": 0,
-          "--hero-scale": 1,
-          "--hero-x": "15.5vw",
+          "--hero-scale": 1.09,
+          "--hero-image-y": "18svh",
+          "--hero-wipe-y": "0%",
           "--hero-title-y": "0rem",
+          "--hero-title-opacity": 0,
           "--hero-opacity": 1,
         } as CSSProperties
       }
     >
       <div className="sticky top-0 h-svh overflow-hidden">
-        <HomepageImageSequence
-          alt="Sunswift solar race car"
-          posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"
-          sequenceBasePath="/homepage-sequences/hero"
-          scrollContainerSelector="[data-homepage-hero]"
+        <div className="absolute inset-0 bg-black" />
+        <Image
+          src="/media/sr8-hero-render.png"
+          alt="Sunswift 8 concept render"
+          fill
           priority
-          imageClassName="homepage-hero-image object-cover object-[52%_50%]"
+          className="homepage-hero-image object-cover object-[50%_52%]"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-[#14181b]/30" />
-        <div className="absolute inset-0 bg-[#14181b]/45" />
+        <div className="pointer-events-none absolute inset-0 bg-white/8" />
+        <div
+          data-homepage-hero-wipe
+          aria-hidden="true"
+          className="homepage-hero-wipe pointer-events-none absolute inset-0 bg-black"
+        />
         <h1
           data-full-text={SLOGAN}
           data-typing-complete={isComplete ? "true" : "false"}
-          className="homepage-hero-title absolute top-[41svh] left-[9vw] max-w-[12ch] text-[clamp(3.05rem,5.45vw,5.95rem)] leading-[0.98] font-light tracking-normal text-white"
+          className="homepage-hero-title absolute top-[41svh] left-[9vw] max-w-[12ch] text-[clamp(3.05rem,5.45vw,5.95rem)] leading-[0.98] font-light tracking-normal text-black"
         >
           <span className="sr-only">{SLOGAN}</span>
           <span aria-hidden="true">
@@ -127,7 +151,7 @@ export function HomepageHero() {
             {typed.length > LINE_BREAK_INDEX && <br />}
             {secondLine}
             <span
-              className="homepage-hero-caret ml-[0.08em] inline-block w-[0.06em] translate-y-[0.05em] self-end bg-white align-baseline"
+              className="homepage-hero-caret ml-[0.08em] inline-block w-[0.06em] translate-y-[0.05em] self-end bg-black align-baseline"
               data-complete={isComplete ? "true" : "false"}
             >
               &nbsp;

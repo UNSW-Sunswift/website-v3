@@ -31,6 +31,58 @@ function normalizeNameKey(value: string) {
   return value.trim().replace(/\s+/g, " ").toLowerCase()
 }
 
+function safeHttpUrl(value: string) {
+  try {
+    const url = new URL(value.trim())
+    return url.protocol === "http:" || url.protocol === "https:" ? url : null
+  } catch {
+    return null
+  }
+}
+
+async function fetchTextUrl(value: string) {
+  const url = safeHttpUrl(value)
+  if (!url) {
+    return ""
+  }
+
+  const response = await fetch(url, { cache: "no-store" })
+  if (!response.ok) {
+    return ""
+  }
+
+  return response.text()
+}
+
+async function fetchUrlAsFile(value: string, fallbackName: string) {
+  const url = safeHttpUrl(value)
+  if (!url) {
+    return null
+  }
+
+  const response = await fetch(url, { cache: "no-store" })
+  if (!response.ok) {
+    return null
+  }
+
+  const contentType = response.headers.get("content-type") ?? "application/octet-stream"
+  const pathnameName = url.pathname.split("/").filter(Boolean).pop()
+  const filename = (pathnameName || fallbackName).replace(/[^a-zA-Z0-9._-]/g, "-")
+  const buffer = await response.arrayBuffer()
+
+  return new File([buffer], filename, { type: contentType })
+}
+
+async function formCsvText(formData: FormData) {
+  const file = formData.get("csv")
+  if (file instanceof File && file.size > 0) {
+    return file.text()
+  }
+
+  const urlText = await fetchTextUrl(String(formData.get("csvUrl") ?? ""))
+  return urlText || String(formData.get("csvText") ?? "")
+}
+
 type PublishCollection = "team" | "roles" | "partners"
 
 type PublishResult = {
@@ -139,8 +191,16 @@ export async function saveTeamMemberDraft(formData: FormData) {
   const hierarchyLevel = normalizeTeamHierarchy(String(formData.get("hierarchyLevel") ?? ""))
   const existingImageKey = String(formData.get("existingImageKey") ?? "")
   const file = formData.get("headshot")
+  const remoteFile = await fetchUrlAsFile(
+    String(formData.get("headshotUrl") ?? ""),
+    `${slug || "team-member"}-headshot`
+  )
   const imageKey =
-    file instanceof File && file.size > 0 ? await stageCmsUpload(file, slug, "team") : existingImageKey
+    file instanceof File && file.size > 0
+      ? await stageCmsUpload(file, slug, "team")
+      : remoteFile
+        ? await stageCmsUpload(remoteFile, slug, "team")
+        : existingImageKey
 
   await saveCmsDraft(
     "team",
@@ -340,8 +400,7 @@ export async function deletePartner(formData: FormData) {
 
 export async function importTeamDrafts(formData: FormData) {
   const updatedBy = await assertAdmin()
-  const file = formData.get("csv")
-  const text = file instanceof File ? await file.text() : String(formData.get("csvText") ?? "")
+  const text = await formCsvText(formData)
   const members = importTeamCsv(text)
   const existingDrafts = await listCmsRecords("team", "draft")
   const existingBySlug = new Map(existingDrafts.map((member) => [member.slug, member]))

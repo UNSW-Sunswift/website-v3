@@ -136,6 +136,7 @@ const cmsAssets = readFileSync(join(root, "content/cms-assets.json"), "utf8")
 const packageJson = readFileSync(join(root, "package.json"), "utf8")
 const authConfig = readFileSync(join(root, "auth.ts"), "utf8")
 const adminActions = readFileSync(join(root, "app/admin/actions.ts"), "utf8")
+const adminDashboardPage = readFileSync(join(root, "app/admin/page.tsx"), "utf8")
 const adminLoginPage = readFileSync(
   join(root, "app/admin/login/page.tsx"),
   "utf8"
@@ -207,10 +208,10 @@ assert(
   "Homepage must render the dedicated homepage hero component."
 )
 assert(
-  hero.includes('posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"') &&
-    hero.includes('sequenceBasePath="/homepage-sequences/hero"') &&
+  hero.includes('src="/media/sr8-hero-render.png"') &&
+    hero.includes("data-homepage-hero-wipe") &&
     !hero.includes('src="/placeholders/hero-track.svg"'),
-  "Homepage hero must use the SR8 vehicle image instead of the old SVG placeholder."
+  "Homepage hero must use the new SR8 render instead of the old SVG placeholder or sequence poster."
 )
 assert(
   /title:\s*\{\s*default:\s*"Sunswift Racing"[^]*template:\s*"%s \| Sunswift Racing"/.test(
@@ -309,14 +310,15 @@ assert(
   "Zoom-reveal section must expose data-homepage-vehicle-render as the live-render placeholder slot."
 )
 assert(
-  zoomReveal.includes('sequenceBasePath="/homepage-sequences/zoom-reveal"') &&
+  !zoomReveal.includes("HomepageImageSequence") &&
+    zoomReveal.includes('src="/media/sr8-hero-2.png"') &&
     homepageImageSequence.includes("frame_") &&
     homepageImageSequence.includes("padStart(3") &&
     homepageImageSequence.includes("frameCount = 81") &&
     homepageImageSequence.includes("enabled = false") &&
     homepageImageSequence.includes('data-sequence-enabled={enabled ? "true" : "false"}') &&
     homepageImageSequence.includes("sequenceUnavailable"),
-  "Homepage image sequence prep must support frame_000.webp through frame_080.webp while staying poster-only until sequences are explicitly enabled."
+  "Zoom reveal must use the static SR8 render while the reusable image sequence prep remains available but disabled by default."
 )
 assert(
   zoomReveal.includes("Built by Students."),
@@ -356,6 +358,10 @@ assert(
   "Zoom-reveal section must drive a --zoom-sweep-x custom property for the light sweep."
 )
 assert(
+  /--zoom-wipe-y/.test(zoomReveal) && /data-homepage-zoom-wipe/.test(zoomReveal),
+  "Zoom-reveal section must use the shared upward wipe treatment without frame-sequence scroll timing."
+)
+assert(
   /--zoom-opacity/.test(zoomReveal),
   "Zoom-reveal section must drive a --zoom-opacity custom property."
 )
@@ -388,8 +394,8 @@ assert(
   "Zoom-reveal section must use a light canvas so the headline can darken from gray to black."
 )
 assert(
-  !/bg-black/.test(zoomReveal),
-  "Zoom-reveal section must not use a black canvas; the tone shift requires a light background."
+  /data-homepage-zoom-wipe/.test(zoomReveal) && /bg-black/.test(zoomReveal),
+  "Zoom-reveal section must keep the light canvas but use a black upward wipe during the handoff."
 )
 assert(
   !/text-shadow:[^;]*rgba\(0,\s*0,\s*0,\s*0\.5/.test(zoomReveal),
@@ -434,8 +440,8 @@ assert(
   "Hero must expose data-homepage-hero for browser verification."
 )
 assert(
-  hero.includes('"Tomorrow, Today."'),
-  "Hero must use the slogan 'Tomorrow, Today.' with the trailing period."
+  hero.includes('"Today, Tomorrow"'),
+  "Hero must use the revised slogan 'Today, Tomorrow'."
 )
 assert(
   hero.includes("useEffect"),
@@ -452,6 +458,16 @@ assert(
 assert(
   hero.includes("homepage-hero-caret"),
   "Hero must render the typewriter caret element."
+)
+assert(
+  hero.includes('src="/media/sr8-hero-render.png"') &&
+    hero.includes("data-homepage-hero-wipe") &&
+    hero.includes("data-hero-reveal-complete") &&
+    hero.includes("--hero-wipe-y") &&
+    hero.includes("--hero-image-y") &&
+    hero.includes("--hero-title-opacity") &&
+    hero.includes("revealComplete"),
+  "Hero must use the SR8 hero render with a black-to-image upward wipe before the black typewriter text appears."
 )
 assert(
   /sr-only/.test(hero),
@@ -619,10 +635,12 @@ assert(
 )
 assert(
   about.includes("data-homepage-about-shared-vehicle") &&
-    about.includes('posterSrc="/vehicle-fleet/vehicle-sunswift-8.jpg"') &&
-    about.includes('sequenceBasePath="/homepage-sequences/about"') &&
+    about.includes('src="/media/sr8-hero-3.png"') &&
+    about.includes("SR8 in development") &&
+    about.includes("Since") &&
+    about.includes("UNSW") &&
     about.includes("bg-[#f6f5f1]"),
-  "About section must share the SR8 visual language and light canvas with the scroll reveal."
+  "About section must use the new SR8 visual and richer editorial/stat treatment."
 )
 assert(
   aboutFlat.includes("What is Sunswift Racing?"),
@@ -1990,6 +2008,9 @@ assert(
     adminTeamPage.includes("TEAM_HIERARCHIES") &&
     adminTeamPage.includes('name="department"') &&
     adminTeamPage.includes('name="hierarchyLevel"') &&
+    adminTeamPage.includes('name="csvUrl"') &&
+    adminTeamPage.includes('name="headshotUrl"') &&
+    adminTeamPage.includes("Upload headshot file") &&
     adminTeamPage.includes("AdminBulkPublishPanel") &&
     adminTeamPage.includes("AdminPublishStatus") &&
     adminTeamPage.includes("publishSelectedTeamMembers") &&
@@ -2004,11 +2025,20 @@ assert(
     adminBulkPublishPanel.includes("data-admin-bulk-record") &&
     adminBulkPublishPanel.includes("data-admin-select-all") &&
     adminBulkPublishPanel.includes("data-admin-publish-selected") &&
-    adminBulkPublishPanel.includes('"grid"') &&
+    adminBulkPublishPanel.includes('data-admin-bulk-view="grid"') &&
     adminBulkPublishPanel.includes("Zoom out") &&
     adminBulkPublishPanel.includes("Select all") &&
-    adminBulkPublishPanel.includes('name="slugs"'),
-  "Admin bulk publish panel must support selectable records, select all, grid view, zoom-out density, and selected-only form submission."
+    adminBulkPublishPanel.includes('name="slugs"') &&
+    !adminBulkPublishPanel.includes("List view") &&
+    !adminBulkPublishPanel.includes("setView"),
+  "Admin bulk publish panel must be grid-only with selectable records, select all, zoom-out density, and selected-only form submission."
+)
+assert(
+  adminActions.includes("fetchUrlAsFile") &&
+    adminActions.includes("fetchTextUrl") &&
+    adminActions.includes('formData.get("headshotUrl")') &&
+    adminActions.includes('formData.get("csvUrl")'),
+  "Team admin actions must accept remote URLs for headshots and team CSV imports."
 )
 assert(
   adminPublishStatus.includes("data-admin-publish-status") &&
@@ -2032,6 +2062,19 @@ assert(
     adminPartnersPage.includes("AdminPublishStatus") &&
     adminPartnersPage.includes("publishSelectedPartners"),
   "Team, recruitment, and partners admin pages must all expose selected batch publishing actions."
+)
+assert(
+  adminDashboardPage.includes('listCmsRecords("team", "draft")') &&
+    adminDashboardPage.includes('listCmsRecords("team", "published")') &&
+    adminDashboardPage.includes('listCmsRecords("roles", "draft")') &&
+    adminDashboardPage.includes('listCmsRecords("roles", "published")') &&
+    adminDashboardPage.includes('listCmsRecords("partners", "draft")') &&
+    adminDashboardPage.includes('listCmsRecords("partners", "published")') &&
+    adminDashboardPage.includes("Live content summary") &&
+    adminDashboardPage.includes("published /") &&
+    adminDashboardPage.includes("Draft") &&
+    adminDashboardPage.includes("Published"),
+  "Admin staging dashboard must show draft and published counts for team, roles, and partners."
 )
 assert(
   packageJson.includes(
