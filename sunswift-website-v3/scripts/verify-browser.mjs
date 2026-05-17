@@ -359,51 +359,72 @@ const recordsTransitionWorks = `(() => new Promise((resolve, reject) => {
     const beforeHandoff = Number(beforeStyle.getPropertyValue("--records-handoff-opacity") || 0);
     const beforeContent = Number(beforeStyle.getPropertyValue("--records-content-opacity") || 1);
     const beforeTextColor = beforeStyle.getPropertyValue("--records-text-color").trim();
+    const distance = Math.max(transition.offsetHeight - window.innerHeight, 1);
 
-    window.scrollBy(0, Math.max(window.innerHeight * 2.78, 1));
+    window.scrollBy(0, Math.max(distance * 0.16, 1));
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        const afterStyle = getComputedStyle(transition);
-        const afterY = afterStyle.getPropertyValue("--records-carousel-y").trim();
-        const afterBlackY = Number.parseFloat(afterStyle.getPropertyValue("--records-black-y") || "100");
-        const afterHandoff = Number(afterStyle.getPropertyValue("--records-handoff-opacity") || 0);
-        const afterContent = Number(afterStyle.getPropertyValue("--records-content-opacity") || 1);
-        const afterTextColor = afterStyle.getPropertyValue("--records-text-color").trim();
+        const earlyStyle = getComputedStyle(transition);
+        const earlyBlackY = Number.parseFloat(earlyStyle.getPropertyValue("--records-black-y") || "100");
+        const earlyCopy = Number(earlyStyle.getPropertyValue("--records-copy-opacity") || 0);
 
-        window.scrollTo(0, 0);
+        window.scrollBy(0, Math.max(distance * 0.8, 1));
 
-        if (beforeY === afterY) {
-          reject(new Error("RECORDS_CAROUSEL_STATIC:" + beforeY));
-          return;
-        }
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const afterStyle = getComputedStyle(transition);
+            const afterY = afterStyle.getPropertyValue("--records-carousel-y").trim();
+            const afterBlackY = Number.parseFloat(afterStyle.getPropertyValue("--records-black-y") || "100");
+            const afterHandoff = Number(afterStyle.getPropertyValue("--records-handoff-opacity") || 0);
+            const afterContent = Number(afterStyle.getPropertyValue("--records-content-opacity") || 1);
+            const afterTextColor = afterStyle.getPropertyValue("--records-text-color").trim();
 
-        if (!(afterBlackY < beforeBlackY - 50)) {
-          reject(new Error(\`RECORDS_BLACK_WIPE_STATIC:\${beforeBlackY}->\${afterBlackY}\`));
-          return;
-        }
+            window.scrollTo(0, 0);
 
-        if (!(afterHandoff > beforeHandoff + 0.25)) {
-          reject(new Error(\`RECORDS_HANDOFF_STATIC:\${beforeHandoff}->\${afterHandoff}\`));
-          return;
-        }
+            if (beforeY === afterY) {
+              reject(new Error("RECORDS_CAROUSEL_STATIC:" + beforeY));
+              return;
+            }
 
-        if (beforeContent < 0.85 || afterContent > 0.2) {
-          reject(new Error(\`RECORDS_CONTENT_VISIBILITY_OFF:\${beforeContent}->\${afterContent}\`));
-          return;
-        }
+            if (!(afterBlackY < beforeBlackY - 50)) {
+              reject(new Error(\`RECORDS_BLACK_WIPE_STATIC:\${beforeBlackY}->\${afterBlackY}\`));
+              return;
+            }
 
-        if (beforeTextColor === afterTextColor || !beforeTextColor.includes("12") || !afterTextColor.includes("255")) {
-          reject(new Error(\`RECORDS_TEXT_COLOR_STATIC:\${beforeTextColor}->\${afterTextColor}\`));
-          return;
-        }
+            if (!(earlyBlackY < 5)) {
+              reject(new Error(\`RECORDS_BLACK_WIPE_LATE:\${beforeBlackY}->\${earlyBlackY}\`));
+              return;
+            }
 
-        if ((transition.textContent || "").includes("Embrace tomorrow.")) {
-          reject(new Error("RECORDS_DUPLICATES_RECRUITMENT_HEADLINE"));
-          return;
-        }
+            if (earlyCopy < 0.95) {
+              reject(new Error(\`RECORDS_COPY_CLEARS_TOO_EARLY:\${earlyCopy}\`));
+              return;
+            }
 
-        resolve(\`RECORDS_TRANSITION_OK:\${beforeY}->\${afterY}\`);
+            if (!(afterHandoff > beforeHandoff + 0.25)) {
+              reject(new Error(\`RECORDS_HANDOFF_STATIC:\${beforeHandoff}->\${afterHandoff}\`));
+              return;
+            }
+
+            if (beforeContent < 0.85 || afterContent > 0.2) {
+              reject(new Error(\`RECORDS_CONTENT_VISIBILITY_OFF:\${beforeContent}->\${afterContent}\`));
+              return;
+            }
+
+            if (beforeTextColor === afterTextColor || !beforeTextColor.includes("12") || !afterTextColor.includes("255")) {
+              reject(new Error(\`RECORDS_TEXT_COLOR_STATIC:\${beforeTextColor}->\${afterTextColor}\`));
+              return;
+            }
+
+            if ((transition.textContent || "").includes("Embrace tomorrow.")) {
+              reject(new Error("RECORDS_DUPLICATES_RECRUITMENT_HEADLINE"));
+              return;
+            }
+
+            resolve(\`RECORDS_TRANSITION_OK:\${beforeY}->\${afterY}\`);
+          });
+        });
       });
     });
   });

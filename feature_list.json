@@ -1862,6 +1862,40 @@
         "HomepageRecords keeps carousel content visible during the black wipe and only clears near the final handoff.",
         "SiteFooter keeps the dark editorial style but uses smaller type and less vertical weight."
       ]
+    },
+    {
+      "id": "records-transition-timing-restore",
+      "priority": 62,
+      "title": "Records transition timing restore",
+      "status": "complete",
+      "description": "Restore the homepage world-records transition timing so the solid black wipe happens early while the records copy and carousel remain visible until the final handoff.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "pnpm verify:browser"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "./init.sh: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.",
+          "pnpm test:homepage-design: passed.",
+          "pnpm typecheck: passed.",
+          "pnpm lint: passed.",
+          "pnpm build: passed.",
+          "pnpm exec agent-browser open/wait/screenshot --annotate/snapshot -i: passed against http://127.0.0.1:3013.",
+          "PATH=\"$PWD/node_modules/.bin:$PATH\" VERIFY_URL=http://127.0.0.1:3013 pnpm verify:browser: passed, including RECORDS_TRANSITION_OK.",
+          "./init.sh: passed after implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "HomepageRecords now starts the black wipe at progress 0.035, clears intro copy at 0.6, clears record content at 0.66, and flips to white text only after blackCover exceeds 0.72.",
+        "The homepage design contract now guards those timing thresholds.",
+        "Browser verification now checks the mid-scroll state so copy cannot disappear before the black wipe covers the frame.",
+        "The untracked new_animation_task.md file was not changed."
+      ]
     }
   ]
 }

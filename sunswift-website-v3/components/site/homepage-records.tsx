@@ -76,15 +76,13 @@ export function HomepageRecords() {
       const rect = section.getBoundingClientRect()
       const distance = Math.max(section.offsetHeight - window.innerHeight, 1)
       const progress = clamp(-rect.top / distance)
-      // Tightened timeline so the records → recruitment handoff is fully resolved
-      // (content cleared, dark veil at 100%) BEFORE the recruitment section enters
-      // the viewport. This removes the visible overlap where the recruitment glow
-      // used to bleed through while the records headline was still on screen.
+      // Keep the black takeover early, then clear records copy/content only at
+      // the final handoff so the section never hits an empty transition frame.
       const carouselProgress = clamp((progress - 0.08) / 0.5)
       const handoffProgress = clamp((progress - 0.58) / 0.3)
-      const contentClear = clamp((progress - 0.76) / 0.12)
-      const copyClear = clamp((progress - 0.03) / 0.07)
-      const blackCover = clamp((progress - 0.12) / 0.13)
+      const contentClear = clamp((progress - 0.66) / 0.12)
+      const copyClear = clamp((progress - 0.6) / 0.12)
+      const blackCover = clamp((progress - 0.035) / 0.12)
       const easedCarousel = 1 - Math.pow(1 - carouselProgress, 3)
       const easedHandoff = 1 - Math.pow(1 - handoffProgress, 3)
 
@@ -110,7 +108,7 @@ export function HomepageRecords() {
         "--records-content-opacity",
         String(1 - contentClear)
       )
-      const darkTheme = blackCover > 0.22
+      const darkTheme = blackCover > 0.72
       section.style.setProperty(
         "--records-text-color",
         darkTheme ? "rgb(255, 255, 255)" : "rgb(12, 12, 12)"

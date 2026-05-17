@@ -2849,3 +2849,42 @@ Known limits:
 
 - LocalStack-dependent checks were skipped for this frontend-only pass.
 - Existing dirty placeholder video assets and `.DS_Store` were not touched.
+
+## 2026-05-17 - Records transition timing restore
+
+Implementation:
+
+- Restored the homepage world-records transition timing to the prior stable
+  choreography: the solid black wipe starts early, while the "Moving records
+  forward" copy and record carousel stay readable until the final handoff.
+- Delayed the text-colour flip until the black wipe is mostly complete so dark
+  text is not shown over the dark panel during the transition.
+- Tightened `scripts/test-homepage-design.mjs` so the expected timing contract
+  covers the restored wipe/copy/content thresholds.
+- Extended `scripts/verify-browser.mjs` with a mid-scroll assertion that catches
+  the broken state where the copy clears before the black wipe has taken over.
+
+Verification:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS
+  build/test, frontend typecheck/lint, and homepage design contract.
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm build`: passed.
+- `pnpm exec agent-browser open http://127.0.0.1:3013 && pnpm exec
+  agent-browser wait --load networkidle && pnpm exec agent-browser screenshot
+  --annotate && pnpm exec agent-browser snapshot -i`: passed.
+- `PATH="$PWD/node_modules/.bin:$PATH" VERIFY_URL=http://127.0.0.1:3013 pnpm
+  verify:browser`: passed against `next start` on port 3013, including
+  `RECORDS_TRANSITION_OK`.
+- `./init.sh`: passed after implementation with LocalStack DynamoDB/S3, AWS
+  build/test, frontend typecheck/lint, and homepage design contract.
+
+Known limits:
+
+- The global `agent-browser` binary was not on PATH, so browser verification used
+  the repo-local CLI via `pnpm exec` / `node_modules/.bin`.
+- `next start` logged the existing Auth.js missing-secret warning when the
+  browser verifier visited `/admin/login`; the verifier still passed.
+- The untracked `new_animation_task.md` file was not changed.

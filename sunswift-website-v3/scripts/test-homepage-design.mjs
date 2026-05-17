@@ -738,21 +738,22 @@ assert(
   "Records handoff must start at progress 0.58 so the dark veil is fully covering the recruitment glow by the end of the section."
 )
 assert(
-  /contentClear\s*=\s*clamp\(\(progress - 0\.76\) \/ 0\.12\)/.test(
+  /contentClear\s*=\s*clamp\(\(progress - 0\.66\) \/ 0\.12\)/.test(
     recordsTransition
   ),
   "Records content must remain readable through the wipe and fade only near the final handoff."
 )
 assert(
-  /copyClear\s*=\s*clamp\(\(progress - 0\.03\) \/ 0\.07\)/.test(
+  /copyClear\s*=\s*clamp\(\(progress - 0\.6\) \/ 0\.12\)/.test(
     recordsTransition
   ),
-  "Records intro copy must clear before the black wipe crosses the frame."
+  "Records intro copy must remain readable through the black wipe and clear only near the final handoff."
 )
 assert(
-  /blackCover\s*=\s*clamp\(\(progress - 0\.12\) \/ 0\.13\)/.test(
+  /blackCover\s*=\s*clamp\(\(progress - 0\.035\) \/ 0\.12\)/.test(
     recordsTransition
   ) &&
+    /darkTheme\s*=\s*blackCover > 0\.72/.test(recordsTransition) &&
     /"--records-content-opacity",\s*String\(1 - contentClear\)/.test(
       recordsTransition
     ) &&
