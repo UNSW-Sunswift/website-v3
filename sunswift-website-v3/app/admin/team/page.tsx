@@ -2,6 +2,7 @@ import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { AdminBulkPublishPanel } from "@/components/site/admin-bulk-publish-panel"
+import { AdminPublishStatus } from "@/components/site/admin-publish-status"
 import { AdminShell } from "@/components/site/admin-shell"
 import {
   deleteTeamMember,
@@ -24,8 +25,13 @@ export const metadata = {
   title: "Admin Team",
 }
 
-export default async function AdminTeamPage() {
+type AdminTeamPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
+export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps) {
   const members = await listCmsRecords("team", "draft")
+  const publishStatus = await searchParams
 
   return (
     <AdminShell>
@@ -38,6 +44,15 @@ export default async function AdminTeamPage() {
             to the public collection.
           </p>
         </div>
+
+        <AdminPublishStatus
+          status={publishStatus?.publishStatus}
+          published={publishStatus?.published}
+          failed={publishStatus?.failed}
+          requested={publishStatus?.requested}
+          singular="team member"
+          plural="team members"
+        />
 
         <AdminBulkPublishPanel
           title="Publish team drafts"

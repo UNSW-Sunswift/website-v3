@@ -2,6 +2,7 @@ import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { AdminBulkPublishPanel } from "@/components/site/admin-bulk-publish-panel"
+import { AdminPublishStatus } from "@/components/site/admin-publish-status"
 import { AdminShell } from "@/components/site/admin-shell"
 import {
   deletePartner,
@@ -18,8 +19,13 @@ export const metadata = {
   title: "Admin Partners",
 }
 
-export default async function AdminPartnersPage() {
+type AdminPartnersPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
+export default async function AdminPartnersPage({ searchParams }: AdminPartnersPageProps) {
   const partners = await listCmsRecords("partners", "draft")
+  const publishStatus = await searchParams
 
   return (
     <AdminShell>
@@ -32,6 +38,15 @@ export default async function AdminPartnersPage() {
             partner grid.
           </p>
         </div>
+
+        <AdminPublishStatus
+          status={publishStatus?.publishStatus}
+          published={publishStatus?.published}
+          failed={publishStatus?.failed}
+          requested={publishStatus?.requested}
+          singular="partner"
+          plural="partners"
+        />
 
         <AdminBulkPublishPanel
           title="Publish partner drafts"

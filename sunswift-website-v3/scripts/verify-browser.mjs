@@ -926,6 +926,7 @@ const partnersContract = `(() => {
   for (const phrase of [
     "Partners.",
     "Building world-class cars takes more than just engineering - it takes a community.",
+    "Partners and sponsors",
     "Contact us",
     "active partners and sponsors"
   ]) {
@@ -940,11 +941,17 @@ const partnersContract = `(() => {
     }
   }
 
-  if (document.querySelector("[data-partners-marquee], [data-partners-grid], [data-partner-card]")) {
-    throw new Error("REMOVED_PARTNERS_SECTIONS_VISIBLE");
+  const grid = document.querySelector("[data-partners-grid]");
+  const cards = document.querySelectorAll("[data-partner-card]");
+  if (!grid || cards.length < 3) {
+    throw new Error("MISSING_PARTNERS_GRID:" + cards.length);
   }
 
-  return "PARTNERS_OK";
+  if (document.querySelector("[data-partners-marquee]")) {
+    throw new Error("REMOVED_PARTNERS_MARQUEE_VISIBLE");
+  }
+
+  return "PARTNERS_OK:" + cards.length;
 })()`
 
 const teamContract = `(() => new Promise((resolve, reject) => {

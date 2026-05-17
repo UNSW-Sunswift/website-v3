@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { AdminBulkPublishPanel } from "@/components/site/admin-bulk-publish-panel"
+import { AdminPublishStatus } from "@/components/site/admin-publish-status"
 import { AdminShell } from "@/components/site/admin-shell"
 import {
   deleteRecruitmentRole,
@@ -15,8 +16,13 @@ export const metadata = {
   title: "Admin Recruitment",
 }
 
-export default async function AdminRecruitmentPage() {
+type AdminRecruitmentPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
+export default async function AdminRecruitmentPage({ searchParams }: AdminRecruitmentPageProps) {
   const roles = await listCmsRecords("roles", "draft")
+  const publishStatus = await searchParams
 
   return (
     <AdminShell>
@@ -28,6 +34,15 @@ export default async function AdminRecruitmentPage() {
             Edit draft role descriptions and publish them to the recruitment page.
           </p>
         </div>
+
+        <AdminPublishStatus
+          status={publishStatus?.publishStatus}
+          published={publishStatus?.published}
+          failed={publishStatus?.failed}
+          requested={publishStatus?.requested}
+          singular="role"
+          plural="roles"
+        />
 
         <AdminBulkPublishPanel
           title="Publish role drafts"

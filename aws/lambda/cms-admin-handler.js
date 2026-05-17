@@ -88,6 +88,14 @@ async function publish(collection, slug, updatedBy) {
   }
 
   await dynamo.send(new PutCommand({ TableName: process.env.CMS_TABLE_NAME, Item: item }))
+  await dynamo.send(new DeleteCommand({
+    TableName: process.env.CMS_TABLE_NAME,
+    Key: {
+      id: config.id,
+      type: itemType(config.kind, slug, "draft"),
+    },
+  }))
+
   return response(200, { item })
 }
 

@@ -31,8 +31,77 @@ function normalizeNameKey(value: string) {
   return value.trim().replace(/\s+/g, " ").toLowerCase()
 }
 
+type PublishCollection = "team" | "roles" | "partners"
+
+type PublishResult = {
+  requested: number
+  published: number
+  failed: number
+}
+
 function selectedSlugs(formData: FormData) {
   return Array.from(new Set(formData.getAll("slugs").map((slug) => String(slug).trim()).filter(Boolean)))
+}
+
+function publishStatusPath(path: string, result: PublishResult) {
+  const status =
+    result.requested === 0
+      ? "empty"
+      : result.failed === 0
+        ? "success"
+        : result.published > 0
+          ? "partial"
+          : "error"
+  const params = new URLSearchParams({
+    publishStatus: status,
+    published: String(result.published),
+    failed: String(result.failed),
+    requested: String(result.requested),
+  })
+
+  return `${path}?${params.toString()}`
+}
+
+async function publishAndArchiveDraft(
+  collection: PublishCollection,
+  slug: string,
+  updatedBy: string
+) {
+  try {
+    const published = await publishCmsDraft(collection, slug, updatedBy)
+
+    if (!published) {
+      return false
+    }
+
+    await deleteCmsRecord(collection, slug, "draft")
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function publishDrafts(
+  collection: PublishCollection,
+  slugs: string[],
+  updatedBy: string
+): Promise<PublishResult> {
+  let published = 0
+  let failed = 0
+
+  for (const slug of slugs) {
+    if (await publishAndArchiveDraft(collection, slug, updatedBy)) {
+      published += 1
+    } else {
+      failed += 1
+    }
+  }
+
+  return {
+    requested: slugs.length,
+    published,
+    failed,
+  }
 }
 
 async function assertAdmin() {
@@ -95,42 +164,36 @@ export async function saveTeamMemberDraft(formData: FormData) {
 export async function publishTeamMember(formData: FormData) {
   const updatedBy = await assertAdmin()
 
-  const slug = String(formData.get("slug") ?? "")
-  const published = await publishCmsDraft("team", slug, updatedBy)
+  const slug = String(formData.get("slug") ?? "").trim()
+  const result = await publishDrafts("team", slug ? [slug] : [], updatedBy)
 
-  if (published) {
-    revalidatePath("/team")
-    revalidatePath("/admin/team")
-  }
+  revalidatePath("/team")
+  revalidatePath("/admin/team")
+  redirect(publishStatusPath("/admin/team", result))
 }
 
 export async function publishAllTeamMembers() {
   const updatedBy = await assertAdmin()
   const drafts = await listCmsRecords("team", "draft")
-
-  for (const member of drafts) {
-    if (!member.slug) {
-      continue
-    }
-    await publishCmsDraft("team", member.slug, updatedBy)
-  }
+  const result = await publishDrafts(
+    "team",
+    drafts.map((member) => member.slug).filter(Boolean),
+    updatedBy
+  )
 
   revalidatePath("/team")
   revalidatePath("/admin/team")
+  redirect(publishStatusPath("/admin/team", result))
 }
 
 export async function publishSelectedTeamMembers(formData: FormData) {
   const updatedBy = await assertAdmin()
   const slugs = selectedSlugs(formData)
+  const result = await publishDrafts("team", slugs, updatedBy)
 
-  for (const slug of slugs) {
-    await publishCmsDraft("team", slug, updatedBy)
-  }
-
-  if (slugs.length > 0) {
-    revalidatePath("/team")
-    revalidatePath("/admin/team")
-  }
+  revalidatePath("/team")
+  revalidatePath("/admin/team")
+  redirect(publishStatusPath("/admin/team", result))
 }
 
 export async function deleteTeamMember(formData: FormData) {
@@ -178,29 +241,24 @@ export async function saveRecruitmentRoleDraft(formData: FormData) {
 export async function publishRecruitmentRole(formData: FormData) {
   const updatedBy = await assertAdmin()
 
-  const slug = String(formData.get("slug") ?? "")
-  const published = await publishCmsDraft("roles", slug, updatedBy)
+  const slug = String(formData.get("slug") ?? "").trim()
+  const result = await publishDrafts("roles", slug ? [slug] : [], updatedBy)
 
-  if (published) {
-    revalidatePath("/recruitment")
-    revalidatePath("/recruitment/available-roles")
-    revalidatePath("/admin/recruitment")
-  }
+  revalidatePath("/recruitment")
+  revalidatePath("/recruitment/available-roles")
+  revalidatePath("/admin/recruitment")
+  redirect(publishStatusPath("/admin/recruitment", result))
 }
 
 export async function publishSelectedRecruitmentRoles(formData: FormData) {
   const updatedBy = await assertAdmin()
   const slugs = selectedSlugs(formData)
+  const result = await publishDrafts("roles", slugs, updatedBy)
 
-  for (const slug of slugs) {
-    await publishCmsDraft("roles", slug, updatedBy)
-  }
-
-  if (slugs.length > 0) {
-    revalidatePath("/recruitment")
-    revalidatePath("/recruitment/available-roles")
-    revalidatePath("/admin/recruitment")
-  }
+  revalidatePath("/recruitment")
+  revalidatePath("/recruitment/available-roles")
+  revalidatePath("/admin/recruitment")
+  redirect(publishStatusPath("/admin/recruitment", result))
 }
 
 export async function deleteRecruitmentRole(formData: FormData) {
@@ -247,27 +305,22 @@ export async function savePartnerDraft(formData: FormData) {
 
 export async function publishPartner(formData: FormData) {
   const updatedBy = await assertAdmin()
-  const slug = String(formData.get("slug") ?? "")
-  const published = await publishCmsDraft("partners", slug, updatedBy)
+  const slug = String(formData.get("slug") ?? "").trim()
+  const result = await publishDrafts("partners", slug ? [slug] : [], updatedBy)
 
-  if (published) {
-    revalidatePath("/partners")
-    revalidatePath("/admin/partners")
-  }
+  revalidatePath("/partners")
+  revalidatePath("/admin/partners")
+  redirect(publishStatusPath("/admin/partners", result))
 }
 
 export async function publishSelectedPartners(formData: FormData) {
   const updatedBy = await assertAdmin()
   const slugs = selectedSlugs(formData)
+  const result = await publishDrafts("partners", slugs, updatedBy)
 
-  for (const slug of slugs) {
-    await publishCmsDraft("partners", slug, updatedBy)
-  }
-
-  if (slugs.length > 0) {
-    revalidatePath("/partners")
-    revalidatePath("/admin/partners")
-  }
+  revalidatePath("/partners")
+  revalidatePath("/admin/partners")
+  redirect(publishStatusPath("/admin/partners", result))
 }
 
 export async function deletePartner(formData: FormData) {

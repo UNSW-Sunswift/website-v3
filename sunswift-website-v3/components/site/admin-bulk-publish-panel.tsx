@@ -168,6 +168,7 @@ export function AdminBulkPublishPanel({
                 <button
                   key={item.slug}
                   type="button"
+                  data-admin-bulk-record={item.slug}
                   aria-pressed={isSelected}
                   onClick={() => toggleSlug(item.slug)}
                   className={cn(

@@ -181,6 +181,48 @@ function teamDraftSavedContract(marker) {
   })()`
 }
 
+const teamPublishContract = `(() => new Promise((resolve, reject) => {
+  const record = document.querySelector("[data-admin-bulk-record]");
+  const submit = document.querySelector("[data-admin-publish-selected]");
+
+  if (!record || !submit) {
+    reject(new Error("MISSING_TEAM_PUBLISH_CONTROLS"));
+    return;
+  }
+
+  const slug = record.getAttribute("data-admin-bulk-record");
+  record.click();
+
+  setTimeout(() => {
+    if (!slug || !submit.textContent.includes("(1)") || submit.disabled) {
+      reject(new Error("TEAM_PUBLISH_SELECTION_FAILED:" + submit.textContent));
+      return;
+    }
+
+    submit.click();
+    resolve(slug);
+  }, 150);
+}))()`
+
+function teamPublishedMovedContract(slug) {
+  return `(() => {
+    const banner = document.querySelector("[data-admin-publish-status]");
+    const text = banner?.textContent || "";
+    const stillDraft = Array.from(document.querySelectorAll("[data-admin-bulk-record]"))
+      .some((record) => record.getAttribute("data-admin-bulk-record") === ${JSON.stringify(slug)});
+
+    if (!banner || !text.includes("Published 1 team member") || !text.includes("moved off this page")) {
+      throw new Error("MISSING_TEAM_PUBLISH_STATUS:" + text);
+    }
+
+    if (stillDraft) {
+      throw new Error("PUBLISHED_TEAM_DRAFT_STILL_VISIBLE:" + ${JSON.stringify(slug)});
+    }
+
+    return "TEAM_PUBLISH_MOVED_OK:" + ${JSON.stringify(slug)};
+  })()`
+}
+
 const recruitmentContract = `(() => {
   const text = document.body.textContent || "";
   const bulkPublish = document.querySelector("[data-admin-bulk-publish]");
@@ -244,6 +286,9 @@ try {
   runAgentBrowser(["open", teamUrl])
   runAgentBrowser(["wait", "--load", "networkidle"])
   console.log(evalInBrowser(teamDraftSavedContract(draftMarker)))
+  const publishedSlug = JSON.parse(evalInBrowser(teamPublishContract))
+  runAgentBrowser(["wait", "--load", "networkidle"])
+  console.log(evalInBrowser(teamPublishedMovedContract(publishedSlug)))
 
   runAgentBrowser(["open", recruitmentUrl])
   runAgentBrowser(["wait", "--load", "networkidle"])

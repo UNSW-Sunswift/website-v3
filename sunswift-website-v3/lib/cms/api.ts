@@ -145,10 +145,13 @@ export async function publishCmsDraft<TCollection extends Exclude<CmsCollection,
 
   if (collection === "team") {
     await putTeamMember(published as TeamMember, "published")
+    await deleteTeamMember(slug, "draft")
   } else if (collection === "roles") {
     await putRecruitmentRole(published as RecruitmentRole, "published")
+    await deleteRecruitmentRole(slug, "draft")
   } else {
     await putPartner(published as Partner, "published")
+    await deletePartner(slug, "draft")
   }
 
   return published
@@ -225,4 +228,3 @@ export async function recordMediaAsset(asset: MediaAsset, updatedBy: string) {
   await putMediaAsset(item, item.status)
   return item
 }
-

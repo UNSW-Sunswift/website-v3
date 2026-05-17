@@ -1930,6 +1930,48 @@
         "The homepage design contract now prevents the footer logo from returning to a white backing.",
         "The untracked new_animation_task.md file was not changed."
       ]
+    },
+    {
+      "id": "partners-grid-publish-status-draft-archive",
+      "priority": 64,
+      "title": "Partners grid and publish status with draft archive",
+      "status": "complete",
+      "description": "Restore the public partners grid and make admin publish actions report visible success/failure status while moving successfully published records off draft pages.",
+      "verification": {
+        "required": [
+          "./init.sh",
+          "pnpm test:homepage-design",
+          "pnpm typecheck",
+          "pnpm lint",
+          "pnpm build",
+          "npm run build in aws",
+          "npm test -- --runInBand in aws",
+          "pnpm verify:browser",
+          "pnpm verify:cms-admin"
+        ],
+        "last_run": "2026-05-17",
+        "evidence": [
+          "./init.sh: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.",
+          "pnpm test:homepage-design: passed.",
+          "pnpm typecheck: passed.",
+          "pnpm lint: passed.",
+          "pnpm build: passed.",
+          "npm run build in aws: passed.",
+          "npm test -- --runInBand in aws: passed.",
+          "Manual agent-browser open/wait/screenshot --annotate/snapshot -i against /partners showed the restored Partners and sponsors grid with 35 partner cards.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser: passed, including PARTNERS_OK:35.",
+          "VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin: passed, including TEAM_PUBLISH_MOVED_OK:alex-rivera.",
+          "./init.sh: passed after artifact updates with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract."
+        ]
+      },
+      "notes": [
+        "PartnersPageContent now renders a public grid of partner cards while keeping the marquee, View grid CTA, and powered-by header removed.",
+        "AdminPublishStatus displays publish success, partial success, failure, and empty-selection states on Team, Roles, and Partners pages.",
+        "Publish actions now publish then delete the matching draft so successful records leave the draft list.",
+        "Draft CMS reads no longer fall back to public seed data when a draft collection is empty.",
+        "The AWS CMS admin publish handler now deletes the draft item after writing the published item.",
+        "The untracked new_animation_task.md file was not changed."
+      ]
     }
   ]
 }

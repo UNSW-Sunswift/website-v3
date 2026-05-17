@@ -69,36 +69,36 @@ async function queryCollection<T>(
 export async function getTeamMembers(status: CmsStatus = "published") {
   try {
     const members = await queryCollection<TeamMember>("team-members", "member", status)
-    return members.length > 0 ? members : fallbackTeamMembers
+    return members.length > 0 || status === "draft" ? members : fallbackTeamMembers
   } catch {
-    return fallbackTeamMembers
+    return status === "draft" ? [] : fallbackTeamMembers
   }
 }
 
 export async function getRecruitmentRoles(status: CmsStatus = "published") {
   try {
     const roles = await queryCollection<RecruitmentRole>("recruitment-roles", "role", status)
-    return roles.length > 0 ? roles : fallbackRecruitmentRoles
+    return roles.length > 0 || status === "draft" ? roles : fallbackRecruitmentRoles
   } catch {
-    return fallbackRecruitmentRoles
+    return status === "draft" ? [] : fallbackRecruitmentRoles
   }
 }
 
 export async function getPartners(status: CmsStatus = "published") {
   try {
     const partners = await queryCollection<Partner>("partners", "partner", status)
-    return partners.length > 0 ? partners : fallbackPartners
+    return partners.length > 0 || status === "draft" ? partners : fallbackPartners
   } catch {
-    return fallbackPartners
+    return status === "draft" ? [] : fallbackPartners
   }
 }
 
 export async function getMediaAssets(status: CmsStatus = "published") {
   try {
     const assets = await queryCollection<MediaAsset>("media-assets", "asset", status)
-    return assets.length > 0 ? assets : fallbackMediaAssets
+    return assets.length > 0 || status === "draft" ? assets : fallbackMediaAssets
   } catch {
-    return fallbackMediaAssets
+    return status === "draft" ? [] : fallbackMediaAssets
   }
 }
 

@@ -6,7 +6,7 @@ This guide covers the CMS staging dashboard for Sunswift Racing. The admin UI le
 
 1. Sign in at `/admin` with an authorized Google account (or the local developer account in non-production).
 2. Use the dashboard tiles to jump to Team, Roles, Partners, or Assets.
-3. Work in drafts first. Publishing copies draft records into the public collection.
+3. Work in drafts first. Publishing moves draft records into the public collection and removes them from the draft list.
 4. Always verify the public route after publishing.
 
 ## Access and accounts
@@ -18,7 +18,8 @@ This guide covers the CMS staging dashboard for Sunswift Racing. The admin UI le
 ## Drafts vs published
 
 - Drafts live only in the admin staging collection.
-- Publish creates or updates the public record used by the website.
+- Publish creates or updates the public record used by the website, then removes the matching draft from the admin draft list.
+- A publish status banner appears after publishing and reports success, partial success, or failure counts.
 - Delete removes the draft and the published record for the selected internal record key.
 
 ## Team members

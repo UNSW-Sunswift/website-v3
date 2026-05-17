@@ -152,6 +152,10 @@ const adminBulkPublishPanel = readFileSync(
   join(root, "components/site/admin-bulk-publish-panel.tsx"),
   "utf8"
 )
+const adminPublishStatus = readFileSync(
+  join(root, "components/site/admin-publish-status.tsx"),
+  "utf8"
+)
 const adminShell = readFileSync(
   join(root, "components/site/admin-shell.tsx"),
   "utf8"
@@ -166,6 +170,10 @@ const adminAssetsPage = readFileSync(
 )
 const cmsAdminVerifier = readFileSync(
   join(root, "scripts/verify-cms-admin.mjs"),
+  "utf8"
+)
+const cmsAdminHandler = readFileSync(
+  join(root, "../aws/lambda/cms-admin-handler.js"),
   "utf8"
 )
 
@@ -1061,14 +1069,16 @@ assert(
   "Partners page must preserve the Webflow partners overview copy."
 )
 assert(
-  !partnersPageContent.includes("data-partners-marquee") &&
+  partnersPageContent.includes("data-partners-grid") &&
+    partnersPageContent.includes("data-partner-card") &&
+    partnersPageContent.includes("Partners and sponsors") &&
+    partnersPageContent.includes("assetUrl(partner.logoKey)") &&
+    !partnersPageContent.includes("data-partners-marquee") &&
     !partnersPageContent.includes("data-partner-marquee-card") &&
     !partnersPageContent.includes("partner-marquee") &&
-    !partnersPageContent.includes("data-partners-grid") &&
-    !partnersPageContent.includes("data-partner-card") &&
     !partnersPageContent.includes("View grid") &&
     !partnersPageContent.includes("Powered by shared ambition"),
-  "Partners page must remove the marquee, grid, view-grid CTA, and powered-by header."
+  "Partners page must render the partner grid while keeping the marquee, view-grid CTA, and powered-by header removed."
 )
 for (const partner of [
   "3M",
@@ -1920,6 +1930,9 @@ assert(
   cmsApi.includes("CMS_API_URL") &&
     cmsApi.includes("saveCmsDraft") &&
     cmsApi.includes("publishCmsDraft") &&
+    cmsApi.includes('deleteTeamMember(slug, "draft")') &&
+    cmsApi.includes('deleteRecruitmentRole(slug, "draft")') &&
+    cmsApi.includes('deletePartner(slug, "draft")') &&
     cmsApi.includes("stageCmsUpload") &&
     adminActions.includes("listCmsRecords") &&
     !adminActions.includes("putTeamMember(") &&
@@ -1937,6 +1950,13 @@ assert(
       cmsDynamodb
     ),
   "DynamoDB CMS writes must set id/type/status after spreading records so publish cannot keep draft keys."
+)
+assert(
+  cmsDynamodb.includes('status === "draft" ? [] : fallbackTeamMembers') &&
+    cmsDynamodb.includes('status === "draft" ? [] : fallbackRecruitmentRoles') &&
+    cmsDynamodb.includes('status === "draft" ? [] : fallbackPartners') &&
+    cmsAdminHandler.includes('itemType(config.kind, slug, "draft")'),
+  "CMS draft reads must not fall back to public seed data, and API publishing must remove the draft record."
 )
 assert(
   authConfig.includes("Credentials") &&
@@ -1970,6 +1990,7 @@ assert(
     adminTeamPage.includes('name="department"') &&
     adminTeamPage.includes('name="hierarchyLevel"') &&
     adminTeamPage.includes("AdminBulkPublishPanel") &&
+    adminTeamPage.includes("AdminPublishStatus") &&
     adminTeamPage.includes("publishSelectedTeamMembers") &&
     !adminTeamPage.includes('name="discipline"') &&
     !adminTeamPage.includes('name="bio"') &&
@@ -1979,6 +2000,7 @@ assert(
 assert(
   adminBulkPublishPanel.includes("data-admin-bulk-publish") &&
     adminBulkPublishPanel.includes("data-admin-bulk-grid") &&
+    adminBulkPublishPanel.includes("data-admin-bulk-record") &&
     adminBulkPublishPanel.includes("data-admin-select-all") &&
     adminBulkPublishPanel.includes("data-admin-publish-selected") &&
     adminBulkPublishPanel.includes('"grid"') &&
@@ -1988,12 +2010,25 @@ assert(
   "Admin bulk publish panel must support selectable records, select all, grid view, zoom-out density, and selected-only form submission."
 )
 assert(
+  adminPublishStatus.includes("data-admin-publish-status") &&
+    adminPublishStatus.includes("Published") &&
+    adminPublishStatus.includes("Publishing failed") &&
+    adminPublishStatus.includes("moved off this page") &&
+    adminActions.includes("publishStatusPath") &&
+    adminActions.includes("publishAndArchiveDraft") &&
+    adminActions.includes('deleteCmsRecord(collection, slug, "draft")') &&
+    adminActions.includes("redirect(publishStatusPath"),
+  "Publish actions must redirect to a visible success/failure status indicator and archive published drafts."
+)
+assert(
   adminActions.includes("publishSelectedTeamMembers") &&
     adminActions.includes("publishSelectedRecruitmentRoles") &&
     adminActions.includes("publishSelectedPartners") &&
     adminRecruitmentPage.includes("AdminBulkPublishPanel") &&
+    adminRecruitmentPage.includes("AdminPublishStatus") &&
     adminRecruitmentPage.includes("publishSelectedRecruitmentRoles") &&
     adminPartnersPage.includes("AdminBulkPublishPanel") &&
+    adminPartnersPage.includes("AdminPublishStatus") &&
     adminPartnersPage.includes("publishSelectedPartners"),
   "Team, recruitment, and partners admin pages must all expose selected batch publishing actions."
 )

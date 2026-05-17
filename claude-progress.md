@@ -1,5 +1,33 @@
 # Claude Progress
 
+## 2026-05-17 - Partners grid and publish status with draft archive
+
+Baseline:
+
+- `./init.sh`: passed before implementation with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
+Implementation:
+
+- Restored the public partners grid on `/partners` with `data-partners-grid` and `data-partner-card` hooks while keeping the horizontal marquee, View grid CTA, and powered-by header removed.
+- Added `AdminPublishStatus` and wired it into Team, Roles, and Partners admin pages so publish actions show success, partial success, failure, or empty-selection feedback.
+- Changed Team, Roles, and Partners publish actions to publish selected records and then remove the matching draft record so published drafts leave the draft list.
+- Updated local CMS fallback behavior so empty draft collections stay empty instead of repopulating from public fallback data.
+- Updated the AWS CMS admin publish handler to delete the draft item after writing the published item.
+- Updated browser/static contracts and the CMS admin user guide for the new publish behavior.
+
+Verification:
+
+- `pnpm test:homepage-design`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed.
+- `pnpm build`: passed.
+- `npm run build` in `aws`: passed.
+- `npm test -- --runInBand` in `aws`: passed.
+- Manual `agent-browser open`, `wait --load networkidle`, `screenshot --annotate`, and `snapshot -i` against `/partners`: passed and showed 35 partner cards.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:browser`: passed, including `PARTNERS_OK:35`.
+- `VERIFY_URL=http://127.0.0.1:3000 pnpm verify:cms-admin`: passed, including `TEAM_PUBLISH_MOVED_OK:alex-rivera`.
+- Final `./init.sh`: passed after artifact updates with LocalStack DynamoDB/S3, AWS build/test, frontend typecheck/lint, and homepage design contract.
+
 ## 2026-05-17 - Selective batch publishing and landing repair
 
 Baseline:
