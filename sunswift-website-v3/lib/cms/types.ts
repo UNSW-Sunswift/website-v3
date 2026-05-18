@@ -64,6 +64,17 @@ export type TimelineVideoSetting = {
   status?: "draft" | "published"
 }
 
+export type SiteImageSetting = {
+  slug: string
+  label: string
+  section: string
+  defaultSrc: string
+  imageUrl: string
+  updatedAt?: string
+  updatedBy?: string
+  status?: "draft" | "published"
+}
+
 export type Vehicle = {
   slug: string
   name: string

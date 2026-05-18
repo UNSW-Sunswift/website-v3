@@ -7,6 +7,7 @@ import {
   achievementsOverview,
   applyTimelineVideoSettings,
 } from "@/lib/cms/static-data"
+import { resolveSiteImage, resolveSiteImages, siteImageMap } from "@/lib/cms/site-images"
 
 export const metadata = {
   title: "Achievements",
@@ -15,12 +16,19 @@ export const metadata = {
 export const dynamic = "force-dynamic"
 
 export default async function AchievementsPage() {
-  const timelineVideoSettings = await listCmsRecords("timeline", "published")
-  const timelineAchievements = applyTimelineVideoSettings(achievements, timelineVideoSettings)
+  const [timelineVideoSettings, siteImages] = await Promise.all([
+    listCmsRecords("timeline", "published"),
+    listCmsRecords("site-images", "published"),
+  ])
+  const imageOverrides = siteImageMap(siteImages)
+  const timelineAchievements = applyTimelineVideoSettings(
+    resolveSiteImages(achievements, imageOverrides),
+    timelineVideoSettings
+  )
 
   return (
     <main className="min-h-svh bg-[#0a0c0e]">
-      <PageLoadReveal image="/achievements/bwsc-23.avif" label="Achievements" />
+      <PageLoadReveal image={resolveSiteImage("/achievements/bwsc-23-win.avif", imageOverrides)} label="Achievements" />
       <TransparentNavbar />
       <AchievementsTimeline achievements={timelineAchievements} overview={achievementsOverview} />
     </main>

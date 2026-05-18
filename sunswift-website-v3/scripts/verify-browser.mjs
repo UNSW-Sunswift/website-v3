@@ -232,12 +232,14 @@ const siteFooterContract = `(() => {
     "Built by Students, Driving Sustainability.",
     "Room G14, Blockhouse (G6), University Mall, UNSW, Kensington NSW 2052",
     "Stay connected",
-    "Copyright © 2025",
-    "Credits"
+    "Copyright © 2025"
   ]) {
     if (!text.includes(phrase)) {
       throw new Error("MISSING_SITE_FOOTER_COPY:" + phrase);
     }
+  }
+  if (text.includes("Credits")) {
+    throw new Error("CREDITS_LINK_SHOULD_BE_HIDDEN");
   }
 
   const logo = footer.querySelector('img[src*="unsw-sydney"]');
@@ -296,7 +298,7 @@ const heroIntroEffectWorks = `(() => new Promise((resolve, reject) => {
     return;
   }
   const before = getComputedStyle(wipe).transform;
-  const deadline = Date.now() + 5200;
+  const deadline = Date.now() + 7000;
   const tick = () => {
     const after = getComputedStyle(wipe).transform;
     if (hero.getAttribute("data-hero-reveal-complete") === "true" && title.dataset.typingComplete === "true" && before !== after) {
@@ -959,7 +961,6 @@ const partnersContract = `(() => {
   for (const phrase of [
     "Partners.",
     "Building world-class cars takes more than just engineering - it takes a community.",
-    "Partners and sponsors",
     "Contact us",
     "active partners and sponsors"
   ]) {
@@ -968,7 +969,14 @@ const partnersContract = `(() => {
     }
   }
 
-  for (const removed of ["View grid", "Partner grid", "Powered by shared ambition"]) {
+  for (const removed of [
+    "View grid",
+    "Partner grid",
+    "Powered by shared ambition",
+    "Collaboration network",
+    "Partners and sponsors",
+    "Logo tiles link out to partner websites whenever we publish a URL"
+  ]) {
     if (text.includes(removed)) {
       throw new Error("REMOVED_PARTNERS_COPY_VISIBLE:" + removed);
     }
@@ -982,6 +990,16 @@ const partnersContract = `(() => {
 
   if (document.querySelector("[data-partners-marquee]")) {
     throw new Error("REMOVED_PARTNERS_MARQUEE_VISIBLE");
+  }
+
+  const firstCard = cards[0];
+  const cardStyle = getComputedStyle(firstCard);
+  const overlay = firstCard.querySelector("[aria-hidden='true']");
+  if (!cardStyle.aspectRatio || cardStyle.aspectRatio === "auto") {
+    throw new Error("PARTNER_CARD_NOT_SQUARE");
+  }
+  if (!overlay || !overlay.textContent.trim()) {
+    throw new Error("MISSING_PARTNER_HOVER_OVERLAY");
   }
 
   return "PARTNERS_OK:" + cards.length;

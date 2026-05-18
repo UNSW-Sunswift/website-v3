@@ -6,6 +6,7 @@ import mediaHighlightsData from "@/content/media-highlights.json"
 import { JuicerSidebar } from "@/components/site/juicer-sidebar"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
 
+import { resolveSiteImage, type SiteImageMap } from "@/lib/cms/site-images"
 import { cn } from "@/lib/utils"
 
 const highlightsBanner = "/media/highlights-banner.jpg"
@@ -289,7 +290,15 @@ function HorizontalSection({
   )
 }
 
-export function MediaHighlightsPage() {
+export function MediaHighlightsPage({ imageOverrides }: { imageOverrides?: SiteImageMap }) {
+  const sections = data.sections.map((section) => ({
+    ...section,
+    items: section.items.map((item) => ({
+      ...item,
+      imageSrc: resolveSiteImage(item.imageSrc, imageOverrides),
+    })),
+  }))
+
   return (
     <main
       data-media-highlights-page
@@ -308,7 +317,7 @@ export function MediaHighlightsPage() {
           >
             <Image
               data-media-hero-background
-              src={highlightsBanner}
+              src={resolveSiteImage(highlightsBanner, imageOverrides)}
               alt=""
               fill
               priority
@@ -353,7 +362,7 @@ export function MediaHighlightsPage() {
             </div>
           </section>
 
-          {data.sections.map((section) =>
+          {sections.map((section) =>
             section.id === "media-spotlight" ? (
               <MediaSpotlightSection key={section.id} section={section} />
             ) : (

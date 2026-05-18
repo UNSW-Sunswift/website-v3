@@ -4,6 +4,7 @@ import {
   Film,
   Handshake,
   ImageIcon,
+  Images,
   LayoutDashboard,
   LogOut,
   UserRound,
@@ -21,6 +22,7 @@ const adminNav = [
   { href: "/admin/recruitment", label: "Roles", icon: UserRound },
   { href: "/admin/partners", label: "Partners", icon: Handshake },
   { href: "/admin/timeline", label: "Timeline", icon: Film },
+  { href: "/admin/images", label: "Site images", icon: Images },
   { href: "/admin/assets", label: "Assets", icon: ImageIcon },
 ]
 

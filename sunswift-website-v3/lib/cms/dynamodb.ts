@@ -12,12 +12,13 @@ import type {
   MediaAsset,
   Partner,
   RecruitmentRole,
+  SiteImageSetting,
   TeamMember,
   TimelineVideoSetting,
 } from "@/lib/cms/types"
 
 type CmsStatus = "draft" | "published"
-type CmsKind = "member" | "role" | "partner" | "asset" | "timeline-video"
+type CmsKind = "member" | "role" | "partner" | "asset" | "timeline-video" | "site-image"
 
 function statusPrefix(kind: CmsKind) {
   return `${kind}#`
@@ -44,7 +45,13 @@ async function deleteRecord(id: string, kind: CmsKind, slug: string, status: Cms
 }
 
 async function queryCollection<T>(
-  id: "team-members" | "recruitment-roles" | "partners" | "media-assets" | "timeline-videos",
+  id:
+    | "team-members"
+    | "recruitment-roles"
+    | "partners"
+    | "media-assets"
+    | "timeline-videos"
+    | "site-images",
   kind: CmsKind,
   status: CmsStatus
 ) {
@@ -111,6 +118,14 @@ export async function getMediaAssets(status: CmsStatus = "published") {
 export async function getTimelineVideoSettings(status: CmsStatus = "published") {
   try {
     return await queryCollection<TimelineVideoSetting>("timeline-videos", "timeline-video", status)
+  } catch {
+    return []
+  }
+}
+
+export async function getSiteImageSettings(status: CmsStatus = "published") {
+  try {
+    return await queryCollection<SiteImageSetting>("site-images", "site-image", status)
   } catch {
     return []
   }
@@ -192,6 +207,20 @@ export async function putTimelineVideoSetting(setting: TimelineVideoSetting, sta
         ...setting,
         id: "timeline-videos",
         type: itemType("timeline-video", setting.slug, status),
+        status,
+      },
+    })
+  )
+}
+
+export async function putSiteImageSetting(setting: SiteImageSetting, status: CmsStatus) {
+  await getDynamoClient().send(
+    new PutCommand({
+      TableName: getCmsTableName(),
+      Item: {
+        ...setting,
+        id: "site-images",
+        type: itemType("site-image", setting.slug, status),
         status,
       },
     })

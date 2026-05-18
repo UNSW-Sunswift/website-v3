@@ -3,6 +3,8 @@
 import Image from "next/image"
 import { useEffect, useRef, type CSSProperties } from "react"
 
+import { resolveSiteImage, type SiteImageMap } from "@/lib/cms/site-images"
+
 type Record = {
   id: string
   metric: string
@@ -54,7 +56,7 @@ function clamp(value: number, min = 0, max = 1) {
   return Math.min(max, Math.max(min, value))
 }
 
-export function HomepageRecords() {
+export function HomepageRecords({ imageOverrides }: { imageOverrides?: SiteImageMap }) {
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -265,7 +267,7 @@ export function HomepageRecords() {
                     style={{ borderColor: "var(--records-rule-color)" }}
                   >
                     <Image
-                      src={record.image}
+                      src={resolveSiteImage(record.image, imageOverrides)}
                       alt=""
                       fill
                       className="object-cover opacity-82 [filter:grayscale(0.42)_contrast(1.05)]"

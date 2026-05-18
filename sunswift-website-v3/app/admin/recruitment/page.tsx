@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { UploadCloud } from "lucide-react"
 import { AdminBulkPublishPanel } from "@/components/site/admin-bulk-publish-panel"
 import { AdminPublishStatus } from "@/components/site/admin-publish-status"
 import { AdminShell } from "@/components/site/admin-shell"
@@ -78,12 +79,26 @@ export default async function AdminRecruitmentPage({ searchParams }: AdminRecrui
             Imports Webflow recruitment role exports into draft records. Publishing remains
             explicit per role.
           </p>
-          <input
-            name="csv"
-            type="file"
-            accept=".csv,text/csv"
-            className="mt-4 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <label
+            className="mt-4 grid gap-2 rounded-lg border border-border bg-background p-4 text-sm"
+            data-admin-recruitment-file-picker
+          >
+            <span className="font-medium">CSV file</span>
+            <span className="text-xs leading-5 text-muted-foreground">
+              Choose the exported recruitment CSV. The import only creates draft roles.
+            </span>
+            <input
+              name="csv"
+              type="file"
+              accept=".csv,text/csv"
+              className="w-full rounded-md border border-input bg-card p-2 text-sm file:mr-4 file:inline-flex file:min-h-10 file:cursor-pointer file:items-center file:rounded-md file:border file:border-primary file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90"
+              data-admin-recruitment-file-input
+            />
+            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-medium text-primary">
+              <UploadCloud className="size-4" />
+              Choose file, then import drafts
+            </span>
+          </label>
           <Button type="submit" className="mt-4">
             Import drafts
           </Button>

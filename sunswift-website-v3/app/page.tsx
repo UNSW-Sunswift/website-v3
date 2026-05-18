@@ -5,6 +5,7 @@ import { HomepageRecruitment } from "@/components/site/homepage-recruitment"
 import { HomepageZoomReveal } from "@/components/site/homepage-zoom-reveal"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
 import { listCmsRecords } from "@/lib/cms/api"
+import { siteImageMap } from "@/lib/cms/site-images"
 
 export const dynamic = "force-dynamic"
 export const metadata = {
@@ -12,17 +13,21 @@ export const metadata = {
 }
 
 export default async function Page() {
-  const roles = await listCmsRecords("roles", "published")
+  const [roles, siteImages] = await Promise.all([
+    listCmsRecords("roles", "published"),
+    listCmsRecords("site-images", "published"),
+  ])
+  const imageOverrides = siteImageMap(siteImages)
 
   return (
     <main data-homepage>
       <div className="relative">
-        <TransparentNavbar heroEdgeVignette />
-        <HomepageHero />
+        <TransparentNavbar heroEdgeVignette delayedHeroIntro />
+        <HomepageHero imageOverrides={imageOverrides} />
       </div>
-      <HomepageZoomReveal />
-      <HomepageAbout />
-      <HomepageRecords />
+      <HomepageZoomReveal imageOverrides={imageOverrides} />
+      <HomepageAbout imageOverrides={imageOverrides} />
+      <HomepageRecords imageOverrides={imageOverrides} />
       <HomepageRecruitment roles={roles} />
     </main>
   )

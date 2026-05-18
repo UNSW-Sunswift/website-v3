@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
+import { resolveSiteImage, type SiteImageMap } from "@/lib/cms/site-images"
 import { cn } from "@/lib/utils"
 import type { TeamMember as CmsTeamMember } from "@/lib/cms/types"
 
@@ -168,8 +169,10 @@ function toRosterMember(member: CmsTeamMember): RosterMember {
 
 export function TeamRoster({
   members = placeholderMembers,
+  imageOverrides,
 }: {
   members?: CmsTeamMember[] | RosterMember[]
+  imageOverrides?: SiteImageMap
 }) {
   const sourceMembers = members.length >= 10 ? members : placeholderMembers
   const rosterMembers = useMemo(
@@ -238,7 +241,7 @@ export function TeamRoster({
         >
           <div className="pointer-events-none absolute inset-0 z-[1]">
             <Image
-              src={teamHeroMediaPath}
+              src={resolveSiteImage(teamHeroMediaPath, imageOverrides)}
               alt=""
               fill
               priority

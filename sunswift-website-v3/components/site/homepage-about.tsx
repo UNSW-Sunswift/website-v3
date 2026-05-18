@@ -1,6 +1,8 @@
 import Image from "next/image"
 
-export function HomepageAbout() {
+import { resolveSiteImage, type SiteImageMap } from "@/lib/cms/site-images"
+
+export function HomepageAbout({ imageOverrides }: { imageOverrides?: SiteImageMap }) {
   return (
     <section data-homepage-about className="relative bg-[#f6f5f1] text-black">
       <div className="mx-auto grid max-w-[92rem] gap-10 px-4 py-24 sm:px-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-center lg:py-32">
@@ -53,7 +55,7 @@ export function HomepageAbout() {
           className="relative aspect-[16/10] w-full overflow-hidden border border-black/10 bg-[#eceae4] shadow-[0_28px_86px_rgba(0,0,0,0.1)]"
         >
           <Image
-            src="/media/sr8-hero-3.png"
+            src={resolveSiteImage("/media/sr8-hero-3.png", imageOverrides)}
             alt="Sunswift Racing solar vehicle in the lab"
             fill
             className="object-cover object-[50%_50%]"

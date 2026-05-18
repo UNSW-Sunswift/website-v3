@@ -5,11 +5,13 @@ import {
   getMediaAssets,
   getPartners,
   getRecruitmentRoles,
+  getSiteImageSettings,
   getTeamMembers,
   getTimelineVideoSettings,
   putMediaAsset,
   putPartner,
   putRecruitmentRole,
+  putSiteImageSetting,
   putTeamMember,
   putTimelineVideoSetting,
   uploadDraftAsset,
@@ -18,12 +20,13 @@ import type {
   MediaAsset,
   Partner,
   RecruitmentRole,
+  SiteImageSetting,
   TeamMember,
   TimelineVideoSetting,
 } from "@/lib/cms/types"
 
 type CmsStatus = "draft" | "published"
-type CmsCollection = "team" | "roles" | "partners" | "assets" | "timeline"
+type CmsCollection = "team" | "roles" | "partners" | "assets" | "timeline" | "site-images"
 
 type CmsRecordMap = {
   team: TeamMember
@@ -31,6 +34,7 @@ type CmsRecordMap = {
   partners: Partner
   assets: MediaAsset
   timeline: TimelineVideoSetting
+  "site-images": SiteImageSetting
 }
 
 function cmsApiUrl() {
@@ -85,6 +89,9 @@ export async function listCmsRecords<TCollection extends CmsCollection>(
   if (collection === "timeline") {
     return (await getTimelineVideoSettings(status)) as CmsRecordMap[TCollection][]
   }
+  if (collection === "site-images") {
+    return (await getSiteImageSettings(status)) as CmsRecordMap[TCollection][]
+  }
 
   return (await getMediaAssets(status)) as CmsRecordMap[TCollection][]
 }
@@ -124,7 +131,7 @@ export async function saveCmsDraft<TCollection extends Exclude<CmsCollection, "a
   return payload
 }
 
-export async function saveCmsPublished<TCollection extends "timeline">(
+export async function saveCmsPublished<TCollection extends "timeline" | "site-images">(
   collection: TCollection,
   slug: string,
   record: CmsRecordMap[TCollection],
@@ -149,7 +156,11 @@ export async function saveCmsPublished<TCollection extends "timeline">(
     return apiResponse.item
   }
 
-  await putTimelineVideoSetting(payload as TimelineVideoSetting, "published")
+  if (collection === "timeline") {
+    await putTimelineVideoSetting(payload as TimelineVideoSetting, "published")
+  } else {
+    await putSiteImageSetting(payload as SiteImageSetting, "published")
+  }
   return payload
 }
 

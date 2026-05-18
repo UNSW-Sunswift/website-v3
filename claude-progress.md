@@ -1,5 +1,117 @@
 # Claude Progress
 
+## 2026-05-19 - Homepage boot transition, zoom readability, partners grid polish, and vehicle image quality
+
+Implementation:
+
+- Added a black sci-fi calibration loading layer to the homepage hero with
+  staggered yellow scan lines, subtle noise, chromatic glow, and the Sunswift
+  logo animating from centre toward the navbar before the existing hero reveal.
+- Tuned the `Built by Students. Driving Sustainability.` scroll section so the
+  headline becomes readable earlier, keeps stronger contrast during slow scroll,
+  and hands off into the Who We Are section through a simple light block and rule.
+- Reduced the vehicles garage/detail image quality constant from `100` to `75`
+  to lower delivered image weight while keeping the existing responsive sizes.
+- Reworked the partners grid into a padded four-column layout with square
+  logo-only cards, default grayscale treatment, hover/focus scale, restored
+  colour, and a bottom-left name/arrow overlay.
+- Removed the redundant partners grid copy block:
+  `Collaboration network`, `Partners and sponsors`, and the explanatory logo
+  tile sentence.
+- Updated static and browser verification contracts for the new hero boot hooks,
+  zoom handoff hooks, partners card treatment, and vehicle image quality.
+
+Verification:
+
+- `node scripts/test-homepage-design.mjs`: passed.
+- `./node_modules/.bin/tsc --noEmit`: passed.
+- `./node_modules/.bin/eslint --quiet`: passed.
+- `./node_modules/.bin/next build`: passed.
+- Manual agent-browser smoke on `http://127.0.0.1:3017/`: boot layer appeared,
+  hero completed, and the slow-scroll zoom headline measured `rgb(8, 8, 8)` at
+  opacity `1` with the readability wash active.
+- Manual agent-browser smoke on `/partners`: redundant grid copy was absent, the
+  grid reported 35 cards, 4 columns, and square cards.
+- `PATH=$PWD/node_modules/.bin:$PATH VERIFY_URL=http://127.0.0.1:3017 node scripts/verify-browser.mjs`:
+  passed across the public browser contracts and admin login smoke.
+
+Known limits:
+
+- Direct `pnpm ...` commands are currently blocked by Corepack failing to resolve
+  the pnpm signing key on this Node install, so the same checks were run through
+  the repo's installed local binaries.
+- LocalStack-dependent checks were not run for this frontend-only pass.
+- Existing unrelated dirty files were left untouched: `.DS_Store` and
+  `aws/lib/website-v3-stack.ts`.
+
+## 2026-05-19 - Admin login warning, sitemap, hidden credits, and wider team editors
+
+Implementation:
+
+- Replaced the admin `next-themes` provider with a local admin theme provider
+  that toggles the `dark` class without rendering an inline script tag.
+- Kept `/credits` in the app but hid it from footer navigation, omitted it from
+  the sitemap, disallowed it in `robots.txt`, and marked the page `noindex`.
+- Added App Router metadata routes for `/sitemap.xml` and `/robots.txt`, covering
+  the public content pages plus recruitment role stream routes.
+- Widened the admin team-member edit cards from a cramped 4-column maximum to a
+  wider 3-column maximum, made the edit summary clearer, and made department /
+  hierarchy selects full-width single-column controls.
+- Updated static and browser harness expectations for the hidden Credits route,
+  sitemap/robots, custom admin theme provider, and wider team editors.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint --quiet`: passed.
+- `pnpm test:homepage-design`: passed.
+- `pnpm build`: passed; route list includes `/sitemap.xml` and `/robots.txt`.
+- `agent-browser` opened `http://127.0.0.1:3016/admin/login`; snapshot showed the
+  Google login page and both `agent-browser console` and `agent-browser errors`
+  returned empty output.
+- `curl /sitemap.xml` returned public routes including recruitment role streams;
+  `curl /robots.txt` disallowed `/admin`, `/api`, and `/credits`.
+
+Known limits:
+
+- GitHub issue listing was not available through the surfaced connector tools
+  and `gh` is not installed, so the issue work was implemented from the issue
+  titles/descriptions supplied in chat.
+- Existing unrelated dirty files were left untouched: `.DS_Store` and
+  `aws/lib/website-v3-stack.ts`.
+
+## 2026-05-18 - Global site image CMS, batch public S3 upload, and footer utility links
+
+Implementation:
+
+- Added a `site-images` CMS collection and `/admin/images` so hardcoded public
+  page imagery can be replaced with S3/CloudFront URLs without redeploying.
+- Wired site-image overrides through the homepage, achievements, vehicles,
+  partners, media, contact, team, recruitment, who-we-are, our-story, and footer
+  UNSW logo image paths.
+- Updated the public S3 asset uploader to accept multiple files in one batch and
+  return/copy all uploaded CloudFront URLs.
+- Added `/credits` and linked both Credits and `/admin/login` from the footer
+  quick navigation.
+- Restored app-local pointer docs for `PARTNER_IMPORT_SCHEMA.md` and
+  `VERCEL_AWS_DEPLOYMENT.md` so the existing static harness can find the docs
+  it asserts.
+
+Verification:
+
+- `pnpm typecheck`: passed.
+- `pnpm lint --quiet`: passed.
+- `pnpm test:homepage-design`: passed after adding site-image CMS/batch upload
+  assertions.
+- `pnpm build`: passed; build output includes `/admin/images` and `/credits`.
+
+Known limits:
+
+- LocalStack-dependent admin regression was not run in this pass.
+- Existing unrelated dirty files were left untouched: `.DS_Store` and
+  `aws/lib/website-v3-stack.ts`.
+- AWS and Google secrets pasted into chat should be rotated before production.
+
 ## 2026-05-18 - Timeline video admin controls and route transition tuning
 
 Implementation:

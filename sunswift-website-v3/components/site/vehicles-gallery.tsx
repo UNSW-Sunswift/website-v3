@@ -11,8 +11,8 @@ type Props = {
 
 const CLICK_TRANSITION_MS = 520
 
-/** Strip + detail hero images: max encoder quality and generous `sizes` for hover expansion + DPR. */
-const GARAGE_IMAGE_QUALITY = 100
+/** Strip + detail hero images: balanced encoder quality with generous `sizes` for hover expansion + DPR. */
+const GARAGE_IMAGE_QUALITY = 75
 const GALLERY_CARD_IMAGE_SIZES =
   "(min-width: 1536px) 65vw, (min-width: 1024px) 70vw, (min-width: 640px) 90vw, 100vw"
 const DETAIL_HERO_IMAGE_SIZES =

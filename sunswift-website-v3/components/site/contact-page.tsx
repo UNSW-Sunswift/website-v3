@@ -3,6 +3,7 @@ import Link from "next/link"
 import { ArrowRight, Mail, MapPin, Share2 } from "lucide-react"
 
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
+import { resolveSiteImage, type SiteImageMap } from "@/lib/cms/site-images"
 
 const contactBanner = "/media/contact-banner.jpg"
 
@@ -29,7 +30,7 @@ const socialLinks = [
   },
 ] as const
 
-export function ContactPageContent() {
+export function ContactPageContent({ imageOverrides }: { imageOverrides?: SiteImageMap }) {
   return (
     <main
       data-contact-page
@@ -39,7 +40,7 @@ export function ContactPageContent() {
         <TransparentNavbar />
         <section className="relative min-h-[86svh] overflow-hidden bg-[#0a0c0e]">
           <Image
-            src={contactBanner}
+            src={resolveSiteImage(contactBanner, imageOverrides)}
             alt=""
             fill
             priority

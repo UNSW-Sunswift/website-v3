@@ -13,6 +13,8 @@ import {
   recruitmentStreamHref,
   recruitmentStreams,
 } from "@/components/site/recruitment-content"
+import { listCmsRecords } from "@/lib/cms/api"
+import { resolveSiteImage, siteImageMap } from "@/lib/cms/site-images"
 import { cn } from "@/lib/utils"
 
 const navItems = [
@@ -22,6 +24,8 @@ const navItems = [
   { href: "/media", label: "Media" },
   { href: "/contact", label: "Contact" },
 ]
+
+const footerQuickLinks = [...navItems, { href: "/admin/login", label: "Admin" }]
 
 const footerUnswLogoSrc = "/brand/unsw-sydney-dark.png?v=20260515-footer"
 
@@ -257,7 +261,9 @@ export function SiteHeader() {
   )
 }
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const imageOverrides = siteImageMap(await listCmsRecords("site-images", "published"))
+
   return (
     <footer
       data-site-footer
@@ -299,7 +305,7 @@ export function SiteFooter() {
               <SunswiftBrandLogo className="w-28 sm:w-32" />
             </Link>
             <Image
-              src={footerUnswLogoSrc}
+              src={resolveSiteImage(footerUnswLogoSrc, imageOverrides)}
               alt="UNSW Sydney"
               width={260}
               height={78}
@@ -320,7 +326,7 @@ export function SiteFooter() {
               </p>
             </div>
             <nav aria-label="Footer" className="grid gap-2 font-mono text-[0.68rem] tracking-[0.2em] uppercase">
-              {navItems.map((item) => (
+              {footerQuickLinks.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -336,12 +342,6 @@ export function SiteFooter() {
 
         <div className="flex flex-wrap justify-between gap-3 border-t border-white/10 pt-4 font-mono text-[0.58rem] tracking-[0.2em] text-white/34 uppercase">
           <span>Copyright © 2025</span>
-          <Link
-            href="/"
-            className="underline decoration-white/20 underline-offset-4 transition-colors duration-300 hover:text-white"
-          >
-            Credits
-          </Link>
         </div>
       </div>
     </footer>

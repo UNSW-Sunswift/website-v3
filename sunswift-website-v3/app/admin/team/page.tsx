@@ -211,26 +211,37 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
           </form>
         </details>
 
-        <label
-          className="mt-8 inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm"
-          data-admin-team-density-toggle
-        >
-          <input type="checkbox" className="peer sr-only" />
-          <span className="size-4 rounded-sm border border-border bg-background peer-checked:border-primary peer-checked:bg-primary" />
-          Extra compact cards
-        </label>
+        <div data-admin-team-density-controller>
+          <input
+            id="admin-team-density"
+            type="checkbox"
+            className="peer sr-only"
+            data-admin-team-density-checkbox
+          />
+          <label
+            htmlFor="admin-team-density"
+            className="mt-8 inline-flex cursor-pointer items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm transition-colors hover:border-primary/50"
+            data-admin-team-density-toggle
+          >
+            <span className="size-4 rounded-sm border border-border bg-background peer-checked:border-primary peer-checked:bg-primary" />
+            Extra compact cards
+          </label>
 
-        <div
-          className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
-          data-admin-team-profile-grid
-        >
+          <div
+            className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+            data-admin-team-profile-grid
+          >
           {members.map((member) => (
             <article
               key={member.slug}
               className="overflow-hidden rounded-lg border border-border bg-card"
+              data-admin-team-profile-card
             >
               <div className="p-3">
-                <div className="relative aspect-square overflow-hidden rounded-md bg-muted">
+                <div
+                  className="relative aspect-square overflow-hidden rounded-md bg-muted"
+                  data-admin-team-card-image
+                >
                   <Image
                     src={assetUrl(member.imageKey)}
                     alt=""
@@ -273,8 +284,11 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
               </div>
 
               <details className="border-t border-border bg-background/60" data-admin-team-edit-panel>
-                <summary className="cursor-pointer px-4 py-3 text-sm font-medium">
+                <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-medium">
                   Edit profile
+                  <span className="font-mono text-[0.58rem] tracking-[0.18em] text-muted-foreground uppercase">
+                    Full form
+                  </span>
                 </summary>
                 <form
                   action={saveTeamMemberDraft}
@@ -299,13 +313,13 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
                       className="rounded-md border border-input bg-background px-3 py-2"
                     />
                   </label>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-4">
                     <label className="grid gap-2 text-sm">
                       Department
                       <select
                         name="department"
                         defaultValue={member.department ?? DEFAULT_TEAM_DEPARTMENT}
-                        className="rounded-md border border-input bg-background px-3 py-2"
+                        className="min-h-11 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2"
                       >
                         {TEAM_DEPARTMENTS.map((department) => (
                           <option key={department} value={department}>
@@ -319,7 +333,7 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
                       <select
                         name="hierarchyLevel"
                         defaultValue={member.hierarchyLevel ?? DEFAULT_TEAM_HIERARCHY}
-                        className="rounded-md border border-input bg-background px-3 py-2"
+                        className="min-h-11 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2"
                       >
                         {TEAM_HIERARCHIES.map((hierarchy) => (
                           <option key={hierarchy} value={hierarchy}>
@@ -369,6 +383,7 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
               </details>
             </article>
           ))}
+          </div>
         </div>
       </section>
     </AdminShell>

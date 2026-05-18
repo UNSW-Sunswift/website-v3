@@ -1,14 +1,13 @@
 "use client"
 
 import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
 
+import { useAdminTheme } from "@/components/admin/admin-theme-provider"
 import { Switch } from "@/components/ui/switch"
 
 export function AdminThemeToggle() {
-  const { resolvedTheme, setTheme, theme } = useTheme()
-  const currentTheme = resolvedTheme ?? theme
-  const isDark = currentTheme === "dark"
+  const { theme, setTheme } = useAdminTheme()
+  const isDark = theme === "dark"
   const label = isDark ? "Switch to light mode" : "Switch to dark mode"
 
   return (

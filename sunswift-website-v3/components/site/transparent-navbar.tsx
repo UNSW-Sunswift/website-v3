@@ -18,14 +18,18 @@ const navItems = [
 type TransparentNavbarProps = {
   /** Hero landing only: vehicles-style top vignette gradient, shorter band than `/vehicles`. */
   heroEdgeVignette?: boolean
+  /** Homepage boot only: keep the nav hidden while the calibration intro runs. */
+  delayedHeroIntro?: boolean
 }
 
 export function TransparentNavbar({
   heroEdgeVignette = false,
+  delayedHeroIntro = false,
 }: TransparentNavbarProps) {
   return (
     <header
       data-homepage-navbar
+      data-homepage-navbar-delayed={delayedHeroIntro ? "true" : "false"}
       className="absolute inset-x-0 top-0 z-50 bg-transparent text-white"
     >
       {heroEdgeVignette ? (

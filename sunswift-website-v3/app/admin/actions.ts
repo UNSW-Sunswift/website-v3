@@ -15,6 +15,7 @@ import {
 } from "@/lib/cms/api"
 import { importPartnersCsv, importRecruitmentCsv, importTeamCsv } from "@/lib/cms/csv"
 import { achievementVideoSlug } from "@/lib/cms/static-data"
+import { siteImageSlug } from "@/lib/cms/site-images"
 import {
   normalizeTeamDepartment,
   normalizeTeamHierarchy,
@@ -487,6 +488,39 @@ export async function saveTimelineVideoSetting(formData: FormData) {
 
   revalidatePath("/achievements")
   revalidatePath("/admin/timeline")
+}
+
+export async function saveSiteImageSetting(formData: FormData) {
+  const updatedBy = await assertAdmin()
+  const defaultSrc = String(formData.get("defaultSrc") ?? "").trim()
+  const label = String(formData.get("label") ?? "").trim()
+  const section = String(formData.get("section") ?? "").trim()
+  const imageUrl = String(formData.get("imageUrl") ?? "").trim()
+  const slug = String(formData.get("slug") || siteImageSlug(defaultSrc)).trim()
+
+  await saveCmsPublished(
+    "site-images",
+    slug,
+    {
+      slug,
+      label,
+      section,
+      defaultSrc,
+      imageUrl,
+    },
+    updatedBy
+  )
+
+  revalidatePath("/")
+  revalidatePath("/achievements")
+  revalidatePath("/contact")
+  revalidatePath("/media")
+  revalidatePath("/our-story")
+  revalidatePath("/partners")
+  revalidatePath("/team")
+  revalidatePath("/vehicles")
+  revalidatePath("/who-we-are")
+  revalidatePath("/admin/images")
 }
 
 export async function seedHeavyMediaAssets() {

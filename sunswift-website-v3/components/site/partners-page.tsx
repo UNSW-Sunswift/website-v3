@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react"
 
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
 import { assetUrl } from "@/lib/cms/dynamodb"
+import { resolveSiteImage, type SiteImageMap } from "@/lib/cms/site-images"
 import type { Partner } from "@/lib/cms/types"
 
 const partnerIntro =
@@ -12,7 +13,13 @@ const partnerIntro =
 
 const partnersHeroMediaPath = "/media/partners-picture.avif"
 
-export function PartnersPageContent({ partners }: { partners: Partner[] }) {
+export function PartnersPageContent({
+  partners,
+  imageOverrides,
+}: {
+  partners: Partner[]
+  imageOverrides?: SiteImageMap
+}) {
   return (
     <main
       data-partners-page
@@ -26,7 +33,7 @@ export function PartnersPageContent({ partners }: { partners: Partner[] }) {
         >
           <div className="pointer-events-none absolute inset-0 z-[1]">
             <Image
-              src={partnersHeroMediaPath}
+              src={resolveSiteImage(partnersHeroMediaPath, imageOverrides)}
               alt=""
               fill
               priority
@@ -71,24 +78,10 @@ export function PartnersPageContent({ partners }: { partners: Partner[] }) {
 
       <section
         data-partners-grid
-        className="relative border-t border-white/10 bg-[#050607] px-4 py-16 sm:px-6 lg:py-20"
+        className="relative border-t border-white/10 bg-[#050607] px-6 py-16 sm:px-10 lg:px-20 lg:py-20 xl:px-28"
       >
-        <div className="mx-auto max-w-[92rem]">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div className="partners-grid-enter">
-              <p className="font-mono text-[0.62rem] tracking-[0.22em] text-accent-yellow uppercase">
-                Collaboration network
-              </p>
-              <h2 className="mt-3 max-w-xl text-3xl font-light tracking-tight text-white sm:text-4xl">
-                Partners and sponsors
-              </h2>
-            </div>
-            <p className="partners-grid-enter partners-grid-enter-delay-header-sub max-w-md text-sm leading-6 text-white/50">
-              Logo tiles link out to partner websites whenever we publish a URL.
-            </p>
-          </div>
-
-          <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="mx-auto max-w-[74rem]">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             {partners.map((partner, index) => {
               const href = partner.website || "#"
               const isExternal = href !== "#" && /^https?:\/\//.test(href)
@@ -98,6 +91,11 @@ export function PartnersPageContent({ partners }: { partners: Partner[] }) {
                   key={partner.slug}
                   data-partner-card
                   href={href}
+                  aria-label={
+                    isExternal
+                      ? `Open ${partner.name} partner website`
+                      : `${partner.name} partner`
+                  }
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noreferrer" : undefined}
                   style={
@@ -105,28 +103,31 @@ export function PartnersPageContent({ partners }: { partners: Partner[] }) {
                       "--partner-card-enter-delay": `${Math.min(index, 14) * 42}ms`,
                     } as CSSProperties
                   }
-                  className="partner-grid-card-enter group flex min-h-36 flex-col justify-between border border-white/10 bg-white/[0.035] p-4 text-white transition-[background-color,border-color] duration-300 motion-safe:[transition-property:background-color,border-color,transform] motion-safe:hover:-translate-y-0.5 hover:border-accent-yellow/70 hover:bg-white/[0.07] motion-safe:active:scale-[0.97] motion-safe:active:border-accent-yellow/85 motion-safe:active:shadow-[0_0_0_1px_rgba(245,208,0,0.35)] motion-safe:active:duration-100 motion-reduce:active:scale-100 focus-visible:ring-3 focus-visible:ring-accent-yellow/35 focus-visible:outline-none"
+                  className="partner-grid-card-enter group relative aspect-square overflow-hidden border border-white/10 bg-white/[0.045] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_20px_60px_-44px_rgba(0,0,0,0.85)] backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-300 motion-safe:[transition-property:background-color,border-color,box-shadow,transform] motion-safe:hover:z-10 motion-safe:hover:scale-[1.035] hover:border-accent-yellow/70 hover:bg-white/[0.08] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_30px_80px_-42px_rgba(245,208,0,0.38)] motion-safe:active:scale-[0.99] motion-safe:active:border-accent-yellow/85 motion-reduce:active:scale-100 focus-visible:z-10 focus-visible:ring-3 focus-visible:ring-accent-yellow/35 focus-visible:outline-none"
                 >
-                  <span className="relative flex h-16 items-center justify-center overflow-hidden bg-black/16">
+                  <span className="absolute inset-0 flex items-center justify-center p-[18%]">
                     {partner.logoKey ? (
                       <Image
                         src={assetUrl(partner.logoKey)}
                         alt=""
                         fill
-                        className="object-contain p-3 brightness-0 invert"
-                        sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 24vw, 50vw"
+                        className="object-contain p-[18%] opacity-80 grayscale transition-[filter,opacity,transform] duration-500 group-hover:scale-[1.04] group-hover:opacity-100 group-hover:grayscale-0 group-focus-visible:scale-[1.04] group-focus-visible:opacity-100 group-focus-visible:grayscale-0"
+                        sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 50vw"
                       />
                     ) : (
-                      <span className="font-mono text-2xl tracking-[0.12em] text-white/72">
+                      <span className="font-mono text-[clamp(2rem,5vw,4rem)] tracking-[0.12em] text-white/58 grayscale transition-[opacity,transform,color] duration-500 group-hover:scale-[1.04] group-hover:text-white group-hover:opacity-100">
                         {partner.name.slice(0, 2).toUpperCase()}
                       </span>
                     )}
                   </span>
-                  <span className="mt-5 flex items-end justify-between gap-3">
-                    <span className="min-w-0 break-words text-sm font-medium text-white/82">
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 bottom-0 flex translate-y-3 items-end justify-between gap-4 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.78)_48%,rgba(0,0,0,0.94)_100%)] px-4 pb-4 pt-16 opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 sm:px-5 sm:pb-5"
+                  >
+                    <span className="min-w-0 break-words text-sm font-medium text-white [text-shadow:0_1px_12px_rgba(0,0,0,0.9)]">
                       {partner.name}
                     </span>
-                    <ArrowUpRight className="size-4 shrink-0 text-white/28 transition-colors duration-300 group-hover:text-accent-yellow" />
+                    <ArrowUpRight className="size-4 shrink-0 text-accent-yellow drop-shadow-[0_1px_10px_rgba(0,0,0,0.8)]" />
                   </span>
                 </a>
               )

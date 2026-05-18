@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react"
 
 import aboutPages from "@/content/about-pages.json"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
+import { resolveSiteImage, type SiteImageMap } from "@/lib/cms/site-images"
 
 type StoryBlock =
   | { type: "heading"; level: string; text: string }
@@ -29,6 +30,7 @@ function PlaceholderImage({
   className = "",
   priority = false,
   showCaption = true,
+  imageOverrides,
 }: {
   src: string
   label?: string
@@ -36,11 +38,12 @@ function PlaceholderImage({
   priority?: boolean
   /** When false, hides the footer caption bar (Who We Are gallery retains captions). */
   showCaption?: boolean
+  imageOverrides?: SiteImageMap
 }) {
   return (
     <div className={`relative overflow-hidden bg-white/[0.035] ${className}`}>
       <Image
-        src={src}
+        src={resolveSiteImage(src, imageOverrides)}
         alt=""
         fill
         priority={priority}
@@ -65,17 +68,19 @@ function DarkHero({
   title,
   body,
   image,
+  imageOverrides,
 }: {
   eyebrow: string
   title: string
   body: string
   image: string
+  imageOverrides?: SiteImageMap
 }) {
   return (
     <section className="relative min-h-svh overflow-hidden bg-black text-white">
       <TransparentNavbar />
       <Image
-        src={image}
+        src={resolveSiteImage(image, imageOverrides)}
         alt=""
         fill
         priority
@@ -101,7 +106,7 @@ function DarkHero({
   )
 }
 
-export function WhoWeAreEditorialPage() {
+export function WhoWeAreEditorialPage({ imageOverrides }: { imageOverrides?: SiteImageMap }) {
   return (
     <main data-about-page="who-we-are" className="bg-[#0a0c0e] text-white">
       <DarkHero
@@ -109,6 +114,7 @@ export function WhoWeAreEditorialPage() {
         title={whoWeAre.title}
         body={whoWeAre.overview}
         image="/vehicle-fleet/vehicle-sunswift-7.jpeg"
+        imageOverrides={imageOverrides}
       />
 
       <section className="border-y border-white/10 bg-black text-white">
@@ -149,6 +155,7 @@ export function WhoWeAreEditorialPage() {
               <PlaceholderImage
                 key={`${image}-${index}`}
                 src={image}
+                imageOverrides={imageOverrides}
                 showCaption={false}
                 className={index === 0 || index === 4 ? "col-span-2 row-span-2" : ""}
               />
@@ -169,7 +176,12 @@ export function WhoWeAreEditorialPage() {
                 href={item.href}
                 className="group grid min-h-[28rem] bg-[#0a0c0e] transition-colors duration-300 hover:bg-[#111315] sm:grid-cols-[0.8fr_1.2fr]"
               >
-                <PlaceholderImage src={item.image} label={item.title} className="min-h-72" />
+                <PlaceholderImage
+                  src={item.image}
+                  label={item.title}
+                  className="min-h-72"
+                  imageOverrides={imageOverrides}
+                />
                 <div className="flex flex-col justify-end p-6 sm:p-8">
                   <h2 className="text-4xl font-thin leading-none tracking-tight text-white sm:text-5xl">
                     {item.title}
@@ -191,7 +203,13 @@ export function WhoWeAreEditorialPage() {
   )
 }
 
-function StoryBlockView({ block }: { block: StoryBlock }) {
+function StoryBlockView({
+  block,
+  imageOverrides,
+}: {
+  block: StoryBlock
+  imageOverrides?: SiteImageMap
+}) {
   if (block.type === "image") {
     const src =
       typeof block.src === "string" && block.src.length > 0
@@ -202,6 +220,7 @@ function StoryBlockView({ block }: { block: StoryBlock }) {
         src={src}
         showCaption={false}
         className="my-10 aspect-[16/9]"
+        imageOverrides={imageOverrides}
       />
     )
   }
@@ -230,7 +249,15 @@ function StoryBlockView({ block }: { block: StoryBlock }) {
   )
 }
 
-function StoryArticleView({ article, index }: { article: StoryArticle; index: number }) {
+function StoryArticleView({
+  article,
+  index,
+  imageOverrides,
+}: {
+  article: StoryArticle
+  index: number
+  imageOverrides?: SiteImageMap
+}) {
   return (
     <article id={article.id} className="border-t border-white/10 py-20 lg:grid lg:grid-cols-[0.42fr_0.58fr] lg:gap-12">
       <aside className="lg:sticky lg:top-24 lg:h-fit">
@@ -251,19 +278,24 @@ function StoryArticleView({ article, index }: { article: StoryArticle; index: nu
           src={article.image}
           showCaption={false}
           className="mt-8 aspect-[4/3]"
+          imageOverrides={imageOverrides}
         />
       </aside>
 
       <div className="mt-12 lg:mt-0">
         {article.blocks.map((block, blockIndex) => (
-          <StoryBlockView key={`${article.id}-${blockIndex}`} block={block} />
+          <StoryBlockView
+            key={`${article.id}-${blockIndex}`}
+            block={block}
+            imageOverrides={imageOverrides}
+          />
         ))}
       </div>
     </article>
   )
 }
 
-export function OurStoryEditorialPage() {
+export function OurStoryEditorialPage({ imageOverrides }: { imageOverrides?: SiteImageMap }) {
   const articles = ourStory.articles as StoryArticle[]
 
   return (
@@ -273,6 +305,7 @@ export function OurStoryEditorialPage() {
         title={ourStory.title}
         body={articles[0]?.summary ?? "The Sunswift story, from first build to future-facing solar racing."}
         image={articles[0]?.image ?? "/placeholders/garage.svg"}
+        imageOverrides={imageOverrides}
       />
 
       <section className="sticky top-0 z-30 border-y border-white/10 bg-black/70 px-5 py-3 backdrop-blur-2xl sm:px-8 lg:px-14">
@@ -292,7 +325,12 @@ export function OurStoryEditorialPage() {
       <section className="px-5 sm:px-8 lg:px-14">
         <div className="mx-auto max-w-[92rem]">
           {articles.map((article, index) => (
-            <StoryArticleView key={article.id} article={article} index={index} />
+            <StoryArticleView
+              key={article.id}
+              article={article}
+              index={index}
+              imageOverrides={imageOverrides}
+            />
           ))}
         </div>
       </section>

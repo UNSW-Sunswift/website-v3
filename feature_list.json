@@ -1,6 +1,94 @@
 {
   "features": [
     {
+      "id": "homepage-hero-boot-zoom-partners-vehicle-quality",
+      "priority": 0,
+      "title": "Homepage boot transition, zoom handoff readability, partners grid polish, and vehicle image quality",
+      "status": "complete",
+      "description": "Add a calibration-style landing hero boot animation, improve the Built by Students scroll handoff into Who We Are, reduce vehicle garage image quality to 75, and redesign the partners grid as four-across square logo tiles with hover overlays.",
+      "verification": {
+        "required": [
+          "node scripts/test-homepage-design.mjs",
+          "./node_modules/.bin/tsc --noEmit",
+          "./node_modules/.bin/eslint --quiet",
+          "./node_modules/.bin/next build",
+          "agent-browser homepage/partners visual smoke",
+          "VERIFY_URL=http://127.0.0.1:3017 node scripts/verify-browser.mjs"
+        ],
+        "last_run": "2026-05-19",
+        "evidence": [
+          "node scripts/test-homepage-design.mjs: passed with boot animation, zoom handoff, partners grid, and vehicle quality assertions",
+          "./node_modules/.bin/tsc --noEmit: passed",
+          "./node_modules/.bin/eslint --quiet: passed",
+          "./node_modules/.bin/next build: passed",
+          "agent-browser homepage smoke: boot overlay appeared, hero completed, zoom headline read as rgb(8, 8, 8) at opacity 1 during slow scroll",
+          "agent-browser partners smoke: redundant grid header copy absent, grid had 35 cards, 4 columns, and square cards",
+          "PATH=$PWD/node_modules/.bin:$PATH VERIFY_URL=http://127.0.0.1:3017 node scripts/verify-browser.mjs: passed"
+        ]
+      },
+      "notes": [
+        "pnpm could not be launched directly because Corepack failed to resolve the pnpm signing key on this Node install, so verification used the repo's installed local binaries.",
+        "LocalStack-dependent checks were not run; this pass was limited to public frontend behavior."
+      ]
+    },
+    {
+      "id": "admin-login-sitemap-hidden-credits-admin-editing",
+      "priority": 0,
+      "title": "Admin login warning fix, sitemap indexing, hidden credits, and wider team editing",
+      "status": "complete",
+      "description": "Remove admin login theme script injection, add sitemap/robots metadata routes, hide Credits while keeping the route, and widen admin team-member edit controls.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint --quiet",
+          "pnpm test:homepage-design",
+          "pnpm build",
+          "agent-browser /admin/login",
+          "HTTP sitemap/robots smoke"
+        ],
+        "last_run": "2026-05-19",
+        "evidence": [
+          "pnpm typecheck: passed",
+          "pnpm lint --quiet: passed",
+          "pnpm test:homepage-design: passed with sitemap, robots, hidden credits, admin theme, and wider team editor assertions",
+          "pnpm build: passed; route list includes /sitemap.xml and /robots.txt",
+          "agent-browser opened http://127.0.0.1:3016/admin/login; console and errors output empty",
+          "curl /sitemap.xml returned public routes including role streams; curl /robots.txt disallowed /admin, /api, and /credits"
+        ]
+      },
+      "notes": [
+        "GitHub connector issue-listing tools were unavailable in this session and gh is not installed, so issue work was implemented from the issue titles/descriptions supplied in chat.",
+        "Credits route remains present with noindex metadata, but it is no longer linked from the footer or sitemap."
+      ]
+    },
+    {
+      "id": "global-site-image-cms-batch-assets-credits",
+      "priority": 0,
+      "title": "Global editable site images, batch S3 assets, and credits/admin footer links",
+      "status": "complete",
+      "description": "Add a Site Images CMS for hardcoded public page imagery, batch direct-to-S3 uploads for public media, and footer quick links for Credits plus Admin login.",
+      "verification": {
+        "required": [
+          "pnpm typecheck",
+          "pnpm lint --quiet",
+          "pnpm test:homepage-design",
+          "pnpm build"
+        ],
+        "last_run": "2026-05-18",
+        "evidence": [
+          "pnpm typecheck: passed",
+          "pnpm lint --quiet: passed",
+          "pnpm test:homepage-design: passed with site-image CMS and batch upload assertions",
+          "pnpm build: passed; route list includes /admin/images and /credits"
+        ]
+      },
+      "notes": [
+        "LocalStack-dependent verification was not run in this pass.",
+        "Team headshots and partner logos remain editable through their existing CMS pages; the new Site Images CMS covers static public page imagery and S3/CloudFront replacement URLs.",
+        "Secrets pasted into chat during deployment setup should be rotated before production use."
+      ]
+    },
+    {
       "id": "localstack-dynamodb-cms-harness",
       "priority": 1,
       "title": "LocalStack DynamoDB CMS harness",

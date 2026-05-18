@@ -121,6 +121,16 @@ const themeProvider = readFileSync(
   join(root, "components/theme-provider.tsx"),
   "utf8"
 )
+const adminThemeProvider = readFileSync(
+  join(root, "components/admin/admin-theme-provider.tsx"),
+  "utf8"
+)
+const adminThemeToggle = readFileSync(
+  join(root, "components/admin/admin-theme-toggle.tsx"),
+  "utf8"
+)
+const sitemapRoute = readFileSync(join(root, "app/sitemap.ts"), "utf8")
+const robotsRoute = readFileSync(join(root, "app/robots.ts"), "utf8")
 const globalsCss = readFileSync(join(root, "app/globals.css"), "utf8")
 const staticData = readFileSync(join(root, "lib/cms/static-data.ts"), "utf8")
 const aboutPages = readFileSync(join(root, "content/about-pages.json"), "utf8")
@@ -169,6 +179,10 @@ const adminTimelinePage = readFileSync(
   join(root, "app/admin/timeline/page.tsx"),
   "utf8"
 )
+const adminImagesPage = readFileSync(
+  join(root, "app/admin/images/page.tsx"),
+  "utf8"
+)
 const adminAssetsPage = readFileSync(
   join(root, "app/admin/assets/page.tsx"),
   "utf8"
@@ -193,8 +207,11 @@ const publicAssetUploader = readFileSync(
   join(root, "components/site/admin-public-asset-uploader.tsx"),
   "utf8"
 )
+const siteImagesCms = readFileSync(join(root, "lib/cms/site-images.ts"), "utf8")
 const partnerImportSchema = readFileSync(join(root, "PARTNER_IMPORT_SCHEMA.md"), "utf8")
 const vercelAwsDeployment = readFileSync(join(root, "VERCEL_AWS_DEPLOYMENT.md"), "utf8")
+const designLanguage = readFileSync(join(root, "DESIGN_LANGUAGE.md"), "utf8")
+const aiUiChecklist = readFileSync(join(root, "AI_UI_CHANGE_CHECKLIST.md"), "utf8")
 const awsStack = readFileSync(join(root, "../aws/lib/website-v3-stack.ts"), "utf8")
 
 const failures = []
@@ -223,11 +240,11 @@ const opalReferences = [
 assert(!opalReferences, "Homepage source files must not mention Opal.")
 
 assert(
-  page.includes("<HomepageHero />"),
+  page.includes("<HomepageHero imageOverrides={imageOverrides} />"),
   "Homepage must render the dedicated homepage hero component."
 )
 assert(
-  hero.includes('src="/media/sr8-hero-render.png"') &&
+  hero.includes('resolveSiteImage("/media/sr8-hero-render.png", imageOverrides)') &&
     hero.includes("data-homepage-hero-wipe") &&
     !hero.includes('src="/placeholders/hero-track.svg"'),
   "Homepage hero must use the new SR8 render instead of the old SVG placeholder or sequence poster."
@@ -270,15 +287,15 @@ assert(
   "Homepage must no longer render the removed HomepageStatement section."
 )
 assert(
-  page.includes("<HomepageZoomReveal />"),
+  page.includes("<HomepageZoomReveal imageOverrides={imageOverrides} />"),
   "Homepage must render the zoom-reveal scroll section."
 )
 assert(
-  page.includes("<HomepageAbout />"),
+  page.includes("<HomepageAbout imageOverrides={imageOverrides} />"),
   "Homepage must render the about section component."
 )
 assert(
-  page.includes("<HomepageRecords />"),
+  page.includes("<HomepageRecords imageOverrides={imageOverrides} />"),
   "Homepage must render the Guinness records section component."
 )
 assert(
@@ -325,12 +342,19 @@ assert(
   "Zoom-reveal section must expose data-homepage-zoom-text on the headline."
 )
 assert(
+  zoomReveal.includes("data-homepage-zoom-readability-wash") &&
+    zoomReveal.includes("data-homepage-zoom-handoff") &&
+    zoomReveal.includes("--zoom-wash-opacity") &&
+    zoomReveal.includes("--zoom-handoff-opacity"),
+  "Zoom-reveal section must expose a scroll-driven readability wash and handoff layer for the Who We Are transition."
+)
+assert(
   zoomReveal.includes("data-homepage-vehicle-render"),
   "Zoom-reveal section must expose data-homepage-vehicle-render as the live-render placeholder slot."
 )
 assert(
   !zoomReveal.includes("HomepageImageSequence") &&
-    zoomReveal.includes('src="/media/sr8-hero-2.png"') &&
+    zoomReveal.includes('resolveSiteImage("/media/sr8-hero-2.png", imageOverrides)') &&
     homepageImageSequence.includes("frame_") &&
     homepageImageSequence.includes("padStart(3") &&
     homepageImageSequence.includes("frameCount = 81") &&
@@ -460,6 +484,16 @@ assert(
   "Hero must expose data-homepage-hero for browser verification."
 )
 assert(
+  hero.includes("data-homepage-hero-boot") &&
+    hero.includes("homepage-hero-boot-line") &&
+    hero.includes("BOOT_DURATION_MS") &&
+    hero.includes("data-hero-boot-complete") &&
+    globalsCss.includes(".homepage-hero-boot-line") &&
+    globalsCss.includes("homepage-hero-boot-noise") &&
+    globalsCss.includes("homepage-hero-boot-logo-in"),
+  "Hero must run the black calibration loading animation before the existing reveal."
+)
+assert(
   hero.includes('"Tomorrow, Today."'),
   "Hero must use the slogan 'Tomorrow, Today.'."
 )
@@ -480,7 +514,7 @@ assert(
   "Hero must render the typewriter caret element."
 )
 assert(
-  hero.includes('src="/media/sr8-hero-render.png"') &&
+  hero.includes('resolveSiteImage("/media/sr8-hero-render.png", imageOverrides)') &&
     hero.includes("data-homepage-hero-wipe") &&
     hero.includes("data-hero-intro-started") &&
     hero.includes("data-hero-reveal-complete") &&
@@ -620,11 +654,11 @@ assert(
 )
 
 assert(
-  whoWeArePage.includes("<WhoWeAreEditorialPage />"),
+  whoWeArePage.includes("<WhoWeAreEditorialPage imageOverrides={imageOverrides} />"),
   "Who We Are route must render the new editorial page."
 )
 assert(
-  ourStoryPage.includes("<OurStoryEditorialPage />"),
+  ourStoryPage.includes("<OurStoryEditorialPage imageOverrides={imageOverrides} />"),
   "Our Story route must render the new editorial page."
 )
 assert(
@@ -669,7 +703,7 @@ assert(
 )
 assert(
   about.includes("data-homepage-about-shared-vehicle") &&
-    about.includes('src="/media/sr8-hero-3.png"') &&
+    about.includes('resolveSiteImage("/media/sr8-hero-3.png", imageOverrides)') &&
     about.includes("aspect-[16/10]") &&
     !about.includes("SR8 in development") &&
     about.includes("Since") &&
@@ -1112,7 +1146,7 @@ assert(
 )
 
 assert(
-  partnersPage.includes("<PartnersPageContent partners={partners} />"),
+  partnersPage.includes("<PartnersPageContent partners={partners} imageOverrides={siteImageMap(siteImages)} />"),
   "Partners route must render the custom partners page with CMS partner records."
 )
 assert(
@@ -1137,8 +1171,14 @@ assert(
 assert(
   partnersPageContent.includes("data-partners-grid") &&
     partnersPageContent.includes("data-partner-card") &&
-    partnersPageContent.includes("Partners and sponsors") &&
+    partnersPageContent.includes("aspect-square") &&
+    partnersPageContent.includes("grayscale") &&
+    partnersPageContent.includes("group-hover:grayscale-0") &&
+    partnersPageContent.includes("ArrowUpRight") &&
     partnersPageContent.includes("assetUrl(partner.logoKey)") &&
+    !partnersPageContent.includes("Collaboration network") &&
+    !partnersPageContent.includes("Partners and sponsors") &&
+    !partnersPageContent.includes("Logo tiles link out to partner websites whenever we publish a URL") &&
     !partnersPageContent.includes("data-partners-marquee") &&
     !partnersPageContent.includes("data-partner-marquee-card") &&
     !partnersPageContent.includes("partner-marquee") &&
@@ -1191,6 +1231,11 @@ assert(
 assert(
   vehiclesGallery.includes("data-clicking"),
   "Vehicles gallery must drive a click animation via data-clicking state."
+)
+assert(
+  /const GARAGE_IMAGE_QUALITY = 75/.test(vehiclesGallery) &&
+    vehiclesGallery.includes("quality={GARAGE_IMAGE_QUALITY}"),
+  "Vehicles garage imagery must use 75 quality instead of full quality for faster loading."
 )
 
 // Scope the card-specific checks to the gallery section only (above the detail view).
@@ -1481,10 +1526,37 @@ assert(
   !/setTheme\("dark"\)|setTheme\(resolvedTheme === "dark"/.test(themeProvider),
   "ThemeProvider must not expose a dark-mode toggle hotkey."
 )
+assert(
+  adminThemeProvider.includes("sunswift-admin-theme") &&
+    adminThemeProvider.includes("classList.toggle") &&
+    !adminThemeProvider.includes("next-themes") &&
+    adminThemeToggle.includes("useAdminTheme") &&
+    !adminThemeToggle.includes("next-themes"),
+  "Admin theme support must avoid next-themes script injection while preserving the admin night-mode toggle."
+)
 
 assert(
   /--primary:\s*oklch\(0\.1[0-9]/.test(globalsCss),
   "Primary token must be a near-black colour."
+)
+assert(
+  sitemapRoute.includes("MetadataRoute.Sitemap") &&
+    sitemapRoute.includes("NEXT_PUBLIC_SITE_URL") &&
+    sitemapRoute.includes("/who-we-are") &&
+    sitemapRoute.includes("/our-story") &&
+    sitemapRoute.includes("/achievements") &&
+    sitemapRoute.includes("/recruitment/available-roles") &&
+    sitemapRoute.includes("recruitmentStreams.map") &&
+    !sitemapRoute.includes("/credits"),
+  "Sitemap route must index the public content routes and recruitment role streams while keeping hidden credits out of indexing."
+)
+assert(
+  robotsRoute.includes("MetadataRoute.Robots") &&
+    robotsRoute.includes("sitemap.xml") &&
+    robotsRoute.includes('"/admin"') &&
+    robotsRoute.includes('"/api"') &&
+    robotsRoute.includes('"/credits"'),
+  "Robots route must advertise the sitemap and keep admin, API, and hidden credits routes out of crawlers."
 )
 assert(
   /--primary-foreground:\s*oklch\(1 /.test(globalsCss),
@@ -1552,7 +1624,9 @@ assert(
 )
 assert(
   siteShell.includes("lg:grid-cols-[1fr_auto]") &&
-    siteShell.includes("navItems.map"),
+    siteShell.includes("footerQuickLinks.map") &&
+    siteShell.includes('href: "/admin/login"') &&
+    !siteShell.includes('href: "/credits"'),
   "Site footer must keep brand/legal/actions organized in the compact dark layout."
 )
 assert(
@@ -1922,7 +1996,7 @@ assert(
   "About pages gallery must use vehicle-fleet vehicle-violet.avif for Violet imagery."
 )
 assert(
-  teamPage.includes("<TeamRoster members={members} />") &&
+  teamPage.includes("<TeamRoster members={members} imageOverrides={siteImageMap(siteImages)} />") &&
     teamRoster.includes("<TransparentNavbar />"),
   "Team route must render the roster with an embedded transparent navbar on the photo hero shell."
 )
@@ -2069,6 +2143,10 @@ assert(
     adminTeamPage.includes("data-admin-team-density-toggle") &&
     adminTeamPage.includes("data-admin-team-edit-panel") &&
     adminTeamPage.includes("Edit profile") &&
+    adminTeamPage.includes("Full form") &&
+    adminTeamPage.includes("min-h-11 w-full min-w-0") &&
+    adminTeamPage.includes("xl:grid-cols-3") &&
+    !adminTeamPage.includes("2xl:grid-cols-4") &&
     adminTeamPage.includes("Extra compact cards") &&
     adminTeamPage.includes("aspect-square") &&
     !adminTeamPage.includes("lg:grid-cols-[220px_1fr]"),
@@ -2173,6 +2251,7 @@ assert(
 assert(
   adminShell.includes("/admin/partners") &&
     adminShell.includes("/admin/timeline") &&
+    adminShell.includes("/admin/images") &&
     adminShell.includes("/admin/assets") &&
     adminPartnersPage.includes("data-admin-partners-import") &&
     adminAssetsPage.includes("Register heavy media") &&
@@ -2184,6 +2263,21 @@ assert(
   "Admin dashboard must expose partners, assets, and direct-to-S3 public asset uploads with URL registration."
 )
 assert(
+  adminImagesPage.includes("data-admin-site-images-page") &&
+    adminImagesPage.includes("data-admin-site-images-grid") &&
+    adminImagesPage.includes("saveSiteImageSetting") &&
+    adminImagesPage.includes("AdminPublicAssetUploader") &&
+    publicAssetUploader.includes("multiple") &&
+    publicAssetUploader.includes("getAll(\"files\")") &&
+    siteImagesCms.includes("createSiteImageRegistry") &&
+    siteImagesCms.includes("resolveSiteImage") &&
+    siteImagesCms.includes("siteImageMap") &&
+    cmsTypes.includes("SiteImageSetting") &&
+    cmsDynamodb.includes("putSiteImageSetting") &&
+    cmsApi.includes('"site-images"'),
+  "Site image CMS must expose editable public image overrides and batch direct-to-S3 uploads."
+)
+assert(
   adminTimelinePage.includes("data-admin-timeline-page") &&
     adminTimelinePage.includes("data-admin-timeline-grid") &&
     adminTimelinePage.includes("data-admin-timeline-record") &&
@@ -2193,7 +2287,7 @@ assert(
     adminActions.includes("saveTimelineVideoSetting") &&
     adminActions.includes("saveCmsPublished") &&
     adminActions.includes('revalidatePath("/achievements")') &&
-    cmsApi.includes('type CmsCollection = "team" | "roles" | "partners" | "assets" | "timeline"') &&
+    cmsApi.includes('type CmsCollection = "team" | "roles" | "partners" | "assets" | "timeline" | "site-images"') &&
     cmsDynamodb.includes("putTimelineVideoSetting") &&
     achievementsPage.includes('listCmsRecords("timeline", "published")') &&
     achievementsPage.includes("applyTimelineVideoSettings") &&
@@ -2254,7 +2348,7 @@ assert(
 )
 
 assert(
-  mediaPage.includes("<MediaHighlightsPage />"),
+  mediaPage.includes("<MediaHighlightsPage imageOverrides={imageOverrides} />"),
   "Media route must render the dedicated highlights page."
 )
 assert(
@@ -2353,7 +2447,7 @@ for (const href of [
 }
 
 assert(
-  contactPage.includes("<ContactPageContent />"),
+  contactPage.includes("<ContactPageContent imageOverrides={imageOverrides} />"),
   "Contact route must render the dedicated new-theme contact page."
 )
 assert(

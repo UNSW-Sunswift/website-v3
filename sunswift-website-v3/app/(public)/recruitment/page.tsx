@@ -7,8 +7,10 @@ import {
 } from "@/components/site/recruitment-content"
 import { PageLoadReveal } from "@/components/site/page-load-reveal"
 import { TransparentNavbar } from "@/components/site/transparent-navbar"
+import { listCmsRecords } from "@/lib/cms/api"
+import { resolveSiteImage, siteImageMap } from "@/lib/cms/site-images"
 
-export const dynamic = "force-static"
+export const dynamic = "force-dynamic"
 export const metadata = {
   title: "Recruitment",
 }
@@ -33,9 +35,11 @@ const alternativeApplicationsUrl =
   "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=pM_2PxXn20i44Qhnufn7o7pdhLeqwPNNryop8wbNiK9UMERaOFI2QkgzMTY4Q1NHTjRPMUROVk5OWS4u"
 
 export default async function RecruitmentPage() {
+  const imageOverrides = siteImageMap(await listCmsRecords("site-images", "published"))
+
   return (
     <main data-recruitment-hub className="bg-[#0a0c0e] text-white">
-      <PageLoadReveal image="/media/our-team.jpg" label="Recruitment" />
+      <PageLoadReveal image={resolveSiteImage("/media/our-team.jpg", imageOverrides)} label="Recruitment" />
       <div className="relative">
         <TransparentNavbar />
         <section className="relative overflow-hidden bg-[#0a0c0e] text-white">

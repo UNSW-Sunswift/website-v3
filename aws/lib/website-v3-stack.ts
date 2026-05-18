@@ -14,10 +14,6 @@ export class WebsiteV3Stack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    new sqs.Queue(this, 'WebsiteV3Queue', {
-      visibilityTimeout: Duration.seconds(300)
-    });
-
     const cmsTable = new dynamodb.Table(this, 'WebsiteV3CMS', {
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'type', type: dynamodb.AttributeType.STRING },
