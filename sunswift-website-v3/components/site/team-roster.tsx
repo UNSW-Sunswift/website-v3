@@ -59,7 +59,7 @@ const placeholderMembers: RosterMember[] = [
   {
     name: "Dr. Sam Chen",
     role: "Faculty advisor",
-    department: "Systems Engineering",
+    department: "",
     hierarchy: "Academic",
     section: "Academic",
     imageSrc: placeholderImage,
@@ -67,7 +67,7 @@ const placeholderMembers: RosterMember[] = [
   {
     name: "Priya Shah",
     role: "Materials liaison",
-    department: "Materials Science",
+    department: "",
     hierarchy: "Academic",
     section: "Academic",
     imageSrc: placeholderImage,
@@ -156,13 +156,14 @@ const placeholderMembers: RosterMember[] = [
 
 function toRosterMember(member: CmsTeamMember): RosterMember {
   const level = member.hierarchyLevel?.trim() || "Team"
+  const section = hierarchyToSection(member.hierarchyLevel)
   return {
     slug: member.slug,
     name: member.name,
     role: member.role,
-    department: member.department || "Systems Engineering",
+    department: section === "Academic" ? "" : member.department || "Systems Engineering",
     hierarchy: level,
-    section: hierarchyToSection(member.hierarchyLevel),
+    section,
     imageSrc: member.publishedAssetKey || member.imageKey || placeholderImage,
   }
 }
@@ -186,7 +187,11 @@ export function TeamRoster({
     () => [
       "All departments",
       ...Array.from(
-        new Set(rosterMembers.map((member) => member.department))
+        new Set(
+          rosterMembers
+            .map((member) => member.department)
+            .filter((department) => department.trim().length > 0)
+        )
       ).sort((a, b) => a.localeCompare(b)),
     ],
     [rosterMembers]
@@ -394,16 +399,15 @@ export function TeamRoster({
                           sizes="(min-width: 1536px) 16vw, (min-width: 1280px) 18vw, (min-width: 640px) 28vw, 45vw"
                         />
                         <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_42%,rgba(0,0,0,0.88))]" />
-                        <div className="absolute top-2 left-2 border border-white/18 bg-black/38 px-2 py-0.5 font-mono text-[0.52rem] tracking-[0.18em] text-white/76 uppercase backdrop-blur-md sm:text-[0.58rem] sm:tracking-[0.2em]">
-                          {member.hierarchy}
-                        </div>
                       </div>
                       <div className="pt-3">
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <p className="truncate font-mono text-[0.58rem] tracking-[0.2em] text-accent-yellow uppercase sm:text-[0.62rem] sm:tracking-[0.22em]">
-                              {member.department}
-                            </p>
+                            {member.department ? (
+                              <p className="truncate font-mono text-[0.58rem] tracking-[0.2em] text-accent-yellow uppercase sm:text-[0.62rem] sm:tracking-[0.22em]">
+                                {member.department}
+                              </p>
+                            ) : null}
                             <h3 className="mt-1.5 truncate text-[1.05rem] leading-tight font-light tracking-normal text-white sm:text-lg lg:text-xl">
                               {member.name}
                             </h3>

@@ -142,6 +142,7 @@ const cmsApi = readFileSync(join(root, "lib/cms/api.ts"), "utf8")
 const cmsCsv = readFileSync(join(root, "lib/cms/csv.ts"), "utf8")
 const cmsTypes = readFileSync(join(root, "lib/cms/types.ts"), "utf8")
 const cmsDynamodb = readFileSync(join(root, "lib/cms/dynamodb.ts"), "utf8")
+const teamOptions = readFileSync(join(root, "lib/cms/team-options.ts"), "utf8")
 const cmsAssets = readFileSync(join(root, "content/cms-assets.json"), "utf8")
 const packageJson = readFileSync(join(root, "package.json"), "utf8")
 const authConfig = readFileSync(join(root, "auth.ts"), "utf8")
@@ -2054,8 +2055,11 @@ assert(
   teamRoster.includes('"member"') &&
     teamRoster.includes('"members"') &&
     !teamRoster.includes('"profiles"') &&
-    !teamRoster.includes("member.discipline"),
-  "Team roster must use member copy and stop rendering discipline badges."
+    !teamRoster.includes("member.discipline") &&
+    !teamRoster.includes("{member.hierarchy}") &&
+    teamRoster.includes('section === "Academic" ? ""') &&
+    teamRoster.includes("filter((department) => department.trim().length > 0)"),
+  "Team roster must use member copy, hide image hierarchy badges, and keep academic department labels blank."
 )
 assert(
   teamRoster.includes("team-card-filter-in") &&
@@ -2105,8 +2109,10 @@ assert(
   cmsDynamodb.includes('status === "draft" ? [] : fallbackTeamMembers') &&
     cmsDynamodb.includes('status === "draft" ? [] : fallbackRecruitmentRoles') &&
     cmsDynamodb.includes('status === "draft" ? [] : fallbackPartners') &&
-    cmsAdminHandler.includes('itemType(config.kind, slug, "draft")'),
-  "CMS draft reads must not fall back to public seed data, and API publishing must remove the draft record."
+    cmsAdminHandler.includes('itemType(config.kind, slug, "draft")') &&
+    awsStack.includes("draftRecord.addMethod('DELETE', adminIntegration)") &&
+    awsStack.includes("slug.addResource('published').addMethod('DELETE', adminIntegration)"),
+  "CMS draft reads must not fall back to public seed data, API publishing must remove the draft record, and AWS API routes must expose delete methods for admin records."
 )
 assert(
   authConfig.includes("Credentials") &&
@@ -2155,6 +2161,9 @@ assert(
 assert(
   adminTeamPage.includes("TEAM_DEPARTMENTS") &&
     adminTeamPage.includes("TEAM_HIERARCHIES") &&
+    adminTeamPage.includes("teamDepartmentLabel") &&
+    teamOptions.includes('""') &&
+    teamOptions.includes("No department (academic)") &&
     adminTeamPage.includes('name="department"') &&
     adminTeamPage.includes('name="hierarchyLevel"') &&
     adminTeamPage.includes('name="csvUrl"') &&
@@ -2163,10 +2172,12 @@ assert(
     adminTeamPage.includes("AdminBulkPublishPanel") &&
     adminTeamPage.includes("AdminPublishStatus") &&
     adminTeamPage.includes("publishSelectedTeamMembers") &&
+    adminActions.includes('hierarchyLevel === "Academic"') &&
+    adminActions.includes('actionStatusPath("/admin/team", "delete", "error")') &&
     !adminTeamPage.includes('name="discipline"') &&
     !adminTeamPage.includes('name="bio"') &&
     !adminTeamPage.includes("Optional override"),
-  "Admin team page must gate department/hierarchy with dropdowns, expose selected batch publishing, and hide slug/discipline/bio manual fields."
+  "Admin team page must gate department/hierarchy with dropdowns, support no-department academics, expose selected batch publishing, and hide slug/discipline/bio manual fields."
 )
 assert(
   adminBulkPublishPanel.includes("data-admin-bulk-publish") &&

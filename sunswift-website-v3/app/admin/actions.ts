@@ -17,6 +17,7 @@ import { importPartnersCsv, importRecruitmentCsv, importTeamCsv } from "@/lib/cm
 import { achievementVideoSlug } from "@/lib/cms/static-data"
 import { siteImageSlug } from "@/lib/cms/site-images"
 import {
+  DEFAULT_TEAM_DEPARTMENT,
   normalizeTeamDepartment,
   normalizeTeamHierarchy,
 } from "@/lib/cms/team-options"
@@ -117,6 +118,15 @@ function publishStatusPath(path: string, result: PublishResult) {
   return `${path}?${params.toString()}`
 }
 
+function actionStatusPath(path: string, action: string, status: "success" | "error") {
+  const params = new URLSearchParams({
+    action,
+    actionStatus: status,
+  })
+
+  return `${path}?${params.toString()}`
+}
+
 async function publishAndArchiveDraft(
   collection: PublishCollection,
   slug: string,
@@ -190,8 +200,12 @@ export async function saveTeamMemberDraft(formData: FormData) {
 
   const name = String(formData.get("name") ?? "").trim()
   const slug = slugify(String(formData.get("slug") || name))
-  const department = normalizeTeamDepartment(String(formData.get("department") ?? ""))
   const hierarchyLevel = normalizeTeamHierarchy(String(formData.get("hierarchyLevel") ?? ""))
+  const selectedDepartment = normalizeTeamDepartment(String(formData.get("department") ?? ""))
+  const department =
+    hierarchyLevel === "Academic"
+      ? ""
+      : selectedDepartment || DEFAULT_TEAM_DEPARTMENT
   const existingImageKey = String(formData.get("existingImageKey") ?? "")
   const file = formData.get("headshot")
   const remoteFile = await fetchUrlAsFile(
@@ -265,13 +279,18 @@ export async function deleteTeamMember(formData: FormData) {
   const slug = String(formData.get("slug") ?? "")
   const deletePublished = String(formData.get("deletePublished") ?? "true") !== "false"
 
-  await deleteCmsRecord("team", slug, "draft")
-  if (deletePublished) {
-    await deleteCmsRecord("team", slug, "published")
+  try {
+    await deleteCmsRecord("team", slug, "draft")
+    if (deletePublished) {
+      await deleteCmsRecord("team", slug, "published")
+    }
+  } catch {
+    redirect(actionStatusPath("/admin/team", "delete", "error"))
   }
 
   revalidatePath("/team")
   revalidatePath("/admin/team")
+  redirect(actionStatusPath("/admin/team", "delete", "success"))
 }
 
 export async function saveRecruitmentRoleDraft(formData: FormData) {
@@ -330,14 +349,19 @@ export async function deleteRecruitmentRole(formData: FormData) {
   const slug = String(formData.get("slug") ?? "")
   const deletePublished = String(formData.get("deletePublished") ?? "true") !== "false"
 
-  await deleteCmsRecord("roles", slug, "draft")
-  if (deletePublished) {
-    await deleteCmsRecord("roles", slug, "published")
+  try {
+    await deleteCmsRecord("roles", slug, "draft")
+    if (deletePublished) {
+      await deleteCmsRecord("roles", slug, "published")
+    }
+  } catch {
+    redirect(actionStatusPath("/admin/recruitment", "delete", "error"))
   }
 
   revalidatePath("/recruitment")
   revalidatePath("/recruitment/available-roles")
   revalidatePath("/admin/recruitment")
+  redirect(actionStatusPath("/admin/recruitment", "delete", "success"))
 }
 
 export async function savePartnerDraft(formData: FormData) {
@@ -400,13 +424,18 @@ export async function deletePartner(formData: FormData) {
   const slug = String(formData.get("slug") ?? "")
   const deletePublished = String(formData.get("deletePublished") ?? "true") !== "false"
 
-  await deleteCmsRecord("partners", slug, "draft")
-  if (deletePublished) {
-    await deleteCmsRecord("partners", slug, "published")
+  try {
+    await deleteCmsRecord("partners", slug, "draft")
+    if (deletePublished) {
+      await deleteCmsRecord("partners", slug, "published")
+    }
+  } catch {
+    redirect(actionStatusPath("/admin/partners", "delete", "error"))
   }
 
   revalidatePath("/partners")
   revalidatePath("/admin/partners")
+  redirect(actionStatusPath("/admin/partners", "delete", "success"))
 }
 
 export async function importTeamDrafts(formData: FormData) {
@@ -433,6 +462,10 @@ export async function importTeamDrafts(formData: FormData) {
       {
         ...member,
         slug,
+        department:
+          member.hierarchyLevel === "Academic"
+            ? ""
+            : member.department || DEFAULT_TEAM_DEPARTMENT,
       },
       updatedBy
     )

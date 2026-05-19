@@ -18,6 +18,7 @@ import {
   DEFAULT_TEAM_HIERARCHY,
   TEAM_DEPARTMENTS,
   TEAM_HIERARCHIES,
+  teamDepartmentLabel,
 } from "@/lib/cms/team-options"
 
 export const dynamic = "force-dynamic"
@@ -44,6 +45,8 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
       (left.sortOrder ?? 0) - (right.sortOrder ?? 0) || left.name.localeCompare(right.name)
   )
   const publishStatus = await searchParams
+  const actionStatus =
+    publishStatus?.action === "delete" ? publishStatus.actionStatus : undefined
 
   return (
     <AdminShell>
@@ -66,13 +69,24 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
           plural="team members"
         />
 
+        {actionStatus === "success" ? (
+          <p className="mt-6 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">
+            Team member deleted.
+          </p>
+        ) : null}
+        {actionStatus === "error" ? (
+          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            Delete failed because the CMS database could not be reached. Start LocalStack locally or use the deployed CMS API environment.
+          </p>
+        ) : null}
+
         <AdminBulkPublishPanel
           title="Publish team drafts"
           description="Select the team members that are ready to go live. Grid view is useful for quickly scanning and choosing many draft records at once."
           items={draftMembers.map((member) => ({
             slug: member.slug,
             title: member.name,
-            eyebrow: member.department ?? member.hierarchyLevel,
+            eyebrow: member.department ? member.department : member.hierarchyLevel,
             description: member.role,
           }))}
           action={publishSelectedTeamMembers}
@@ -149,7 +163,7 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
               >
                 {TEAM_DEPARTMENTS.map((department) => (
                   <option key={department} value={department}>
-                    {department}
+                    {teamDepartmentLabel(department)}
                   </option>
                 ))}
               </select>
@@ -261,7 +275,7 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
                 <h2 className="mt-3 text-base font-medium">{member.name}</h2>
                 <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{member.role}</p>
                 <p className="mt-3 font-mono text-[0.62rem] tracking-[0.18em] text-primary uppercase">
-                  {member.department ?? "Department"}
+                  {member.department ? member.department : "Academic"}
                 </p>
 
                 <div className="mt-3 grid gap-2">
@@ -323,7 +337,7 @@ export default async function AdminTeamPage({ searchParams }: AdminTeamPageProps
                       >
                         {TEAM_DEPARTMENTS.map((department) => (
                           <option key={department} value={department}>
-                            {department}
+                            {teamDepartmentLabel(department)}
                           </option>
                         ))}
                       </select>

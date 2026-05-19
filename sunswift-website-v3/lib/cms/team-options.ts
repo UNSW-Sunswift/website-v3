@@ -1,4 +1,5 @@
 export const TEAM_DEPARTMENTS = [
+  "",
   "Alternative Energies",
   "Business",
   "Chassis and Bodywork",
@@ -24,6 +25,10 @@ export const TEAM_HIERARCHIES = [
 export const DEFAULT_TEAM_DEPARTMENT: (typeof TEAM_DEPARTMENTS)[number] =
   "Systems Engineering"
 export const DEFAULT_TEAM_HIERARCHY: (typeof TEAM_HIERARCHIES)[number] = "Team"
+
+export function teamDepartmentLabel(value?: string | null) {
+  return String(value ?? "").trim() || "No department (academic)"
+}
 
 export function normalizeTeamDepartment(value?: string | null) {
   const trimmed = String(value ?? "").trim()
