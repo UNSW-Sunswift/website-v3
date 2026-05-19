@@ -241,7 +241,7 @@ export async function stageCmsUpload(
   slug: string,
   scope: "team" | "roles" | "partners"
 ) {
-  const apiResponse = await cmsFetch<{ key: string }>(
+  const apiResponse = await cmsFetch<{ key: string; uploadUrl?: string; contentType?: string }>(
     "/cms/admin/uploads/presign",
     {
       method: "POST",
@@ -255,6 +255,20 @@ export async function stageCmsUpload(
   )
 
   if (apiResponse) {
+    if (apiResponse.uploadUrl) {
+      const uploadResponse = await fetch(apiResponse.uploadUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": apiResponse.contentType || file.type || "application/octet-stream",
+        },
+      })
+
+      if (!uploadResponse.ok) {
+        throw new Error(`CMS upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`)
+      }
+    }
+
     return apiResponse.key
   }
 

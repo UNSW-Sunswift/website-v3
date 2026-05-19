@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Sunswift Racing">
+  <rect width="256" height="256" fill="#3f3f3f"/>
+  <g fill="none" stroke="#ffd400" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 137c45-20 84-30 123-29 18 0 32 10 45 18 16 4 29 8 41 17 7 5 9 11 8 20" stroke-width="8"/>
+    <path d="M21 157h214" stroke-width="6"/>
+  </g>
+  <g fill="#ffffff">
+    <path d="M154 42l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z"/>
+    <path d="M198 33l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z"/>
+    <path d="M210 81l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z"/>
+    <path d="M184 93l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>
+    <path d="M157 124l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z"/>
+  </g>
+</svg>

@@ -66,7 +66,7 @@ Location: `/admin/partners`
 What you can do:
 - Import Webflow partner CSVs (creates drafts only).
 - Manually add a partner (details panel at the top).
-- Stage a logo upload or keep the initials placeholder.
+- Stage a logo upload, paste a logo URL, or import Webflow logo URLs that are copied into the CMS assets bucket.
 - Edit website links and sort order.
 - Publish one partner, or select multiple drafts in the batch publishing panel and publish only those partners.
 - Delete to remove the draft and published record.

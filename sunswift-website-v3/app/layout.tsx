@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   },
   description:
     "Student-led solar racing at UNSW, building prototype electric vehicles for the future of sustainable transport.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 }
 
 export default function RootLayout({

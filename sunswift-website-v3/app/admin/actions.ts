@@ -77,6 +77,20 @@ async function fetchUrlAsFile(value: string, fallbackName: string) {
   return new File([buffer], filename, { type: contentType })
 }
 
+async function stageRemotePartnerLogo(logoKey: string | undefined, slug: string) {
+  const source = String(logoKey ?? "").trim()
+  if (!safeHttpUrl(source)) {
+    return source
+  }
+
+  const remoteLogo = await fetchUrlAsFile(source, `${slug || "partner"}-logo`)
+  if (!remoteLogo) {
+    return source
+  }
+
+  return stageCmsUpload(remoteLogo, slug, "partners")
+}
+
 async function formCsvText(formData: FormData) {
   const file = formData.get("csv")
   if (file instanceof File && file.size > 0) {
@@ -493,7 +507,8 @@ export async function importPartnerDrafts(formData: FormData) {
   const partners = importPartnersCsv(text)
 
   for (const partner of partners) {
-    await saveCmsDraft("partners", partner.slug, partner, updatedBy)
+    const logoKey = await stageRemotePartnerLogo(partner.logoKey, partner.slug)
+    await saveCmsDraft("partners", partner.slug, { ...partner, logoKey }, updatedBy)
   }
 
   revalidatePath("/admin/partners")

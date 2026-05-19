@@ -256,6 +256,12 @@ assert(
   ),
   "Root layout must use a per-page browser tab title template."
 )
+assert(
+  layout.includes('url: "/favicon.ico"') &&
+    layout.includes('url: "/icon.svg"') &&
+    layout.includes('url: "/apple-icon.png"'),
+  "Root layout must publish Sunswift browser tab and Apple touch icons."
+)
 for (const [source, title] of [
   [page, "Home"],
   [whoWeArePage, "About Us"],
@@ -2311,10 +2317,15 @@ assert(
   adminPartnersPage.includes('name="csvUrl"') &&
     adminPartnersPage.includes('name="logoUrl"') &&
     adminActions.includes('formData.get("logoUrl")') &&
+    adminActions.includes("stageRemotePartnerLogo") &&
+    adminActions.includes("stageCmsUpload(remoteLogo, slug, \"partners\")") &&
+    cmsApi.includes("apiResponse.uploadUrl") &&
+    cmsApi.includes('method: "PUT"') &&
     cmsCsv.includes('record["Sort Order"]') &&
     partnerImportSchema.includes("Partner Import Schema") &&
-    partnerImportSchema.includes("Name,Website,Logo,Sort Order,Slug"),
-  "Partner imports must document the mass-upload schema and support CSV URLs, logo URLs, and sort-order columns."
+    partnerImportSchema.includes("Name,Website,Logo,Sort Order,Slug") &&
+    partnerImportSchema.includes("Webflow CDN logo URLs are copied into the CMS"),
+  "Partner imports must document the mass-upload schema, support CSV/logo URLs and sort-order columns, and copy Webflow logos into CMS assets."
 )
 assert(
   vercelAwsDeployment.includes("Vercel + AWS Deployment") &&

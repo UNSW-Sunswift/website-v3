@@ -81,8 +81,8 @@ export default async function AdminPartnersPage({ searchParams }: AdminPartnersP
         >
           <h2 className="text-xl font-medium">Import partners CSV</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Use the documented partner schema: Name, Website, Logo, Sort Order, and optional Slug.
-            Upload a file or paste a CSV URL.
+            Use the documented partner schema or a Webflow partners export. Remote logo URLs are
+            copied into the CMS assets bucket during import, then saved on each partner draft.
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <label className="grid gap-2 text-sm">
